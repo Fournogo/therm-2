@@ -1,0 +1,247 @@
+import yaml
+import os
+import glob
+from ServerDeviceProxy import ServerDeviceManager, ComponentInspector
+import json
+
+class ConfigLoader:
+    """Loads multiple config files and creates device proxies"""
+    
+    def __init__(self, config_directory: str = "configs", component_path: str = "."):
+        self.config_directory = config_directory
+        self.device_managers = {}  # One per device_prefix
+        self.all_devices = {}  # All devices accessible by name
+        
+        # Add component path for imports
+        ComponentInspector.add_component_path(component_path)
+    
+    def load_all_configs(self):
+        """Load all YAML config files from the directory"""
+        if not os.path.exists(self.config_directory):
+            print(f"Config directory '{self.config_directory}' not found")
+            return
+        
+        # Find all .yaml and .yml files
+        config_files = glob.glob(os.path.join(self.config_directory, "*.yaml"))
+        config_files.extend(glob.glob(os.path.join(self.config_directory, "*.yml")))
+        
+        print(f"Found {len(config_files)} config files")
+        
+        for config_file in config_files:
+            try:
+                self.load_config_file(config_file)
+            except Exception as e:
+                print(f"Failed to load config file {config_file}: {e}")
+    
+    def load_config_file(self, config_file: str):
+        """Load a single config file"""
+        print(f"Loading config: {config_file}")
+        
+        with open(config_file, 'r') as file:
+            config = yaml.safe_load(file)
+        
+        # Extract MQTT config
+        mqtt_config = config.get('mqtt', {})
+        device_prefix = mqtt_config.get('device_prefix', 'devices')
+        
+        # Create or get device manager for this prefix
+        if device_prefix not in self.device_managers:
+            # Add broker_host if not specified (you might want to set this)
+            if 'broker_host' not in mqtt_config:
+                mqtt_config['broker_host'] = 'localhost'  # or however you want to handle this
+            
+            self.device_managers[device_prefix] = ServerDeviceManager(mqtt_config)
+        
+        # Load devices into the appropriate manager
+        device_manager = self.device_managers[device_prefix]
+        device_manager.load_device_config(config)
+        
+        # Add devices to global registry and as attributes
+        for device_name, device_proxy in device_manager.devices.items():
+            self.all_devices[device_name] = device_proxy
+            # Add device as attribute to this loader for easy access
+            setattr(self, device_name, device_proxy)
+    
+    def get_device(self, name: str):
+        """Get any device by name regardless of prefix"""
+        return self.all_devices.get(name)
+    
+    def list_all_devices(self):
+        """List all devices from all config files"""
+        print("\n=== All Loaded Devices ===")
+        for prefix, manager in self.device_managers.items():
+            print(f"\nDevice Prefix: {prefix}")
+            manager.list_devices()
+    
+    def disconnect_all(self):
+        """Disconnect all MQTT connections"""
+        for manager in self.device_managers.values():
+            manager.disconnect()
+
+    def list_all_commands(self, include_status=True):
+        """
+        Generate a list of all available commands using ComponentInspector
+        
+        Args:
+            include_status: Whether to include @status decorated methods
+            
+        Returns:
+            List of command strings with proper signatures
+        """
+        commands = []
+        
+        # Iterate through all loaded devices
+        for device_name, device_proxy in self.all_devices.items():
+            # Get the device config to find component types
+            device_config = self._get_device_config(device_name)
+            if not device_config:
+                continue
+                
+            components_config = device_config.get('components', {})
+            
+            for component_name, component_config in components_config.items():
+                component_type = component_config.get('type')
+                if not component_type:
+                    continue
+                    
+                # Use ComponentInspector to discover methods
+                command_methods = ComponentInspector.discover_command_methods(component_type)
+                status_methods = ComponentInspector.discover_status_methods(component_type) if include_status else []
+                
+                # Add command methods
+                for method_name in command_methods:
+                    signature = self._get_method_signature(component_type, method_name)
+                    command_str = f"{device_name}.{component_name}.{method_name}{signature}"
+                    commands.append(command_str)
+                
+                # Add status methods
+                for method_name in status_methods:
+                    signature = self._get_method_signature(component_type, method_name)
+                    command_str = f"{device_name}.{component_name}.{method_name}{signature}"
+                    commands.append(command_str)
+        
+        return sorted(commands)
+
+    def _get_device_config(self, device_name: str):
+        """Get the original config for a device"""
+        # Look through all device managers to find the config
+        for manager in self.device_managers.values():
+            if hasattr(manager, 'devices') and device_name in manager.devices:
+                device_proxy = manager.devices[device_name]
+                if hasattr(device_proxy, 'device_config'):
+                    return device_proxy.device_config
+        return None
+
+    def _get_method_signature(self, component_type: str, method_name: str):
+        """Get the actual method signature by inspecting the component class"""
+        try:
+            import importlib
+            import inspect
+            
+            # Import the component module
+            module = importlib.import_module(component_type)
+            component_class = getattr(module, component_type)
+            method = getattr(component_class, method_name)
+            
+            # Get the signature
+            sig = inspect.signature(method)
+            
+            # Filter out 'self' and '**kwargs' parameters, show actual parameters
+            params = []
+            for name, param in sig.parameters.items():
+                if name == 'self':
+                    continue
+                if param.kind == param.VAR_KEYWORD:  # Skip **kwargs
+                    continue
+                params.append(str(param))
+            
+            # Return clean signature
+            if params:
+                return f"({', '.join(params)})"
+            else:
+                return "()"
+                
+        except Exception as e:
+            # Fallback to empty parentheses if we can't inspect
+            return "()"
+
+    def print_all_commands(self, include_status=True):
+        """Print all available commands to the terminal"""
+        commands = self.list_all_commands(include_status)
+        
+        print(f"\nAvailable Commands ({len(commands)} total):")
+        print("=" * 50)
+        
+        # Group by device for better readability
+        by_device = {}
+        for cmd in commands:
+            device = cmd.split('.')[0]
+            if device not in by_device:
+                by_device[device] = []
+            by_device[device].append(cmd)
+            
+        for device, cmds in by_device.items():
+            print(f"\n{device.upper()}:")
+            for cmd in cmds:
+                # Mark status methods differently
+                if self._is_status_method(cmd):
+                    print(f"  {cmd} [STATUS]")
+                else:
+                    print(f"  {cmd}")
+
+    def _is_status_method(self, command_str: str):
+        """Check if a command string represents a status method"""
+        try:
+            parts = command_str.split('.')
+            if len(parts) < 3:
+                return False
+                
+            device_name = parts[0]
+            component_name = parts[1]
+            method_name = parts[2].split('(')[0]  # Remove signature
+            
+            # Get component type
+            device_config = self._get_device_config(device_name)
+            if not device_config:
+                return False
+                
+            component_config = device_config.get('components', {}).get(component_name, {})
+            component_type = component_config.get('type')
+            
+            if not component_type:
+                return False
+                
+            # Check if it's in status methods
+            status_methods = ComponentInspector.discover_status_methods(component_type)
+            return method_name in status_methods
+            
+        except Exception:
+            return False
+
+    def get_commands_json(self, include_status=True):
+        """Get all commands as JSON string for API endpoints"""
+        import json
+        commands = self.list_all_commands(include_status)
+        
+        # Separate commands and status methods
+        command_list = []
+        status_list = []
+        
+        for cmd in commands:
+            if self._is_status_method(cmd):
+                status_list.append(cmd)
+            else:
+                command_list.append(cmd)
+        
+        return json.dumps({
+            "commands": command_list,
+            "status_methods": status_list,
+            "total": len(commands)
+        }, indent=2)
+    
+# Example usage function
+def create_device_controller(config_directory: str = "configs", component_path: str = "."):
+    """Simple function to create and return a configured device controller"""
+    loader = ConfigLoader(config_directory, component_path)
+    loader.load_all_configs()
+    return loader

@@ -1,0 +1,29 @@
+mqtt:
+  username: "scrumpi"
+  password: "Th3rm"
+  port: 1883
+  device_prefix: "therm"
+
+devices:
+  stink_button:
+    components:
+      button:
+        type: "Button"
+        pin: 14
+        pull_up: false
+      light:
+        type: "Relay"
+        signal: "LOW"
+        pin: 27
+  bathroom:
+    components:
+      valve:
+        type: "Relay"
+        signal: "LOW"
+        pin: 10
+  averys-room:
+    components:
+      valve:
+          type: "Relay"
+          signal: "LOW"
+          pin: 9
