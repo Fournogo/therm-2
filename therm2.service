@@ -8,6 +8,7 @@ Type=simple
 User=pi
 Group=pi
 WorkingDirectory=/home/pi/your_project_directory
+ExecStartPre=/usr/bin/git pull
 ExecStart=/home/pi/your_project_directory/venv/bin/python /home/pi/your_project_directory/device_service.py /home/pi/your_project_directory/config.yaml
 Restart=always
 RestartSec=10
