@@ -7,6 +7,7 @@ import sys
 import time
 import signal
 import logging
+import os
 from ComponentFactory import DeviceManager
 
 class DeviceService:
@@ -15,20 +16,47 @@ class DeviceService:
         self.device_manager = None
         self.running = True
         
-        # Setup logging
-        logging.basicConfig(
-            level=logging.INFO,
-            format='%(asctime)s - %(levelname)s - %(message)s',
-            handlers=[
-                logging.FileHandler('/var/log/device_service.log'),
-                logging.StreamHandler(sys.stdout)
-            ]
-        )
+        # Setup logging with fallback locations
+        self._setup_logging()
         self.logger = logging.getLogger(__name__)
         
         # Setup signal handlers for graceful shutdown
         signal.signal(signal.SIGINT, self.signal_handler)
         signal.signal(signal.SIGTERM, self.signal_handler)
+    
+    def _setup_logging(self):
+        """Setup logging with relative paths based on script location"""
+        # Get the directory where this script is located
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        
+        # Create logs directory relative to script location
+        log_dir = os.path.join(script_dir, 'logs')
+        os.makedirs(log_dir, exist_ok=True)
+        
+        # Log file in the logs subdirectory
+        log_file = os.path.join(log_dir, 'device_service.log')
+        
+        try:
+            # Test if we can write to the log file
+            with open(log_file, 'a') as test_file:
+                pass
+            
+            handlers = [
+                logging.FileHandler(log_file),
+                logging.StreamHandler(sys.stdout)
+            ]
+            print(f"Logging to: {log_file}")
+            
+        except (PermissionError, OSError) as e:
+            # Fallback to console only
+            handlers = [logging.StreamHandler(sys.stdout)]
+            print(f"Warning: Could not create log file ({e}), logging to console only")
+        
+        logging.basicConfig(
+            level=logging.INFO,
+            format='%(asctime)s - %(levelname)s - %(message)s',
+            handlers=handlers
+        )
     
     def signal_handler(self, signum, frame):
         """Handle shutdown signals gracefully"""
