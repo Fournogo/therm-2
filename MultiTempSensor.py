@@ -54,4 +54,5 @@ class MultiTempSensor(Component):
 
         return result
     
-    
+    def cleanup(self):
+        pass

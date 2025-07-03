@@ -36,4 +36,5 @@ class TemperatureSensor(Component):
             "humidity": self.humidity
         }
     
-    
+    def cleanup(self):
+        pass

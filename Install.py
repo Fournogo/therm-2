@@ -27,6 +27,7 @@ class DeviceInstaller:
             
             # Hardware interfaces (Raspberry Pi)
             'RPi.GPIO': 'RPi.GPIO',
+            'rpi-lgpio': 'rpi-lgpio',
             'smbus': 'smbus',
             'board': 'adafruit-circuitpython-busdevice',
             
