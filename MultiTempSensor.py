@@ -9,7 +9,7 @@ class MultiTempSensor(Component):
         self._i2c = board.I2C()
         self._tca = adafruit_tca9548a.TCA9548A(self._i2c)
 
-        self.sensor_county = sensor_count
+        self.sensor_count = sensor_count
         self.sensors = []
 
         for i in range(self.sensor_count):
