@@ -1,0 +1,21 @@
+[Unit]
+Description=Therm2 Device Service
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/your_project_directory
+ExecStart=/home/pi/your_project_directory/venv/bin/python /home/pi/your_project_directory/device_service.py /home/pi/your_project_directory/config.yaml
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# Environment variables if needed
+Environment=PYTHONPATH=/home/pi/your_project_directory
+
+[Install]
+WantedBy=multi-user.target
