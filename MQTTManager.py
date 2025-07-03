@@ -4,6 +4,7 @@ import socket
 import time
 import json
 import logging
+import threading
 from typing import Dict, Callable, Any
 
 class MQTTManager:
@@ -13,9 +14,12 @@ class MQTTManager:
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             
+            # Add thread safety lock
+            cls._instance._topic_lock = threading.RLock()
+            
             # Use config or defaults
             if mqtt_config:
-            # Check if broker_host is explicitly provided
+                # Check if broker_host is explicitly provided
                 if 'broker_host' in mqtt_config:
                     cls._instance.broker_host = mqtt_config['broker_host']
                     print(f"Using explicit broker host: {cls._instance.broker_host}")
@@ -36,7 +40,7 @@ class MQTTManager:
                 cls._instance.password = None
                 cls._instance.device_prefix = 'devices'
         
-        # Heartbeat topics using device name
+            # Heartbeat topics using device name
             cls._instance.heartbeat_request_topic = f"{cls._instance.device_prefix}/heartbeat/request"
             cls._instance.heartbeat_response_topic = f"{cls._instance.device_prefix}/heartbeat/response"
 
@@ -102,7 +106,7 @@ class MQTTManager:
             raise
 
     def _on_connect(self, client, userdata, flags, rc):
-        """Callback when MQTT client connects"""
+        """Callback when MQTT client connects - thread safe"""
         if rc == 0:
             self.is_connected = True
             print("MQTT connected successfully")
@@ -111,8 +115,12 @@ class MQTTManager:
             client.subscribe(self.heartbeat_request_topic)
             print(f"Subscribed to heartbeat: {self.heartbeat_request_topic}")
 
-            # Resubscribe to all topics
-            for topic in self.topic_callbacks.keys():
+            # Resubscribe to all topics - thread safe iteration
+            with self._topic_lock:
+                # Create a copy of the keys to avoid iteration issues
+                topics_to_subscribe = list(self.topic_callbacks.keys())
+            
+            for topic in topics_to_subscribe:
                 if topic != self.heartbeat_request_topic:
                     client.subscribe(topic)
                     print(f"Subscribed to: {topic}")
@@ -125,7 +133,7 @@ class MQTTManager:
         print("MQTT disconnected")
     
     def _on_message(self, client, userdata, msg):
-        """Handle incoming MQTT messages"""
+        """Handle incoming MQTT messages - thread safe"""
         topic = msg.topic
         try:
             # Try to decode as JSON, fall back to string
@@ -140,19 +148,22 @@ class MQTTManager:
                 self._handle_heartbeat_request(payload)
                 return
 
-            # Call all callbacks for this topic
-            if topic in self.topic_callbacks:
-                for callback in self.topic_callbacks[topic]:
-                    try:
-                        callback(topic, payload)
-                    except Exception as e:
-                        logging.error(f"Error in MQTT callback for {topic}: {e}")
+            # Call all callbacks for this topic - thread safe
+            with self._topic_lock:
+                # Create a copy of callbacks to avoid iteration issues
+                callbacks = self.topic_callbacks.get(topic, []).copy()
+            
+            for callback in callbacks:
+                try:
+                    callback(topic, payload)
+                except Exception as e:
+                    logging.error(f"Error in MQTT callback for {topic}: {e}")
                         
         except Exception as e:
             logging.error(f"Error processing MQTT message: {e}")
 
     def register_command(self, device_name: str, component_name: str, function_name: str, method):
-        """Register a single command method"""
+        """Register a single command method - thread safe"""
         # Create topic: {device_prefix}/{device_name}/{component_name}/{function_name}
         command_topic = f"{self.device_prefix}/{device_name}/{component_name}/{function_name}"
         
@@ -217,13 +228,16 @@ class MQTTManager:
             self.publish(status_topic, {"status": status, "timestamp": time.time()})
     
     def subscribe(self, topic: str, callback: Callable):
-        """Subscribe to a topic with callback"""
-        if topic not in self.topic_callbacks:
-            self.topic_callbacks[topic] = []
+        """Subscribe to a topic with callback - thread safe"""
+        with self._topic_lock:
+            if topic not in self.topic_callbacks:
+                self.topic_callbacks[topic] = []
+            
+            self.topic_callbacks[topic].append(callback)
+            should_subscribe = self.is_connected
         
-        self.topic_callbacks[topic].append(callback)
-        
-        if self.is_connected:
+        # Subscribe outside the lock to avoid potential deadlocks
+        if should_subscribe:
             self.client.subscribe(topic)
             print(f"Subscribed to: {topic}")
     
@@ -255,6 +269,40 @@ class MQTTManager:
         """Get the MQTT topics for a specific component"""
         component_id = f"{device_name}_{component_name}"
         return self.component_topics.get(component_id, {})
+    
+    def get_topic_count(self):
+        """Get the number of subscribed topics - thread safe"""
+        with self._topic_lock:
+            return len(self.topic_callbacks)
+
+    def get_subscribed_topics(self):
+        """Get a list of all subscribed topics - thread safe"""
+        with self._topic_lock:
+            return list(self.topic_callbacks.keys())
+
+    def unsubscribe_topic(self, topic: str):
+        """Unsubscribe from a topic - thread safe"""
+        with self._topic_lock:
+            if topic in self.topic_callbacks:
+                del self.topic_callbacks[topic]
+                should_unsubscribe = self.is_connected
+            else:
+                should_unsubscribe = False
+        
+        if should_unsubscribe:
+            self.client.unsubscribe(topic)
+            print(f"Unsubscribed from: {topic}")
+
+    def clear_all_subscriptions(self):
+        """Clear all topic subscriptions - thread safe"""
+        with self._topic_lock:
+            topics_to_clear = list(self.topic_callbacks.keys())
+            self.topic_callbacks.clear()
+        
+        if self.is_connected:
+            for topic in topics_to_clear:
+                self.client.unsubscribe(topic)
+            print(f"Cleared {len(topics_to_clear)} subscriptions")
     
     def disconnect(self):
         """Disconnect from MQTT broker"""
