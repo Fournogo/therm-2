@@ -32,6 +32,7 @@ class DeviceInstaller:
             
             # Sensor libraries
             'adafruit_sht31d': 'adafruit-circuitpython-sht31d',
+            'adafruit_tca9548a': 'adafruit-circuitpython-tca9548a',
             'adafruit_shtc3': 'adafruit-circuitpython-shtc3', 
             'adafruit_dps310': 'adafruit-circuitpython-dps310',
             
