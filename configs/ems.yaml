@@ -1,0 +1,12 @@
+mqtt:
+  username: "scrumpi"
+  password: "Th3rm"
+  port: 1883
+  device_prefix: "ems"
+
+devices:
+  averys_room:
+    components:
+      temp_sensor:
+        type: "MultiTempSensor"
+        sensor_count: 2

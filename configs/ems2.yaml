@@ -1,0 +1,11 @@
+mqtt:
+  username: "scrumpi"
+  password: "Th3rm"
+  port: 1883
+  device_prefix: "ems2"
+
+devices:
+  ryans_room:
+    components:
+      temp_sensor:
+        type: "TemperatureSensor"
