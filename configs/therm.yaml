@@ -15,18 +15,6 @@ devices:
         type: "Relay"
         signal: "LOW"
         pin: 27
-  bathroom:
-    components:
-      valve:
-        type: "Relay"
-        signal: "LOW"
-        pin: 10
-  averys_room:
-    components:
-      valve:
-          type: "Relay"
-          signal: "HIGH"
-          pin: 9
   hvac:
     components:
       fan:
@@ -35,3 +23,11 @@ devices:
         channel: 0
       temp_sensor:
         type: "TemperatureSensor"
+      avery_valve:
+          type: "Relay"
+          signal: "HIGH"
+          pin: 9
+      bathroom_valve:
+        type: "Relay"
+        signal: "LOW"
+        pin: 10
