@@ -27,7 +27,7 @@ class DeviceInstaller:
             
             # Hardware interfaces (Raspberry Pi)
             'RPi.GPIO': 'RPi.GPIO',
-            'smbus': 'smbus2',
+            'smbus': 'smbus',
             'board': 'adafruit-circuitpython-busdevice',
             
             # Sensor libraries
