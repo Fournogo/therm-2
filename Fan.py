@@ -9,6 +9,7 @@ class Fan(Component):
         self.channel = channel
         self.voltage = 0
         self.power = 0
+        self.humidity = 0  # Add missing attribute
         
         self.DAC = DFRobot_GP8403(int(address, 16))
         self.DAC.begin()
@@ -17,30 +18,36 @@ class Fan(Component):
 
     @command
     def read_fan(self):
-        self.trigger_event('read_fan')
-    
-    @status(auto_publish=True, trigger_on=['read fan'])
+        """Read fan status - triggers auto-publish of fan_status"""
+        self.trigger_event('read_fan')  # Fixed: use underscore, not space
+        # Remove manual call to fan_status() - let auto-publish handle it
+        self.auto_publish_on_event('read_fan')
+
+    @status(auto_publish=True, trigger_on=['read_fan'])  # Fixed: moved trigger_on to decorator
     def fan_status(self):
-        """Get current button state (call manually)"""
+        """Get current fan state - auto-published when read_fan event occurs"""
         return {
             "event": "read_fan",
             "timestamp": time.time(),
-            "power": self.power
+            "power": self.power,
+            "voltage": self.voltage  # Added voltage for completeness
         }
 
     @status(auto_publish=True, trigger_on=['read'])
     def read_status(self):
-        """Get current button state (call manually)"""
+        """Get current sensor state - auto-published when read event occurs"""
         return {
             "event": "read_status",
             "timestamp": time.time(),
-            "temperature": self.voltage,
-            "humidity": self.humidity
+            "temperature": self.voltage,  # This seems wrong - should be actual temp?
+            "humidity": self.humidity     # Fixed: now this attribute exists
         }
-    
+
     @command
     def read(self):
+        """Read sensor data - triggers auto-publish of read_status"""
         self.trigger_event('read')
+        self.auto_publish_on_event('read')
 
     @command
     def set_voltage(self, voltage):
@@ -53,6 +60,6 @@ class Fan(Component):
         self.power = power
         self.voltage = self.power * 1000
         self.DAC.set_DAC_out_voltage(int(self.voltage), self.channel)
-    
+
     def cleanup(self):
         pass

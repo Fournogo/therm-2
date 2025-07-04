@@ -2993,3 +2993,567 @@ Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603043.6
  * Restarting with stat
  * Debugger is active!
  * Debugger PIN: 723-753-695
+
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751602802.9470282, 'temperature': 70.214, 'humidity': 56.02}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751602802.9470282, 'temperature': 70.214, 'humidity': 56.02}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751602802.952012, 'pressure': 1011.1091283169803}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751602802.952012, 'pressure': 1011.1091283169803}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751602862.4145887, 'sensor_0': {'temperature': 68.67978942549783, 'humidity': 52.01037613488976}, 'sensor_1': {'temperature': 68.33371480888076, 'humidity': 52.878614480811784}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751602862.4145887, 'sensor_0': {'temperature': 68.67978942549783, 'humidity': 52.01037613488976}, 'sensor_1': {'temperature': 68.33371480888076, 'humidity': 52.878614480811784}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751602862.4525247, 'temperature': 70.0544747081712, 'humidity': 52.72297245746548}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751602862.4525247, 'temperature': 70.0544747081712, 'humidity': 52.72297245746548}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751602862.5180707, 'temperature': 47.01167315175098, 'humidity': 93.8323033493553}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751602862.5180707, 'temperature': 47.01167315175098, 'humidity': 93.8323033493553}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751602862.5430338, 'temperature': 70.214, 'humidity': 55.68}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751602862.5430338, 'temperature': 70.214, 'humidity': 55.68}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751602862.5473886, 'pressure': 1011.1383457487758}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751602862.5473886, 'pressure': 1011.1383457487758}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751602923.1362739, 'sensor_0': {'temperature': 68.60288395513848, 'humidity': 51.953917753871984}, 'sensor_1': {'temperature': 68.33371480888076, 'humidity': 52.75654230563821}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751602923.1362739, 'sensor_0': {'temperature': 68.60288395513848, 'humidity': 51.953917753871984}, 'sensor_1': {'temperature': 68.33371480888076, 'humidity': 52.75654230563821}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751602923.1796882, 'temperature': 70.11215381094071, 'humidity': 52.581063553826205}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751602923.1796882, 'temperature': 70.11215381094071, 'humidity': 52.581063553826205}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751602923.241973, 'temperature': 46.857862211032256, 'humidity': 94.24887464713511}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751602923.241973, 'temperature': 46.857862211032256, 'humidity': 94.24887464713511}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751602923.2697124, 'temperature': 70.232, 'humidity': 55.47}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751602923.2697124, 'temperature': 70.232, 'humidity': 55.47}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751602923.274561, 'pressure': 1011.1412881058554}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751602923.274561, 'pressure': 1011.1412881058554}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751602982.7327209, 'sensor_0': {'temperature': 68.62691691462577, 'humidity': 51.72045471885253}, 'sensor_1': {'temperature': 68.28564888990616, 'humidity': 52.745860990310526}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751602982.7327209, 'sensor_0': {'temperature': 68.62691691462577, 'humidity': 51.72045471885253}, 'sensor_1': {'temperature': 68.28564888990616, 'humidity': 52.745860990310526}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751602982.7796276, 'temperature': 70.1842526894026, 'humidity': 52.29877164873732}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751602982.7796276, 'temperature': 70.1842526894026, 'humidity': 52.29877164873732}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751602982.8384745, 'temperature': 46.60311284046692, 'humidity': 94.33585107194628}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751602982.8384745, 'temperature': 46.60311284046692, 'humidity': 94.33585107194628}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751602982.8685176, 'temperature': 70.196, 'humidity': 55.43}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751602982.8685176, 'temperature': 70.196, 'humidity': 55.43}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751602982.872958, 'pressure': 1011.1346720275687}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751602982.872958, 'pressure': 1011.1346720275687}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603043.3633542, 'sensor_0': {'temperature': 68.65094987411307, 'humidity': 51.48851758602273}, 'sensor_1': {'temperature': 68.30968184939346, 'humidity': 52.48950942244603}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603043.3633542, 'sensor_0': {'temperature': 68.65094987411307, 'humidity': 51.48851758602273}, 'sensor_1': {'temperature': 68.30968184939346, 'humidity': 52.48950942244603}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603043.5034785, 'temperature': 70.26115815976195, 'humidity': 52.072938124666216}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603043.5034785, 'temperature': 70.26115815976195, 'humidity': 52.072938124666216}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603043.6202044, 'temperature': 46.44930189974822, 'humidity': 94.57846952010375}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603043.6202044, 'temperature': 46.44930189974822, 'humidity': 94.57846952010375}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603043.6499908, 'temperature': 70.196, 'humidity': 55.2}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603043.6499908, 'temperature': 70.196, 'humidity': 55.2}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603043.6547377, 'pressure': 1011.1279874919793}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603043.6547377, 'pressure': 1011.1279874919793}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603102.953863, 'sensor_0': {'temperature': 68.55001144426642, 'humidity': 51.569390402075236}, 'sensor_1': {'temperature': 68.30968184939346, 'humidity': 52.35370412756543}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603102.953863, 'sensor_0': {'temperature': 68.55001144426642, 'humidity': 51.569390402075236}, 'sensor_1': {'temperature': 68.30968184939346, 'humidity': 52.35370412756543}}Found 4 config files
+Loading config: /home/scrumpi/containers/therm-2/configs/ems2.yaml
+Connecting to MQTT broker: localhost:1883
+Server MQTT connected successfully
+Found @command methods in TemperatureSensor: ['read']
+Created 1 proxy methods for TemperatureSensor
+Found @status methods in TemperatureSensor: ['read_status']
+Subscribed to status topic: ems2/ryans_room/temp_sensor/status/read_status
+Created event for status method: read_status
+Created component proxy: ryans_room.temp_sensor (TemperatureSensor)
+Created device proxy: ryans_room
+Loading config: /home/scrumpi/containers/therm-2/configs/therm.yaml
+Connecting to MQTT broker: localhost:1883
+Server MQTT connected successfully
+No @command methods found for Button (or could not inspect class)
+Found @status methods in Button: ['get_state', 'pressed_status']
+Subscribed to status topic: therm/stink_button/button/status/get_state
+Created event for status method: get_state
+Subscribed to status topic: therm/stink_button/button/status/pressed_status
+Created event for status method: pressed_status
+Created component proxy: stink_button.button (Button)
+Found @command methods in Relay: ['off', 'on']
+Created 2 proxy methods for Relay
+Created component proxy: stink_button.light (Relay)
+Created device proxy: stink_button
+Found @command methods in Fan: ['read', 'read_fan', 'set_power', 'set_voltage']
+Created 4 proxy methods for Fan
+Found @status methods in Fan: ['fan_status', 'read_status']
+Subscribed to status topic: therm/hvac/fan/status/fan_status
+Created event for status method: fan_status
+Subscribed to status topic: therm/hvac/fan/status/read_status
+Created event for status method: read_status
+Created component proxy: hvac.fan (Fan)
+Found @command methods in TemperatureSensor: ['read']
+Created 1 proxy methods for TemperatureSensor
+Found @status methods in TemperatureSensor: ['read_status']
+Subscribed to status topic: therm/hvac/temp_sensor/status/read_status
+Created event for status method: read_status
+Created component proxy: hvac.temp_sensor (TemperatureSensor)
+Found @command methods in Relay: ['off', 'on']
+Created 2 proxy methods for Relay
+Created component proxy: hvac.avery_valve (Relay)
+Found @command methods in Relay: ['off', 'on']
+Created 2 proxy methods for Relay
+Created component proxy: hvac.bathroom_valve (Relay)
+Created device proxy: hvac
+Loading config: /home/scrumpi/containers/therm-2/configs/scrumpi.yaml
+Connecting to MQTT broker: localhost:1883
+Server MQTT connected successfully
+Found @command methods in ScrumpiTempSensor: ['read']
+Created 1 proxy methods for ScrumpiTempSensor
+Found @status methods in ScrumpiTempSensor: ['read_status']
+Subscribed to status topic: scrumpi/living_room/temp_sensor/status/read_status
+Created event for status method: read_status
+Created component proxy: living_room.temp_sensor (ScrumpiTempSensor)
+Found @command methods in ScrumpiBaroSensor: ['read']
+Created 1 proxy methods for ScrumpiBaroSensor
+Found @status methods in ScrumpiBaroSensor: ['read_status']
+Subscribed to status topic: scrumpi/living_room/pressure_sensor/status/read_status
+Created event for status method: read_status
+Created component proxy: living_room.pressure_sensor (ScrumpiBaroSensor)
+Created device proxy: living_room
+Loading config: /home/scrumpi/containers/therm-2/configs/ems.yaml
+Connecting to MQTT broker: localhost:1883
+Server MQTT connected successfully
+Found @command methods in MultiTempSensor: ['read']
+Created 1 proxy methods for MultiTempSensor
+Found @status methods in MultiTempSensor: ['read_status']
+Subscribed to status topic: ems/averys_room/temp_sensor/status/read_status
+Created event for status method: read_status
+Created component proxy: averys_room.temp_sensor (MultiTempSensor)
+Created device proxy: averys_room
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603102.953863, 'sensor_0': {'temperature': 68.55001144426642, 'humidity': 51.569390402075236}, 'sensor_1': {'temperature': 68.30968184939346, 'humidity': 52.35370412756543}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603102.953863, 'sensor_0': {'temperature': 68.55001144426642, 'humidity': 51.569390402075236}, 'sensor_1': {'temperature': 68.30968184939346, 'humidity': 52.35370412756543}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603103.000447, 'temperature': 70.31403067063403, 'humidity': 51.91729610131991}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603103.000447, 'temperature': 70.31403067063403, 'humidity': 51.91729610131991}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603103.0542297, 'temperature': 46.37720302128632, 'humidity': 94.79056992446783}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603103.0542297, 'temperature': 46.37720302128632, 'humidity': 94.79056992446783}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603103.0847456, 'temperature': 70.214, 'humidity': 55.04}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603103.0847456, 'temperature': 70.214, 'humidity': 55.04}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603103.090118, 'pressure': 1011.1365399874899}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603103.090118, 'pressure': 1011.1365399874899}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603162.5500329, 'sensor_0': {'temperature': 68.55001144426642, 'humidity': 51.653315022507066}, 'sensor_1': {'temperature': 68.28564888990616, 'humidity': 52.370489051651795}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603162.5500329, 'sensor_0': {'temperature': 68.55001144426642, 'humidity': 51.653315022507066}, 'sensor_1': {'temperature': 68.28564888990616, 'humidity': 52.370489051651795}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603162.8041933, 'temperature': 70.39093614099338, 'humidity': 51.68535896849013}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603162.8041933, 'temperature': 70.39093614099338, 'humidity': 51.68535896849013}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603162.8568692, 'temperature': 46.30029755092697, 'humidity': 95.01792935072861}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603162.8568692, 'temperature': 46.30029755092697, 'humidity': 95.01792935072861}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603162.8905244, 'temperature': 70.232, 'humidity': 54.76}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603162.8905244, 'temperature': 70.232, 'humidity': 54.76}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603162.8977585, 'pressure': 1011.1342411581833}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603162.8977585, 'pressure': 1011.1342411581833}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603223.1714368, 'sensor_0': {'temperature': 68.44907301441978, 'humidity': 51.473258564126034}, 'sensor_1': {'temperature': 68.26161593041886, 'humidity': 52.30640115968567}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603223.1714368, 'sensor_0': {'temperature': 68.44907301441978, 'humidity': 51.473258564126034}, 'sensor_1': {'temperature': 68.26161593041886, 'humidity': 52.30640115968567}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603223.222057, 'temperature': 70.43900205996795, 'humidity': 51.60296025024797}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603223.222057, 'temperature': 70.43900205996795, 'humidity': 51.60296025024797} * Detected change in '/home/scrumpi/containers/therm-2/Fan.py', reloading
+
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603223.2721558, 'temperature': 46.199359121080334, 'humidity': 94.88059815365834}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603223.2721558, 'temperature': 46.199359121080334, 'humidity': 94.88059815365834}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603223.3018699, 'temperature': 70.16, 'humidity': 54.75}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603223.3018699, 'temperature': 70.16, 'humidity': 54.75}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603223.3065848, 'pressure': 1011.1095868419861}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603223.3065848, 'pressure': 1011.1095868419861}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603282.871804, 'sensor_0': {'temperature': 68.44907301441978, 'humidity': 51.60296025024797}, 'sensor_1': {'temperature': 68.28564888990616, 'humidity': 52.21179522392615}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603282.871804, 'sensor_0': {'temperature': 68.44907301441978, 'humidity': 51.60296025024797}, 'sensor_1': {'temperature': 68.28564888990616, 'humidity': 52.21179522392615}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603282.923348, 'temperature': 70.46303501945525, 'humidity': 51.381704432745856}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603282.923348, 'temperature': 70.46303501945525, 'humidity': 51.381704432745856}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603282.9721758, 'temperature': 46.07438773174639, 'humidity': 95.00572213321125}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603282.9721758, 'temperature': 46.07438773174639, 'humidity': 95.00572213321125}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603283.0018272, 'temperature': 70.124, 'humidity': 54.69}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603283.0018272, 'temperature': 70.124, 'humidity': 54.69}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603283.0059326, 'pressure': 1011.137932421748}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603283.0059326, 'pressure': 1011.137932421748}
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 723-753-695
+
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603103.000447, 'temperature': 70.31403067063403, 'humidity': 51.91729610131991}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603103.000447, 'temperature': 70.31403067063403, 'humidity': 51.91729610131991}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603103.0542297, 'temperature': 46.37720302128632, 'humidity': 94.79056992446783}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603103.0542297, 'temperature': 46.37720302128632, 'humidity': 94.79056992446783}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603103.0847456, 'temperature': 70.214, 'humidity': 55.04}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603103.0847456, 'temperature': 70.214, 'humidity': 55.04}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603103.090118, 'pressure': 1011.1365399874899}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603103.090118, 'pressure': 1011.1365399874899}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603162.5500329, 'sensor_0': {'temperature': 68.55001144426642, 'humidity': 51.653315022507066}, 'sensor_1': {'temperature': 68.28564888990616, 'humidity': 52.370489051651795}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603162.5500329, 'sensor_0': {'temperature': 68.55001144426642, 'humidity': 51.653315022507066}, 'sensor_1': {'temperature': 68.28564888990616, 'humidity': 52.370489051651795}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603162.8041933, 'temperature': 70.39093614099338, 'humidity': 51.68535896849013}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603162.8041933, 'temperature': 70.39093614099338, 'humidity': 51.68535896849013}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603162.8568692, 'temperature': 46.30029755092697, 'humidity': 95.01792935072861}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603162.8568692, 'temperature': 46.30029755092697, 'humidity': 95.01792935072861}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603162.8905244, 'temperature': 70.232, 'humidity': 54.76}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603162.8905244, 'temperature': 70.232, 'humidity': 54.76}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603162.8977585, 'pressure': 1011.1342411581833}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603162.8977585, 'pressure': 1011.1342411581833}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603223.1714368, 'sensor_0': {'temperature': 68.44907301441978, 'humidity': 51.473258564126034}, 'sensor_1': {'temperature': 68.26161593041886, 'humidity': 52.30640115968567}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603223.1714368, 'sensor_0': {'temperature': 68.44907301441978, 'humidity': 51.473258564126034}, 'sensor_1': {'temperature': 68.26161593041886, 'humidity': 52.30640115968567}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603223.222057, 'temperature': 70.43900205996795, 'humidity': 51.60296025024797}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603223.222057, 'temperature': 70.43900205996795, 'humidity': 51.60296025024797}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603223.2721558, 'temperature': 46.199359121080334, 'humidity': 94.88059815365834}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603223.2721558, 'temperature': 46.199359121080334, 'humidity': 94.88059815365834}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603223.3018699, 'temperature': 70.16, 'humidity': 54.75}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603223.3018699, 'temperature': 70.16, 'humidity': 54.75}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603223.3065848, 'pressure': 1011.1095868419861}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603223.3065848, 'pressure': 1011.1095868419861}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603282.871804, 'sensor_0': {'temperature': 68.44907301441978, 'humidity': 51.60296025024797}, 'sensor_1': {'temperature': 68.28564888990616, 'humidity': 52.21179522392615}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603282.871804, 'sensor_0': {'temperature': 68.44907301441978, 'humidity': 51.60296025024797}, 'sensor_1': {'temperature': 68.28564888990616, 'humidity': 52.21179522392615}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603282.923348, 'temperature': 70.46303501945525, 'humidity': 51.381704432745856}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603282.923348, 'temperature': 70.46303501945525, 'humidity': 51.381704432745856}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603282.9721758, 'temperature': 46.07438773174639, 'humidity': 95.00572213321125}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603282.9721758, 'temperature': 46.07438773174639, 'humidity': 95.00572213321125}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603283.0018272, 'temperature': 70.124, 'humidity': 54.69}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603283.0018272, 'temperature': 70.124, 'humidity': 54.69}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603283.0059326, 'pressure': 1011.137932421748}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603283.0059326, 'pressure': 1011.137932421748}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603342.5699594, 'sensor_0': {'temperature': 68.42504005493248, 'humidity': 51.47936217288471}, 'sensor_1': {'temperature': 68.28564888990616, 'humidity': 52.18738078889144}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603342.5699594, 'sensor_0': {'temperature': 68.42504005493248, 'humidity': 51.47936217288471}, 'sensor_1': {'temperature': 68.28564888990616, 'humidity': 52.18738078889144}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603342.62389, 'temperature': 70.5399404898146, 'humidity': 51.180285343709464}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603342.62389, 'temperature': 70.5399404898146, 'humidity': 51.180285343709464}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603343.1245813, 'temperature': 45.99748226138704, 'humidity': 95.12932021057449}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603343.1245813, 'temperature': 45.99748226138704, 'humidity': 95.12932021057449}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603343.1994388, 'temperature': 70.124, 'humidity': 54.7}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603343.1994388, 'temperature': 70.124, 'humidity': 54.7}Found 4 config files
+Loading config: /home/scrumpi/containers/therm-2/configs/ems2.yaml
+Connecting to MQTT broker: localhost:1883
+Server MQTT connected successfully
+Found @command methods in TemperatureSensor: ['read']
+Created 1 proxy methods for TemperatureSensor
+Found @status methods in TemperatureSensor: ['read_status']
+Subscribed to status topic: ems2/ryans_room/temp_sensor/status/read_status
+Created event for status method: read_status
+Created component proxy: ryans_room.temp_sensor (TemperatureSensor)
+Created device proxy: ryans_room
+Loading config: /home/scrumpi/containers/therm-2/configs/therm.yaml
+Connecting to MQTT broker: localhost:1883
+Server MQTT connected successfully
+No @command methods found for Button (or could not inspect class)
+Found @status methods in Button: ['get_state', 'pressed_status']
+Subscribed to status topic: therm/stink_button/button/status/get_state
+Created event for status method: get_state
+Subscribed to status topic: therm/stink_button/button/status/pressed_status
+Created event for status method: pressed_status
+Created component proxy: stink_button.button (Button)
+Found @command methods in Relay: ['off', 'on']
+Created 2 proxy methods for Relay
+Created component proxy: stink_button.light (Relay)
+Created device proxy: stink_button
+Found @command methods in Fan: ['read', 'read_fan', 'set_power', 'set_voltage']
+Created 4 proxy methods for Fan
+Found @status methods in Fan: ['fan_status', 'read_status']
+Subscribed to status topic: therm/hvac/fan/status/fan_status
+Created event for status method: fan_status
+Subscribed to status topic: therm/hvac/fan/status/read_status
+Created event for status method: read_status
+Created component proxy: hvac.fan (Fan)
+Found @command methods in TemperatureSensor: ['read']
+Created 1 proxy methods for TemperatureSensor
+Found @status methods in TemperatureSensor: ['read_status']
+Subscribed to status topic: therm/hvac/temp_sensor/status/read_status
+Created event for status method: read_status
+Created component proxy: hvac.temp_sensor (TemperatureSensor)
+Found @command methods in Relay: ['off', 'on']
+Created 2 proxy methods for Relay
+Created component proxy: hvac.avery_valve (Relay)
+Found @command methods in Relay: ['off', 'on']
+Created 2 proxy methods for Relay
+Created component proxy: hvac.bathroom_valve (Relay)
+Created device proxy: hvac
+Loading config: /home/scrumpi/containers/therm-2/configs/scrumpi.yaml
+Connecting to MQTT broker: localhost:1883
+Server MQTT connected successfully
+Found @command methods in ScrumpiTempSensor: ['read']
+Created 1 proxy methods for ScrumpiTempSensor
+Found @status methods in ScrumpiTempSensor: ['read_status']
+Subscribed to status topic: scrumpi/living_room/temp_sensor/status/read_status
+Created event for status method: read_status
+Created component proxy: living_room.temp_sensor (ScrumpiTempSensor)
+Found @command methods in ScrumpiBaroSensor: ['read']
+Created 1 proxy methods for ScrumpiBaroSensor
+Found @status methods in ScrumpiBaroSensor: ['read_status']
+Subscribed to status topic: scrumpi/living_room/pressure_sensor/status/read_status
+Created event for status method: read_status
+Created component proxy: living_room.pressure_sensor (ScrumpiBaroSensor)
+Created device proxy: living_room
+Loading config: /home/scrumpi/containers/therm-2/configs/ems.yaml
+Connecting to MQTT broker: localhost:1883
+Server MQTT connected successfully
+Found @command methods in MultiTempSensor: ['read']
+Created 1 proxy methods for MultiTempSensor
+Found @status methods in MultiTempSensor: ['read_status']
+Subscribed to status topic: ems/averys_room/temp_sensor/status/read_status
+Created event for status method: read_status
+Created component proxy: averys_room.temp_sensor (MultiTempSensor)
+Created device proxy: averys_room
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603342.5699594, 'sensor_0': {'temperature': 68.42504005493248, 'humidity': 51.47936217288471}, 'sensor_1': {'temperature': 68.28564888990616, 'humidity': 52.18738078889144}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603342.5699594, 'sensor_0': {'temperature': 68.42504005493248, 'humidity': 51.47936217288471}, 'sensor_1': {'temperature': 68.28564888990616, 'humidity': 52.18738078889144}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603342.62389, 'temperature': 70.5399404898146, 'humidity': 51.180285343709464}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603342.62389, 'temperature': 70.5399404898146, 'humidity': 51.180285343709464}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603343.1245813, 'temperature': 45.99748226138704, 'humidity': 95.12932021057449}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603343.1245813, 'temperature': 45.99748226138704, 'humidity': 95.12932021057449}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603343.1994388, 'temperature': 70.124, 'humidity': 54.7}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603343.1994388, 'temperature': 70.124, 'humidity': 54.7}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603343.2036853, 'pressure': 1011.1383609754789}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603343.2036853, 'pressure': 1011.1383609754789}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603403.0892045, 'sensor_0': {'temperature': 68.40100709544518, 'humidity': 51.386282139314865}, 'sensor_1': {'temperature': 68.2327763790341, 'humidity': 52.14618142977036}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603403.0892045, 'sensor_0': {'temperature': 68.40100709544518, 'humidity': 51.386282139314865}, 'sensor_1': {'temperature': 68.2327763790341, 'humidity': 52.14618142977036}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603403.1450663, 'temperature': 70.5639734493019, 'humidity': 51.006332494087125}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603403.1450663, 'temperature': 70.5639734493019, 'humidity': 51.006332494087125}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603408.1813881, 'temperature': 70.124, 'humidity': 54.67}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603408.1813881, 'temperature': 70.124, 'humidity': 54.67}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603408.1858678, 'pressure': 1011.1479753653164}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603408.1858678, 'pressure': 1011.1479753653164}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603462.687447, 'sensor_0': {'temperature': 68.40100709544518, 'humidity': 51.474784466315704}, 'sensor_1': {'temperature': 68.2087434195468, 'humidity': 52.123292896925314}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603462.687447, 'sensor_0': {'temperature': 68.40100709544518, 'humidity': 51.474784466315704}, 'sensor_1': {'temperature': 68.2087434195468, 'humidity': 52.123292896925314}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603462.7444193, 'temperature': 70.59281300068665, 'humidity': 51.25352864881361}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603462.7444193, 'temperature': 70.59281300068665, 'humidity': 51.25352864881361}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603467.7790504, 'temperature': 70.016, 'humidity': 54.39}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603467.7790504, 'temperature': 70.016, 'humidity': 54.39}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603343.2036853, 'pressure': 1011.1383609754789}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603343.2036853, 'pressure': 1011.1383609754789}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603403.0892045, 'sensor_0': {'temperature': 68.40100709544518, 'humidity': 51.386282139314865}, 'sensor_1': {'temperature': 68.2327763790341, 'humidity': 52.14618142977036}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603403.0892045, 'sensor_0': {'temperature': 68.40100709544518, 'humidity': 51.386282139314865}, 'sensor_1': {'temperature': 68.2327763790341, 'humidity': 52.14618142977036}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603403.1450663, 'temperature': 70.5639734493019, 'humidity': 51.006332494087125}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603403.1450663, 'temperature': 70.5639734493019, 'humidity': 51.006332494087125}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603408.1813881, 'temperature': 70.124, 'humidity': 54.67}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603408.1813881, 'temperature': 70.124, 'humidity': 54.67}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603408.1858678, 'pressure': 1011.1479753653164}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603408.1858678, 'pressure': 1011.1479753653164}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603462.687447, 'sensor_0': {'temperature': 68.40100709544518, 'humidity': 51.474784466315704}, 'sensor_1': {'temperature': 68.2087434195468, 'humidity': 52.123292896925314}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603462.687447, 'sensor_0': {'temperature': 68.40100709544518, 'humidity': 51.474784466315704}, 'sensor_1': {'temperature': 68.2087434195468, 'humidity': 52.123292896925314}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603462.7444193, 'temperature': 70.59281300068665, 'humidity': 51.25352864881361}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603462.7444193, 'temperature': 70.59281300068665, 'humidity': 51.25352864881361}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603467.7790504, 'temperature': 70.016, 'humidity': 54.39}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603467.7790504, 'temperature': 70.016, 'humidity': 54.39}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603467.784702, 'pressure': 1011.1822394475074}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603467.784702, 'pressure': 1011.1822394475074}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603523.3083682, 'sensor_0': {'temperature': 68.42504005493248, 'humidity': 51.10704203860532}, 'sensor_1': {'temperature': 68.26161593041886, 'humidity': 52.04699778744183}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603523.3083682, 'sensor_0': {'temperature': 68.42504005493248, 'humidity': 51.10704203860532}, 'sensor_1': {'temperature': 68.26161593041886, 'humidity': 52.04699778744183}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603523.3655689, 'temperature': 70.61684596017395, 'humidity': 51.18638895246814}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603523.3655689, 'temperature': 70.61684596017395, 'humidity': 51.18638895246814}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603528.399918, 'temperature': 69.94399999999999, 'humidity': 53.51}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603528.399918, 'temperature': 69.94399999999999, 'humidity': 53.51}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603528.405047, 'pressure': 1011.2163462432572}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603528.405047, 'pressure': 1011.2163462432572}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603583.3162608, 'sensor_0': {'temperature': 68.40100709544518, 'humidity': 50.91172655832761}, 'sensor_1': {'temperature': 68.2087434195468, 'humidity': 51.88525215533685}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603583.3162608, 'sensor_0': {'temperature': 68.40100709544518, 'humidity': 50.91172655832761}, 'sensor_1': {'temperature': 68.2087434195468, 'humidity': 51.88525215533685}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603583.3721244, 'temperature': 70.74181734950788, 'humidity': 50.960555428397036}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603583.3721244, 'temperature': 70.74181734950788, 'humidity': 50.960555428397036}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603583.4128993, 'temperature': 41.16685740444037, 'humidity': 87.7759975585565}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603583.4128993, 'temperature': 41.16685740444037, 'humidity': 87.7759975585565}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603583.4468079, 'temperature': 69.85400000000001, 'humidity': 53.19}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603583.4468079, 'temperature': 69.85400000000001, 'humidity': 53.19}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603583.451751, 'pressure': 1011.2200373829586}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603583.451751, 'pressure': 1011.2200373829586}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603642.9128547, 'sensor_0': {'temperature': 68.40100709544518, 'humidity': 50.86442359044785}, 'sensor_1': {'temperature': 68.16067750057223, 'humidity': 51.72655832761121}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603642.9128547, 'sensor_0': {'temperature': 68.40100709544518, 'humidity': 50.86442359044785}, 'sensor_1': {'temperature': 68.16067750057223, 'humidity': 51.72655832761121}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603642.9703796, 'temperature': 70.79468986037995, 'humidity': 49.50637064164187}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603642.9703796, 'temperature': 70.79468986037995, 'humidity': 49.50637064164187}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603643.011506, 'temperature': 40.10460059510186, 'humidity': 91.34355687800412}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603643.011506, 'temperature': 40.10460059510186, 'humidity': 91.34355687800412}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603643.0463104, 'temperature': 69.782, 'humidity': 53.15}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603643.0463104, 'temperature': 69.782, 'humidity': 53.15}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603643.0517738, 'pressure': 1011.1932727008426}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603467.784702, 'pressure': 1011.1822394475074}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603467.784702, 'pressure': 1011.1822394475074}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603523.3083682, 'sensor_0': {'temperature': 68.42504005493248, 'humidity': 51.10704203860532}, 'sensor_1': {'temperature': 68.26161593041886, 'humidity': 52.04699778744183}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603523.3083682, 'sensor_0': {'temperature': 68.42504005493248, 'humidity': 51.10704203860532}, 'sensor_1': {'temperature': 68.26161593041886, 'humidity': 52.04699778744183}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603523.3655689, 'temperature': 70.61684596017395, 'humidity': 51.18638895246814}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603523.3655689, 'temperature': 70.61684596017395, 'humidity': 51.18638895246814}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603528.399918, 'temperature': 69.94399999999999, 'humidity': 53.51}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603528.399918, 'temperature': 69.94399999999999, 'humidity': 53.51}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603528.405047, 'pressure': 1011.2163462432572}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603528.405047, 'pressure': 1011.2163462432572}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603583.3162608, 'sensor_0': {'temperature': 68.40100709544518, 'humidity': 50.91172655832761}, 'sensor_1': {'temperature': 68.2087434195468, 'humidity': 51.88525215533685}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603583.3162608, 'sensor_0': {'temperature': 68.40100709544518, 'humidity': 50.91172655832761}, 'sensor_1': {'temperature': 68.2087434195468, 'humidity': 51.88525215533685}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603583.3721244, 'temperature': 70.74181734950788, 'humidity': 50.960555428397036}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603583.3721244, 'temperature': 70.74181734950788, 'humidity': 50.960555428397036}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603583.4128993, 'temperature': 41.16685740444037, 'humidity': 87.7759975585565}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603583.4128993, 'temperature': 41.16685740444037, 'humidity': 87.7759975585565}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603583.4468079, 'temperature': 69.85400000000001, 'humidity': 53.19}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603583.4468079, 'temperature': 69.85400000000001, 'humidity': 53.19}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603583.451751, 'pressure': 1011.2200373829586}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603583.451751, 'pressure': 1011.2200373829586}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603642.9128547, 'sensor_0': {'temperature': 68.40100709544518, 'humidity': 50.86442359044785}, 'sensor_1': {'temperature': 68.16067750057223, 'humidity': 51.72655832761121}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603642.9128547, 'sensor_0': {'temperature': 68.40100709544518, 'humidity': 50.86442359044785}, 'sensor_1': {'temperature': 68.16067750057223, 'humidity': 51.72655832761121}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603642.9703796, 'temperature': 70.79468986037995, 'humidity': 49.50637064164187}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603642.9703796, 'temperature': 70.79468986037995, 'humidity': 49.50637064164187}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603643.011506, 'temperature': 40.10460059510186, 'humidity': 91.34355687800412}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603643.011506, 'temperature': 40.10460059510186, 'humidity': 91.34355687800412}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603643.0463104, 'temperature': 69.782, 'humidity': 53.15}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603643.0463104, 'temperature': 69.782, 'humidity': 53.15}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603643.0517738, 'pressure': 1011.1932727008426}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603643.0517738, 'pressure': 1011.1932727008426}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603702.5102267, 'sensor_0': {'temperature': 68.32410162508583, 'humidity': 50.836957351033796}, 'sensor_1': {'temperature': 68.1847104600595, 'humidity': 51.63347829404136}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603702.5102267, 'sensor_0': {'temperature': 68.32410162508583, 'humidity': 50.836957351033796}, 'sensor_1': {'temperature': 68.1847104600595, 'humidity': 51.63347829404136}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603702.5676916, 'temperature': 70.81872281986723, 'humidity': 49.005874723430225}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603702.5676916, 'temperature': 70.81872281986723, 'humidity': 49.005874723430225}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603702.6065953, 'temperature': 39.97482261387045, 'humidity': 93.676661326009}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603702.6065953, 'temperature': 39.97482261387045, 'humidity': 93.676661326009}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603702.640585, 'temperature': 69.74600000000001, 'humidity': 53.27}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603702.640585, 'temperature': 69.74600000000001, 'humidity': 53.27}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603702.6449296, 'pressure': 1011.1650604787739}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603702.6449296, 'pressure': 1011.1650604787739}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603763.1317823, 'sensor_0': {'temperature': 68.32410162508583, 'humidity': 50.72404058899824}, 'sensor_1': {'temperature': 68.1847104600595, 'humidity': 51.54192416266117}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603763.1317823, 'sensor_0': {'temperature': 68.32410162508583, 'humidity': 50.72404058899824}, 'sensor_1': {'temperature': 68.1847104600595, 'humidity': 51.54192416266117}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603763.190122, 'temperature': 70.79468986037995, 'humidity': 48.65491721980621}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603763.190122, 'temperature': 70.79468986037995, 'humidity': 48.65491721980621}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603763.2267034, 'temperature': 39.92675669489586, 'humidity': 94.39078355077439}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603643.0517738, 'pressure': 1011.1932727008426}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603702.5102267, 'sensor_0': {'temperature': 68.32410162508583, 'humidity': 50.836957351033796}, 'sensor_1': {'temperature': 68.1847104600595, 'humidity': 51.63347829404136}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603702.5102267, 'sensor_0': {'temperature': 68.32410162508583, 'humidity': 50.836957351033796}, 'sensor_1': {'temperature': 68.1847104600595, 'humidity': 51.63347829404136}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603702.5676916, 'temperature': 70.81872281986723, 'humidity': 49.005874723430225}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603702.5676916, 'temperature': 70.81872281986723, 'humidity': 49.005874723430225}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603702.6065953, 'temperature': 39.97482261387045, 'humidity': 93.676661326009}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603702.6065953, 'temperature': 39.97482261387045, 'humidity': 93.676661326009}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603702.640585, 'temperature': 69.74600000000001, 'humidity': 53.27}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603702.640585, 'temperature': 69.74600000000001, 'humidity': 53.27}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603702.6449296, 'pressure': 1011.1650604787739}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603702.6449296, 'pressure': 1011.1650604787739}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603763.1317823, 'sensor_0': {'temperature': 68.32410162508583, 'humidity': 50.72404058899824}, 'sensor_1': {'temperature': 68.1847104600595, 'humidity': 51.54192416266117}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603763.1317823, 'sensor_0': {'temperature': 68.32410162508583, 'humidity': 50.72404058899824}, 'sensor_1': {'temperature': 68.1847104600595, 'humidity': 51.54192416266117}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603763.190122, 'temperature': 70.79468986037995, 'humidity': 48.65491721980621}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603763.190122, 'temperature': 70.79468986037995, 'humidity': 48.65491721980621}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603763.2267034, 'temperature': 39.92675669489586, 'humidity': 94.39078355077439}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603763.2267034, 'temperature': 39.92675669489586, 'humidity': 94.39078355077439}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603763.2612026, 'temperature': 69.72800000000001, 'humidity': 53.02}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603763.2612026, 'temperature': 69.72800000000001, 'humidity': 53.02}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603763.2653158, 'pressure': 1011.174950835676}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603763.2653158, 'pressure': 1011.174950835676}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603822.8314636, 'sensor_0': {'temperature': 68.30006866559853, 'humidity': 50.64621957732509}, 'sensor_1': {'temperature': 68.13183794918746, 'humidity': 51.48699168383306}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603822.8314636, 'sensor_0': {'temperature': 68.30006866559853, 'humidity': 50.64621957732509}, 'sensor_1': {'temperature': 68.13183794918746, 'humidity': 51.48699168383306}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603822.8914642, 'temperature': 70.77065690089265, 'humidity': 48.56183718623636}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603822.8914642, 'temperature': 70.77065690089265, 'humidity': 48.56183718623636}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603822.9283335, 'temperature': 39.84985122453651, 'humidity': 94.53727016098267}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603822.9283335, 'temperature': 39.84985122453651, 'humidity': 94.53727016098267}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603822.9627035, 'temperature': 69.74600000000001, 'humidity': 52.92}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603822.9627035, 'temperature': 69.74600000000001, 'humidity': 52.92}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603822.9669151, 'pressure': 1011.1720800660893}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603822.9669151, 'pressure': 1011.1720800660893}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603882.42959, 'sensor_0': {'temperature': 68.17029068436713, 'humidity': 50.754558632791635}, 'sensor_1': {'temperature': 68.13183794918746, 'humidity': 51.40001525902189}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603882.42959, 'sensor_0': {'temperature': 68.17029068436713, 'humidity': 50.754558632791635}, 'sensor_1': {'temperature': 68.13183794918746, 'humidity': 51.40001525902189}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603882.4873743, 'temperature': 70.79468986037995, 'humidity': 48.119325551232166}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603882.4873743, 'temperature': 70.79468986037995, 'humidity': 48.119325551232166}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603882.5230193, 'temperature': 39.77294575417716, 'humidity': 94.6517128252079}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603882.5230193, 'temperature': 39.77294575417716, 'humidity': 94.6517128252079}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603882.5582151, 'temperature': 69.72800000000001, 'humidity': 52.75}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603882.5582151, 'temperature': 69.72800000000001, 'humidity': 52.75}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603882.562524, 'pressure': 1011.1808642277788}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603882.562524, 'pressure': 1011.1808642277788}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603943.050338, 'sensor_0': {'temperature': 68.12222476539256, 'humidity': 50.543984130617226}, 'sensor_1': {'temperature': 68.08377203021288, 'humidity': 51.33287556267643}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603943.050338, 'sensor_0': {'temperature': 68.12222476539256, 'humidity': 50.543984130617226}, 'sensor_1': {'temperature': 68.08377203021288, 'humidity': 51.33287556267643}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603943.314689, 'temperature': 70.74181734950788, 'humidity': 47.76989394979782}10.1.1.100 - - [03/Jul/2025 23:39:45] "[36mGET / HTTP/1.1[0m" 304 -
+
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603763.2267034, 'temperature': 39.92675669489586, 'humidity': 94.39078355077439}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603763.2612026, 'temperature': 69.72800000000001, 'humidity': 53.02}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603763.2612026, 'temperature': 69.72800000000001, 'humidity': 53.02}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603763.2653158, 'pressure': 1011.174950835676}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603763.2653158, 'pressure': 1011.174950835676}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603822.8314636, 'sensor_0': {'temperature': 68.30006866559853, 'humidity': 50.64621957732509}, 'sensor_1': {'temperature': 68.13183794918746, 'humidity': 51.48699168383306}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603822.8314636, 'sensor_0': {'temperature': 68.30006866559853, 'humidity': 50.64621957732509}, 'sensor_1': {'temperature': 68.13183794918746, 'humidity': 51.48699168383306}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603822.8914642, 'temperature': 70.77065690089265, 'humidity': 48.56183718623636}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603822.8914642, 'temperature': 70.77065690089265, 'humidity': 48.56183718623636}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603822.9283335, 'temperature': 39.84985122453651, 'humidity': 94.53727016098267}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603822.9283335, 'temperature': 39.84985122453651, 'humidity': 94.53727016098267}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603822.9627035, 'temperature': 69.74600000000001, 'humidity': 52.92}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603822.9627035, 'temperature': 69.74600000000001, 'humidity': 52.92}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603822.9669151, 'pressure': 1011.1720800660893}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603822.9669151, 'pressure': 1011.1720800660893}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603882.42959, 'sensor_0': {'temperature': 68.17029068436713, 'humidity': 50.754558632791635}, 'sensor_1': {'temperature': 68.13183794918746, 'humidity': 51.40001525902189}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603882.42959, 'sensor_0': {'temperature': 68.17029068436713, 'humidity': 50.754558632791635}, 'sensor_1': {'temperature': 68.13183794918746, 'humidity': 51.40001525902189}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603882.4873743, 'temperature': 70.79468986037995, 'humidity': 48.119325551232166}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603882.4873743, 'temperature': 70.79468986037995, 'humidity': 48.119325551232166}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603882.5230193, 'temperature': 39.77294575417716, 'humidity': 94.6517128252079}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603882.5230193, 'temperature': 39.77294575417716, 'humidity': 94.6517128252079}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603882.5582151, 'temperature': 69.72800000000001, 'humidity': 52.75}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603882.5582151, 'temperature': 69.72800000000001, 'humidity': 52.75}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603882.562524, 'pressure': 1011.1808642277788}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603882.562524, 'pressure': 1011.1808642277788}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603943.050338, 'sensor_0': {'temperature': 68.12222476539256, 'humidity': 50.543984130617226}, 'sensor_1': {'temperature': 68.08377203021288, 'humidity': 51.33287556267643}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603943.050338, 'sensor_0': {'temperature': 68.12222476539256, 'humidity': 50.543984130617226}, 'sensor_1': {'temperature': 68.08377203021288, 'humidity': 51.33287556267643}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603943.314689, 'temperature': 70.74181734950788, 'humidity': 47.76989394979782}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603943.314689, 'temperature': 70.74181734950788, 'humidity': 47.76989394979782}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603943.351139, 'temperature': 39.95078965438316, 'humidity': 95.21171892881665}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603943.351139, 'temperature': 39.95078965438316, 'humidity': 95.21171892881665}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603943.3864307, 'temperature': 69.69200000000001, 'humidity': 52.57}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603943.3864307, 'temperature': 69.69200000000001, 'humidity': 52.57}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603943.3917518, 'pressure': 1011.1513882517675}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603943.3917518, 'pressure': 1011.1513882517675}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604002.649371, 'sensor_0': {'temperature': 68.17029068436713, 'humidity': 50.56687266346227}, 'sensor_1': {'temperature': 68.02609292744336, 'humidity': 51.2489509422446}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604002.649371, 'sensor_0': {'temperature': 68.17029068436713, 'humidity': 50.56687266346227}, 'sensor_1': {'temperature': 68.02609292744336, 'humidity': 51.2489509422446}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604002.7086039, 'temperature': 70.74181734950788, 'humidity': 47.88433661402304}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604002.7086039, 'temperature': 70.74181734950788, 'humidity': 47.88433661402304}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604002.744959, 'temperature': 41.6955825131609, 'humidity': 96.88715953307393}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604002.744959, 'temperature': 41.6955825131609, 'humidity': 96.88715953307393}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604002.7795298, 'temperature': 69.638, 'humidity': 52.98}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604002.7795298, 'temperature': 69.638, 'humidity': 52.98}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604002.7846053, 'pressure': 1011.1581243266073}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604002.7846053, 'pressure': 1011.1581243266073}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604063.1685498, 'sensor_0': {'temperature': 68.17029068436713, 'humidity': 50.32120241092546}, 'sensor_1': {'temperature': 68.02609292744336, 'humidity': 51.20317387655451}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603943.314689, 'temperature': 70.74181734950788, 'humidity': 47.76989394979782}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603943.351139, 'temperature': 39.95078965438316, 'humidity': 95.21171892881665}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603943.351139, 'temperature': 39.95078965438316, 'humidity': 95.21171892881665}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603943.3864307, 'temperature': 69.69200000000001, 'humidity': 52.57}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603943.3864307, 'temperature': 69.69200000000001, 'humidity': 52.57}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603943.3917518, 'pressure': 1011.1513882517675}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603943.3917518, 'pressure': 1011.1513882517675}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604002.649371, 'sensor_0': {'temperature': 68.17029068436713, 'humidity': 50.56687266346227}, 'sensor_1': {'temperature': 68.02609292744336, 'humidity': 51.2489509422446}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604002.649371, 'sensor_0': {'temperature': 68.17029068436713, 'humidity': 50.56687266346227}, 'sensor_1': {'temperature': 68.02609292744336, 'humidity': 51.2489509422446}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604002.7086039, 'temperature': 70.74181734950788, 'humidity': 47.88433661402304}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604002.7086039, 'temperature': 70.74181734950788, 'humidity': 47.88433661402304}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604002.744959, 'temperature': 41.6955825131609, 'humidity': 96.88715953307393}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604002.744959, 'temperature': 41.6955825131609, 'humidity': 96.88715953307393}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604002.7795298, 'temperature': 69.638, 'humidity': 52.98}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604002.7795298, 'temperature': 69.638, 'humidity': 52.98}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604002.7846053, 'pressure': 1011.1581243266073}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604002.7846053, 'pressure': 1011.1581243266073}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604063.1685498, 'sensor_0': {'temperature': 68.17029068436713, 'humidity': 50.32120241092546}, 'sensor_1': {'temperature': 68.02609292744336, 'humidity': 51.20317387655451}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604063.1685498, 'sensor_0': {'temperature': 68.17029068436713, 'humidity': 50.32120241092546}, 'sensor_1': {'temperature': 68.02609292744336, 'humidity': 51.20317387655451}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604063.229333, 'temperature': 70.74181734950788, 'humidity': 48.07202258335241}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604063.229333, 'temperature': 70.74181734950788, 'humidity': 48.07202258335241}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604063.2663891, 'temperature': 42.85877775234607, 'humidity': 97.16182192721446}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604063.2663891, 'temperature': 42.85877775234607, 'humidity': 97.16182192721446}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604063.3029358, 'temperature': 69.638, 'humidity': 53.14}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604063.3029358, 'temperature': 69.638, 'humidity': 53.14}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604063.309139, 'pressure': 1011.1804816241503}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604063.309139, 'pressure': 1011.1804816241503}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604122.8693452, 'sensor_0': {'temperature': 68.17029068436713, 'humidity': 50.15182726787213}, 'sensor_1': {'temperature': 68.05012588693064, 'humidity': 51.02464332036316}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604122.8693452, 'sensor_0': {'temperature': 68.17029068436713, 'humidity': 50.15182726787213}, 'sensor_1': {'temperature': 68.05012588693064, 'humidity': 51.02464332036316}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604123.0418646, 'temperature': 70.77065690089265, 'humidity': 48.00946059357595}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604123.0418646, 'temperature': 70.77065690089265, 'humidity': 48.00946059357595}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604123.0766816, 'temperature': 42.40215152208744, 'humidity': 96.90089265278095}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604123.0766816, 'temperature': 42.40215152208744, 'humidity': 96.90089265278095}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604123.1105201, 'temperature': 69.602, 'humidity': 52.89}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604123.1105201, 'temperature': 69.602, 'humidity': 52.89}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604123.1151655, 'pressure': 1011.2243847161859}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604123.1151655, 'pressure': 1011.2243847161859}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604182.4645598, 'sensor_0': {'temperature': 68.12222476539256, 'humidity': 50.2738994430457}, 'sensor_1': {'temperature': 68.05012588693064, 'humidity': 50.98496986343175}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604182.4645598, 'sensor_0': {'temperature': 68.12222476539256, 'humidity': 50.2738994430457}, 'sensor_1': {'temperature': 68.05012588693064, 'humidity': 50.98496986343175}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604182.524076, 'temperature': 70.74181734950788, 'humidity': 47.87975890745403}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604182.524076, 'temperature': 70.74181734950788, 'humidity': 47.87975890745403}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604182.561791, 'temperature': 41.79652094300755, 'humidity': 96.14404516670481}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604182.561791, 'temperature': 41.79652094300755, 'humidity': 96.14404516670481}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604182.5956864, 'temperature': 69.584, 'humidity': 52.68}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604182.5956864, 'temperature': 69.584, 'humidity': 52.68}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604182.5999212, 'pressure': 1011.2431383189995} * Detected change in '/home/scrumpi/containers/therm-2/Fan.py', reloading
+
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604063.1685498, 'sensor_0': {'temperature': 68.17029068436713, 'humidity': 50.32120241092546}, 'sensor_1': {'temperature': 68.02609292744336, 'humidity': 51.20317387655451}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604063.229333, 'temperature': 70.74181734950788, 'humidity': 48.07202258335241}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604063.229333, 'temperature': 70.74181734950788, 'humidity': 48.07202258335241}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604063.2663891, 'temperature': 42.85877775234607, 'humidity': 97.16182192721446}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604063.2663891, 'temperature': 42.85877775234607, 'humidity': 97.16182192721446}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604063.3029358, 'temperature': 69.638, 'humidity': 53.14}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604063.3029358, 'temperature': 69.638, 'humidity': 53.14}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604063.309139, 'pressure': 1011.1804816241503}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604063.309139, 'pressure': 1011.1804816241503}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604122.8693452, 'sensor_0': {'temperature': 68.17029068436713, 'humidity': 50.15182726787213}, 'sensor_1': {'temperature': 68.05012588693064, 'humidity': 51.02464332036316}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604122.8693452, 'sensor_0': {'temperature': 68.17029068436713, 'humidity': 50.15182726787213}, 'sensor_1': {'temperature': 68.05012588693064, 'humidity': 51.02464332036316}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604123.0418646, 'temperature': 70.77065690089265, 'humidity': 48.00946059357595}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604123.0418646, 'temperature': 70.77065690089265, 'humidity': 48.00946059357595}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604123.0766816, 'temperature': 42.40215152208744, 'humidity': 96.90089265278095}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604123.0766816, 'temperature': 42.40215152208744, 'humidity': 96.90089265278095}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604123.1105201, 'temperature': 69.602, 'humidity': 52.89}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604123.1105201, 'temperature': 69.602, 'humidity': 52.89}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604123.1151655, 'pressure': 1011.2243847161859}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604123.1151655, 'pressure': 1011.2243847161859}
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604182.4645598, 'sensor_0': {'temperature': 68.12222476539256, 'humidity': 50.2738994430457}, 'sensor_1': {'temperature': 68.05012588693064, 'humidity': 50.98496986343175}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604182.4645598, 'sensor_0': {'temperature': 68.12222476539256, 'humidity': 50.2738994430457}, 'sensor_1': {'temperature': 68.05012588693064, 'humidity': 50.98496986343175}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604182.524076, 'temperature': 70.74181734950788, 'humidity': 47.87975890745403}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604182.524076, 'temperature': 70.74181734950788, 'humidity': 47.87975890745403}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604182.561791, 'temperature': 41.79652094300755, 'humidity': 96.14404516670481}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604182.561791, 'temperature': 41.79652094300755, 'humidity': 96.14404516670481}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604182.5956864, 'temperature': 69.584, 'humidity': 52.68}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604182.5956864, 'temperature': 69.584, 'humidity': 52.68}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751604182.5999212, 'pressure': 1011.2431383189995}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751604182.5999212, 'pressure': 1011.2431383189995}
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 723-753-695
