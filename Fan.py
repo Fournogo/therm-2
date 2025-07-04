@@ -14,7 +14,20 @@ class Fan(Component):
         self.DAC.begin()
         self.DAC.set_DAC_outrange(OUTPUT_RANGE_10V)
         self.DAC.set_DAC_out_voltage(self.voltage, self.channel)
+
+    @command
+    def read_fan(self):
+        self.trigger_event('read_fan')
     
+    @status(auto_publish=True, trigger_on=['read fan'])
+    def read_fan(self):
+        """Get current button state (call manually)"""
+        return {
+            "event": "read_status",
+            "timestamp": time.time(),
+            "power": self.power
+        }
+
     @status(auto_publish=True, trigger_on=['read'])
     def read_status(self):
         """Get current button state (call manually)"""
