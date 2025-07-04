@@ -7,6 +7,8 @@ from Relay import Relay
 from Fan import Fan
 from MultiTempSensor import MultiTempSensor
 from MQTTManager import MQTTManager
+from ScrumpiBaroSensor import ScrumpiBaroSensor
+from ScrumpiTempSensor import ScrumpiTempSensor
 
 class ComponentFactory:
     """Factory to create components"""
@@ -16,7 +18,9 @@ class ComponentFactory:
         'Relay': Relay,
         'Fan': Fan,
         'TemperatureSensor': TemperatureSensor,
-        'MultiTempSensor': MultiTempSensor
+        'MultiTempSensor': MultiTempSensor,
+        'ScrumpiBaroSensor': ScrumpiBaroSensor,
+        'ScrumpiTempSensor': ScrumpiTempSensor
     }
     
     @classmethod

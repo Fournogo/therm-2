@@ -99,6 +99,27 @@ class InfluxSensorWriter:
                 'wait_method': 'read_status',
                 'timeout': 5,
                 'location_tag': 'server_closet'
+            },
+            {
+                'command_path': 'living_room.temp_sensor.read',
+                'command_args': {'units': 'f'},
+                'influx_fields': {
+                    'temperature': 'temperature',
+                    'humidity': 'humidity'
+                },
+                'wait_method': 'read_status',
+                'timeout': 5,
+                'location_tag': 'server_closet'
+            },
+            {
+                'command_path': 'living_room.pressure_sensor.read',
+                'command_args': {},
+                'influx_fields': {
+                    'pressure': 'pressure'
+                },
+                'wait_method': 'read_status',
+                'timeout': 5,
+                'location_tag': 'server_closet'
             }
         ]
     
