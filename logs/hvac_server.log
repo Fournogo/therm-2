@@ -2825,3 +2825,171 @@ Status update: read_status -> {'event': 'read_status', 'timestamp': 1751602923.2
  * Restarting with stat
  * Debugger is active!
  * Debugger PIN: 723-753-695
+ * Detected change in '/home/scrumpi/containers/therm-2/Fan.py', reloading
+Found 4 config files
+Loading config: /home/scrumpi/containers/therm-2/configs/ems2.yaml
+Connecting to MQTT broker: localhost:1883
+Server MQTT connected successfully
+Found @command methods in TemperatureSensor: ['read']
+Created 1 proxy methods for TemperatureSensor
+Found @status methods in TemperatureSensor: ['read_status']
+Subscribed to status topic: ems2/ryans_room/temp_sensor/status/read_status
+Created event for status method: read_status
+Created component proxy: ryans_room.temp_sensor (TemperatureSensor)
+Created device proxy: ryans_room
+Loading config: /home/scrumpi/containers/therm-2/configs/therm.yaml
+Connecting to MQTT broker: localhost:1883
+Server MQTT connected successfully
+No @command methods found for Button (or could not inspect class)
+Found @status methods in Button: ['get_state', 'pressed_status']
+Subscribed to status topic: therm/stink_button/button/status/get_state
+Created event for status method: get_state
+Subscribed to status topic: therm/stink_button/button/status/pressed_status
+Created event for status method: pressed_status
+Created component proxy: stink_button.button (Button)
+Found @command methods in Relay: ['off', 'on']
+Created 2 proxy methods for Relay
+Created component proxy: stink_button.light (Relay)
+Created device proxy: stink_button
+Found @command methods in Fan: ['read', 'read_fan', 'set_power', 'set_voltage']
+Created 4 proxy methods for Fan
+Found @status methods in Fan: ['fan_status']
+Subscribed to status topic: therm/hvac/fan/status/fan_status
+Created event for status method: fan_status
+Created component proxy: hvac.fan (Fan)
+Found @command methods in TemperatureSensor: ['read']
+Created 1 proxy methods for TemperatureSensor
+Found @status methods in TemperatureSensor: ['read_status']
+Subscribed to status topic: therm/hvac/temp_sensor/status/read_status
+Created event for status method: read_status
+Created component proxy: hvac.temp_sensor (TemperatureSensor)
+Found @command methods in Relay: ['off', 'on']
+Created 2 proxy methods for Relay
+Created component proxy: hvac.avery_valve (Relay)
+Found @command methods in Relay: ['off', 'on']
+Created 2 proxy methods for Relay
+Created component proxy: hvac.bathroom_valve (Relay)
+Created device proxy: hvac
+Loading config: /home/scrumpi/containers/therm-2/configs/scrumpi.yaml
+Connecting to MQTT broker: localhost:1883
+Server MQTT connected successfully
+Found @command methods in ScrumpiTempSensor: ['read']
+Created 1 proxy methods for ScrumpiTempSensor
+Found @status methods in ScrumpiTempSensor: ['read_status']
+Subscribed to status topic: scrumpi/living_room/temp_sensor/status/read_status
+Created event for status method: read_status
+Created component proxy: living_room.temp_sensor (ScrumpiTempSensor)
+Found @command methods in ScrumpiBaroSensor: ['read']
+Created 1 proxy methods for ScrumpiBaroSensor
+Found @status methods in ScrumpiBaroSensor: ['read_status']
+Subscribed to status topic: scrumpi/living_room/pressure_sensor/status/read_status
+Created event for status method: read_status
+Created component proxy: living_room.pressure_sensor (ScrumpiBaroSensor)
+Created device proxy: living_room
+Loading config: /home/scrumpi/containers/therm-2/configs/ems.yaml
+Connecting to MQTT broker: localhost:1883
+Server MQTT connected successfully
+Found @command methods in MultiTempSensor: ['read']
+Created 1 proxy methods for MultiTempSensor
+Found @status methods in MultiTempSensor: ['read_status']
+Subscribed to status topic: ems/averys_room/temp_sensor/status/read_status
+Created event for status method: read_status
+Created component proxy: averys_room.temp_sensor (MultiTempSensor)
+Created device proxy: averys_room
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751602982.7327209, 'sensor_0': {'temperature': 68.62691691462577, 'humidity': 51.72045471885253}, 'sensor_1': {'temperature': 68.28564888990616, 'humidity': 52.745860990310526}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751602982.7327209, 'sensor_0': {'temperature': 68.62691691462577, 'humidity': 51.72045471885253}, 'sensor_1': {'temperature': 68.28564888990616, 'humidity': 52.745860990310526}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751602982.7796276, 'temperature': 70.1842526894026, 'humidity': 52.29877164873732}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751602982.7796276, 'temperature': 70.1842526894026, 'humidity': 52.29877164873732}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751602982.8384745, 'temperature': 46.60311284046692, 'humidity': 94.33585107194628}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751602982.8384745, 'temperature': 46.60311284046692, 'humidity': 94.33585107194628}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751602982.8685176, 'temperature': 70.196, 'humidity': 55.43}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751602982.8685176, 'temperature': 70.196, 'humidity': 55.43}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751602982.872958, 'pressure': 1011.1346720275687}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751602982.872958, 'pressure': 1011.1346720275687}
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 723-753-695
+ * Detected change in '/home/scrumpi/containers/therm-2/Fan.py', reloading
+Found 4 config files
+Loading config: /home/scrumpi/containers/therm-2/configs/ems2.yaml
+Connecting to MQTT broker: localhost:1883
+Server MQTT connected successfully
+Found @command methods in TemperatureSensor: ['read']
+Created 1 proxy methods for TemperatureSensor
+Found @status methods in TemperatureSensor: ['read_status']
+Subscribed to status topic: ems2/ryans_room/temp_sensor/status/read_status
+Created event for status method: read_status
+Created component proxy: ryans_room.temp_sensor (TemperatureSensor)
+Created device proxy: ryans_room
+Loading config: /home/scrumpi/containers/therm-2/configs/therm.yaml
+Connecting to MQTT broker: localhost:1883
+Server MQTT connected successfully
+No @command methods found for Button (or could not inspect class)
+Found @status methods in Button: ['get_state', 'pressed_status']
+Subscribed to status topic: therm/stink_button/button/status/get_state
+Created event for status method: get_state
+Subscribed to status topic: therm/stink_button/button/status/pressed_status
+Created event for status method: pressed_status
+Created component proxy: stink_button.button (Button)
+Found @command methods in Relay: ['off', 'on']
+Created 2 proxy methods for Relay
+Created component proxy: stink_button.light (Relay)
+Created device proxy: stink_button
+Found @command methods in Fan: ['read', 'read_fan', 'set_power', 'set_voltage']
+Created 4 proxy methods for Fan
+Found @status methods in Fan: ['fan_status']
+Subscribed to status topic: therm/hvac/fan/status/fan_status
+Created event for status method: fan_status
+Created component proxy: hvac.fan (Fan)
+Found @command methods in TemperatureSensor: ['read']
+Created 1 proxy methods for TemperatureSensor
+Found @status methods in TemperatureSensor: ['read_status']
+Subscribed to status topic: therm/hvac/temp_sensor/status/read_status
+Created event for status method: read_status
+Created component proxy: hvac.temp_sensor (TemperatureSensor)
+Found @command methods in Relay: ['off', 'on']
+Created 2 proxy methods for Relay
+Created component proxy: hvac.avery_valve (Relay)
+Found @command methods in Relay: ['off', 'on']
+Created 2 proxy methods for Relay
+Created component proxy: hvac.bathroom_valve (Relay)
+Created device proxy: hvac
+Loading config: /home/scrumpi/containers/therm-2/configs/scrumpi.yaml
+Connecting to MQTT broker: localhost:1883
+Server MQTT connected successfully
+Found @command methods in ScrumpiTempSensor: ['read']
+Created 1 proxy methods for ScrumpiTempSensor
+Found @status methods in ScrumpiTempSensor: ['read_status']
+Subscribed to status topic: scrumpi/living_room/temp_sensor/status/read_status
+Created event for status method: read_status
+Created component proxy: living_room.temp_sensor (ScrumpiTempSensor)
+Found @command methods in ScrumpiBaroSensor: ['read']
+Created 1 proxy methods for ScrumpiBaroSensor
+Found @status methods in ScrumpiBaroSensor: ['read_status']
+Subscribed to status topic: scrumpi/living_room/pressure_sensor/status/read_status
+Created event for status method: read_status
+Created component proxy: living_room.pressure_sensor (ScrumpiBaroSensor)
+Created device proxy: living_room
+Loading config: /home/scrumpi/containers/therm-2/configs/ems.yaml
+Connecting to MQTT broker: localhost:1883
+Server MQTT connected successfully
+Found @command methods in MultiTempSensor: ['read']
+Created 1 proxy methods for MultiTempSensor
+Found @status methods in MultiTempSensor: ['read_status']
+Subscribed to status topic: ems/averys_room/temp_sensor/status/read_status
+Created event for status method: read_status
+Created component proxy: averys_room.temp_sensor (MultiTempSensor)
+Created device proxy: averys_room
+Server MQTT received: ems/averys_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603043.3633542, 'sensor_0': {'temperature': 68.65094987411307, 'humidity': 51.48851758602273}, 'sensor_1': {'temperature': 68.30968184939346, 'humidity': 52.48950942244603}}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603043.3633542, 'sensor_0': {'temperature': 68.65094987411307, 'humidity': 51.48851758602273}, 'sensor_1': {'temperature': 68.30968184939346, 'humidity': 52.48950942244603}}
+Server MQTT received: ems2/ryans_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603043.5034785, 'temperature': 70.26115815976195, 'humidity': 52.072938124666216}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603043.5034785, 'temperature': 70.26115815976195, 'humidity': 52.072938124666216}
+Server MQTT received: therm/hvac/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603043.6202044, 'temperature': 46.44930189974822, 'humidity': 94.57846952010375}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603043.6202044, 'temperature': 46.44930189974822, 'humidity': 94.57846952010375}
+Server MQTT received: scrumpi/living_room/temp_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603043.6499908, 'temperature': 70.196, 'humidity': 55.2}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603043.6499908, 'temperature': 70.196, 'humidity': 55.2}
+Server MQTT received: scrumpi/living_room/pressure_sensor/status/read_status -> {'event': 'read_status', 'timestamp': 1751603043.6547377, 'pressure': 1011.1279874919793}
+Status update: read_status -> {'event': 'read_status', 'timestamp': 1751603043.6547377, 'pressure': 1011.1279874919793}
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 723-753-695

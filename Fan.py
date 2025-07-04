@@ -23,13 +23,13 @@ class Fan(Component):
     def fan_status(self):
         """Get current button state (call manually)"""
         return {
-            "event": "read_status",
+            "event": "read_fan",
             "timestamp": time.time(),
             "power": self.power
         }
 
     @status(auto_publish=True, trigger_on=['read'])
-    def fan_status(self):
+    def read_status(self):
         """Get current button state (call manually)"""
         return {
             "event": "read_status",
