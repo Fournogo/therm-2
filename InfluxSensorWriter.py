@@ -34,6 +34,74 @@ class InfluxSensorWriter:
         self.sensor_configs = self._setup_sensor_configs()
         self.external_api_configs = self._setup_external_api_configs()
         
+    def _setup_sensor_configs(self):
+        """
+        Configure which sensors to read and how to map them to InfluxDB
+        
+        ADD YOUR SENSOR CONFIGURATIONS HERE:
+        Format: {
+            'command_path': 'device.component.method',
+            'influx_fields': {
+                'status_data_key': 'influx_field_name',
+                'temperature': 'hvac_temp',
+                'humidity': 'hvac_hum'
+            },
+            'wait_method': 'status_method_name',
+            'timeout': seconds,
+            'location_tag': 'sensor_location'
+        }
+        """
+        return [
+            # Example configuration - UPDATE THESE FOR YOUR ACTUAL SENSORS
+            # {
+            #     'command_path': 'hvac.temp_sensor.read',
+            #     'command_args': {'units': 'f'},  # Arguments for the read command
+            #     'influx_fields': {
+            #         'temperature': 'hvac_temp',  # status_data['temperature'] -> influx field 'hvac_temp'
+            #         'humidity': 'hvac_hum'       # status_data['humidity'] -> influx field 'hvac_hum'
+            #     },
+            #     'wait_method': 'read_status',    # Wait for this status method
+            #     'timeout': 10,
+            #     'location_tag': 'hvac_system'
+            # },
+            # Add more sensor configurations here...
+            {
+                'command_path': 'averys_room.temp_sensor.read',
+                'command_args': {'units': 'f'},
+                'influx_fields': {
+                    'sensor_0.temperature': 'shroompi_temp_0',
+                    'sensor_0.humidity': 'shroompi_hum_0',
+                    'sensor_1.temperature': 'shroompi_temp_1',
+                    'sensor_1.humidity': 'shroompi_hum_1',
+                },
+                'wait_method': 'read_status',
+                'timeout': 5,
+                'location_tag': 'server_closet'
+            },
+            {
+                'command_path': 'ryans_room.temp_sensor.read',
+                'command_args': {'units': 'f'},
+                'influx_fields': {
+                    'temperature': 'ems2_temp',
+                    'humidity': 'ems2_hum'
+                },
+                'wait_method': 'read_status',
+                'timeout': 5,
+                'location_tag': 'server_closet'
+            },
+            {
+                'command_path': 'hvac.temp_sensor.read',
+                'command_args': {'units': 'f'},
+                'influx_fields': {
+                    'temperature': 'fan_temp',
+                    'humidity': 'fan_hum'
+                },
+                'wait_method': 'read_status',
+                'timeout': 5,
+                'location_tag': 'server_closet'
+            }
+        ]
+    
     def _setup_external_api_configs(self):
         """
         Configure external API calls and how to map their data to InfluxDB
@@ -53,115 +121,37 @@ class InfluxSensorWriter:
         }
         """
         return [
-            {
-                'name': 'thermostat',
-                'url': 'http://localhost:5023/state',
-                'method': 'GET',
-                'timeout': 2,
-                'max_attempts': 3,
-                'influx_fields': {
-                    'set_temp': 'thermostat_set_temp',       # Simple field: JSON['set_temp']
-                    # Add more fields as needed:
-                    # 'current_temp': 'thermostat_current_temp',
-                    # 'mode': 'thermostat_mode',
-                    # 'fan_status': 'thermostat_fan_status'
-                }
-            },
-            {
-                'name': 'multi_sensor_device',
-                'url': 'http://your-device/sensors',
-                'method': 'GET', 
-                'timeout': 5,
-                'max_attempts': 2,
-                'influx_fields': {
-                    # Nested field access using dot notation:
-                    'sensor_0.temperature': 'sensor_0_temp',         # JSON['sensor_0']['temperature']
-                    'sensor_0.humidity': 'sensor_0_humidity',        # JSON['sensor_0']['humidity'] 
-                    'sensor_1.temperature': 'sensor_1_temp',         # JSON['sensor_1']['temperature']
-                    'sensor_1.humidity': 'sensor_1_humidity',        # JSON['sensor_1']['humidity']
-                    # You can go deeper: 'device.status.sensors.0.temp': 'deep_sensor_temp'
-                }
-            }
-            # Add more external APIs here...
-        ]
-        """
-        Configure which sensors to read and how to map them to InfluxDB
-        
-        ADD YOUR SENSOR CONFIGURATIONS HERE:
-        Format: {
-            'command_path': 'device.component.method',
-            'influx_fields': {
-                'status_data_key': 'influx_field_name',
-                'temperature': 'hvac_temp',
-                'humidity': 'hvac_hum'
-            },
-            'wait_method': 'status_method_name',
-            'timeout': seconds,
-            'location_tag': 'sensor_location'
-        }
-        """
-        return [
-            # Example configuration - UPDATE THESE FOR YOUR ACTUAL SENSORS
-            {
-                'command_path': 'hvac.temp_sensor.read',
-                'command_args': {'units': 'f'},  # Arguments for the read command
-                'influx_fields': {
-                    'temperature': 'hvac_temp',  # status_data['temperature'] -> influx field 'hvac_temp'
-                    'humidity': 'hvac_hum'       # status_data['humidity'] -> influx field 'hvac_hum'
-                },
-                'wait_method': 'read_status',    # Wait for this status method
-                'timeout': 10,
-                'location_tag': 'hvac_system'
-            },
-            # Add more sensor configurations here...
             # {
-            #     'command_path': 'bathroom.temp_sensor.read',
-            #     'command_args': {'units': 'f'},
+            #     'name': 'thermostat',
+            #     'url': 'http://localhost:5023/state',
+            #     'method': 'GET',
+            #     'timeout': 2,
+            #     'max_attempts': 3,
             #     'influx_fields': {
-            #         'temperature': 'bathroom_temp',
-            #         'humidity': 'bathroom_hum'
-            #     },
-            #     'wait_method': 'read_status',
-            #     'timeout': 10,
-            #     'location_tag': 'bathroom'
+            #         'set_temp': 'thermostat_set_temp',       # Simple field: JSON['set_temp']
+            #         # Add more fields as needed:
+            #         # 'current_temp': 'thermostat_current_temp',
+            #         # 'mode': 'thermostat_mode',
+            #         # 'fan_status': 'thermostat_fan_status'
+            #     }
             # },
             # {
-            #     'command_path': 'outdoor.weather_station.read',
-            #     'command_args': {},
+            #     'name': 'multi_sensor_device',
+            #     'url': 'http://your-device/sensors',
+            #     'method': 'GET', 
+            #     'timeout': 5,
+            #     'max_attempts': 2,
             #     'influx_fields': {
-            #         'temperature': 'outdoor_temp',
-            #         'humidity': 'outdoor_hum',
-            #         'pressure': 'outdoor_pressure'
-            #     },
-            #     'wait_method': 'read_status',
-            #     'timeout': 15,
-            #     'location_tag': 'outdoor'
+            #         # Nested field access using dot notation:
+            #         'sensor_0.temperature': 'sensor_0_temp',         # JSON['sensor_0']['temperature']
+            #         'sensor_0.humidity': 'sensor_0_humidity',        # JSON['sensor_0']['humidity'] 
+            #         'sensor_1.temperature': 'sensor_1_temp',         # JSON['sensor_1']['temperature']
+            #         'sensor_1.humidity': 'sensor_1_humidity',        # JSON['sensor_1']['humidity']
+            #         # You can go deeper: 'device.status.sensors.0.temp': 'deep_sensor_temp'
+            #     }
             # }
+            # Add more external APIs here...
         ]
-    
-    def _setup_sensor_configs(self):
-        """Get thermostat set temperature (from your original script)"""
-        max_attempts = 3
-        attempts = 0
-        
-        while attempts < max_attempts:
-            try:
-                response = requests.get(self.thermostat_url, timeout=2)
-                if response.status_code == 200:
-                    data = response.json()
-                    set_temp = float(data['set_temp'])
-                    print(f"Thermostat set temperature: {set_temp}")
-                    return set_temp
-                else:
-                    print(f"Failed to retrieve thermostat data: {response.status_code}")
-            except Exception as e:
-                print(f"Error getting thermostat data (attempt {attempts + 1}/{max_attempts}): {e}")
-            
-            attempts += 1
-            time.sleep(1)
-        
-        print("Could not retrieve thermostat data")
-        return None
     
     def _execute_sensor_command(self, command_path, command_args=None):
         """Execute a sensor command using dot notation"""
@@ -240,17 +230,53 @@ class InfluxSensorWriter:
             )
             
             if status_data:
-                # Map the status data to InfluxDB field names
-                for status_key, influx_field in config['influx_fields'].items():
-                    if status_key in status_data:
-                        all_sensor_data[influx_field] = status_data[status_key]
-                        print(f"  {status_key}: {status_data[status_key]} -> {influx_field}")
+                # Map the status data to InfluxDB field names (supports nested paths)
+                for status_key_path, influx_field in config['influx_fields'].items():
+                    # Use dot notation for nested access: 'sensor_0.temperature'
+                    value = self._get_nested_value(status_data, status_key_path)
+                    
+                    if value is not None:
+                        all_sensor_data[influx_field] = value
+                        print(f"  {status_key_path}: {value} -> {influx_field}")
                     else:
-                        print(f"  Warning: {status_key} not found in status data")
+                        print(f"  Warning: {status_key_path} not found in status data")
+                        print(f"    Available keys: {list(status_data.keys()) if isinstance(status_data, dict) else 'Not a dict'}")
             else:
                 print(f"  Failed to get data from {command_path}")
         
         return all_sensor_data, current_time
+    
+    def _get_nested_value(self, data, key_path):
+        """
+        Get a value from nested dictionary using dot notation
+        
+        Args:
+            data: The dictionary to search
+            key_path: Dot notation path like 'sensor_0.temperature' or 'settings.hvac.mode'
+            
+        Returns:
+            The value if found, None if not found
+            
+        Examples:
+            data = {'sensor_0': {'temperature': 73.2, 'humidity': 56.5}}
+            get_nested_value(data, 'sensor_0.temperature')  # Returns 73.2
+            get_nested_value(data, 'sensor_0.humidity')     # Returns 56.5
+            get_nested_value(data, 'sensor_0.missing')      # Returns None
+            get_nested_value(data, 'missing.key')           # Returns None
+        """
+        try:
+            keys = key_path.split('.')
+            current = data
+            
+            for key in keys:
+                if isinstance(current, dict) and key in current:
+                    current = current[key]
+                else:
+                    return None
+                    
+            return current
+        except Exception:
+            return None
     
     def get_external_data(self):
         """Get data from all configured external sources"""
@@ -294,7 +320,7 @@ class InfluxSensorWriter:
         
         # Create the InfluxDB point
         point_data = {
-            "name": "sensor_collection",  # Measurement name
+            "name": "sensor_shtc3",  # Measurement name
             "location": "server_closet",  # Main location tag
             **all_data
         }

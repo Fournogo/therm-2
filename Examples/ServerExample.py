@@ -6,7 +6,7 @@ controller = create_device_controller('/home/scrumpi/containers/therm-2/configs'
 dispatcher = SafeCommandDispatcher()
 dispatcher.register_controller('controller', controller)
 
-cmd = "controller.averys_room.valve.off()"
+cmd = "controller.hvac.avery_valve.off()"
 
 try:
     result = dispatcher.execute_command(cmd)
