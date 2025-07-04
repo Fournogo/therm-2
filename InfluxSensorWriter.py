@@ -28,7 +28,7 @@ class InfluxSensorWriter:
         self.write_api = self.client.write_api(write_options=SYNCHRONOUS)
         
         # Setup device controller
-        self.controller = create_device_controller('configs', component_path='.')
+        self.controller = create_device_controller('/home/scrumpi/containers/therm-2/configs', component_path='/home/scrumpi/containers/therm-2')
         
         # Configuration for sensor readings and external APIs
         self.sensor_configs = self._setup_sensor_configs()
