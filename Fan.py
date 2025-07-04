@@ -29,7 +29,7 @@ class Fan(Component):
         }
 
     @status(auto_publish=True, trigger_on=['read'])
-    def read_status(self):
+    def fan_status(self):
         """Get current button state (call manually)"""
         return {
             "event": "read_status",
