@@ -66,7 +66,7 @@ class InfluxSensorWriter:
             # },
             # Add more sensor configurations here...
             {
-                'command_path': 'averys_room.temp_sensor.read',
+                'command_path': 'averys_room.temp_sensor.read_temp',
                 'command_args': {'units': 'f'},
                 'influx_fields': {
                     'sensor_0.temperature': 'shroompi_temp_0',
@@ -74,50 +74,50 @@ class InfluxSensorWriter:
                     'sensor_1.temperature': 'shroompi_temp_1',
                     'sensor_1.humidity': 'shroompi_hum_1',
                 },
-                'wait_method': 'read_status',
+                'wait_method': 'temp_status',
                 'timeout': 5,
                 'location_tag': 'server_closet'
             },
             {
-                'command_path': 'ryans_room.temp_sensor.read',
+                'command_path': 'ryans_room.temp_sensor.read_temp',
                 'command_args': {'units': 'f'},
                 'influx_fields': {
                     'temperature': 'ems2_temp',
                     'humidity': 'ems2_hum'
                 },
-                'wait_method': 'read_status',
+                'wait_method': 'temp_status',
                 'timeout': 5,
                 'location_tag': 'server_closet'
             },
             {
-                'command_path': 'hvac.temp_sensor.read',
+                'command_path': 'hvac.temp_sensor.read_temp',
                 'command_args': {'units': 'f'},
                 'influx_fields': {
                     'temperature': 'fan_temp',
                     'humidity': 'fan_hum'
                 },
-                'wait_method': 'read_status',
+                'wait_method': 'temp_status',
                 'timeout': 5,
                 'location_tag': 'server_closet'
             },
             {
-                'command_path': 'living_room.temp_sensor.read',
+                'command_path': 'living_room.temp_sensor.read_temp',
                 'command_args': {'units': 'f'},
                 'influx_fields': {
                     'temperature': 'temperature',
                     'humidity': 'humidity'
                 },
-                'wait_method': 'read_status',
+                'wait_method': 'temp_status',
                 'timeout': 5,
                 'location_tag': 'server_closet'
             },
             {
-                'command_path': 'living_room.pressure_sensor.read',
+                'command_path': 'living_room.pressure_sensor.read_baro',
                 'command_args': {},
                 'influx_fields': {
                     'pressure': 'pressure'
                 },
-                'wait_method': 'read_status',
+                'wait_method': 'baro_status',
                 'timeout': 5,
                 'location_tag': 'server_closet'
             },

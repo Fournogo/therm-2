@@ -22,7 +22,7 @@ class MultiTempSensor(Component):
         super().__init__(name, device_name)
 
     @command
-    def read(self, units="f"):
+    def read_temp(self, units="f"):
 
         for sensor in self.sensors:
             sensor["temperature"] = sensor["sensor"].temperature
@@ -37,7 +37,7 @@ class MultiTempSensor(Component):
         self.auto_publish_on_event('read')
 
     @status(auto_publish=True, trigger_on=['read'])
-    def read_status(self):
+    def temp_status(self):
         """Status method that publishes when sensor read command is received"""
 
         result = {
