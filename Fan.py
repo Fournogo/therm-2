@@ -19,15 +19,15 @@ class Fan(Component):
     @command
     def read_fan(self):
         """Read fan status - triggers auto-publish of fan_status"""
-        self.trigger_event('read_fan')  # Fixed: use underscore, not space
+        self.trigger_event('fan_status')  # Fixed: use underscore, not space
         # Remove manual call to fan_status() - let auto-publish handle it
-        self.auto_publish_on_event('read_fan')
+        self.auto_publish_on_event('fan_status')
 
-    @status(auto_publish=True, trigger_on=['read_fan'])  # Fixed: moved trigger_on to decorator
+    @status(auto_publish=True, trigger_on=['fan_status'])  # Fixed: moved trigger_on to decorator
     def fan_status(self):
-        """Get current fan state - auto-published when read_fan event occurs"""
+        """Get current fan state - auto-published when fan_status event occurs"""
         return {
-            "event": "read_fan",
+            "event": "fan_status",
             "timestamp": time.time(),
             "power": self.power,
             "voltage": self.voltage  # Added voltage for completeness

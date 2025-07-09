@@ -16,16 +16,16 @@ class ScrumpiBaroSensor(Component):
     def read_baro(self):
         self.pressure = self._sensor.pressure
         
-        self.trigger_event('rea_status')
+        self.trigger_event('baro_status')
         
         # Auto-publish any status methods triggered by 'read' event
-        self.auto_publish_on_event('read_status')
+        self.auto_publish_on_event('baro_status')
 
-    @status(auto_publish=True, trigger_on=['read_status'])
+    @status(auto_publish=True, trigger_on=['baro_status'])
     def baro_status(self):
         """Status method that publishes when sensor read command is received"""
         return {
-            "event": "read_status",
+            "event": "baro_status",
             "timestamp": time.time(),
             "pressure": self.pressure
         }

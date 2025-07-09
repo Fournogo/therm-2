@@ -31,17 +31,17 @@ class MultiTempSensor(Component):
             if units == "f" or units == "F":
                 sensor["temperature"] = sensor["temperature"] * 1.8 + 32
         
-        self.trigger_event('read')
+        self.trigger_event('temp_status')
         
         # Auto-publish any status methods triggered by 'read' event
-        self.auto_publish_on_event('read')
+        self.auto_publish_on_event('temp_status')
 
-    @status(auto_publish=True, trigger_on=['read'])
+    @status(auto_publish=True, trigger_on=['temp_status'])
     def temp_status(self):
         """Status method that publishes when sensor read command is received"""
 
         result = {
-            "event": "read_status",
+            "event": "temp_status",
             "timestamp": time.time()
         }
 

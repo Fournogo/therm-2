@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
-from Component import Component, command
+from Component import Component, command, status
 from GPIOManager import GPIOManager
+import time
 import logging
 
 class Relay(Component):
@@ -34,7 +35,23 @@ class Relay(Component):
         GPIO.output(self.pin, self.signal_value_off)
         self._state = False
         self.trigger_event('turned_off')
+
+    @command
+    def read(self):
+        self.trigger_event('relay_status')
+        
+        # Auto-publish any status methods triggered by 'relay_status' event
+        self.auto_publish_on_event('relay_status')
     
+    @status(auto_publish=True, trigger_on=['relay_status'])
+    def relay_status(self):
+        """Status method that publishes when sensor read command is received"""
+        return {
+            "event": "relay_status",
+            "timestamp": time.time(),
+            "relay": self._state
+        }
+
     def toggle(self):
         if self._state:
             self.off()
