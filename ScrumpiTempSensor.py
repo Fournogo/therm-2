@@ -14,7 +14,7 @@ class ScrumpiTempSensor(Component):
         super().__init__(name, device_name)
 
     @command
-    def read(self, units="f"):
+    def read_temp(self, units="f"):
         self.temperature, self.humidity = self._sensor.measurements
 
         if units == "f" or units == "F":

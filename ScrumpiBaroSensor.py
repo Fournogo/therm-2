@@ -13,7 +13,7 @@ class ScrumpiBaroSensor(Component):
         super().__init__(name, device_name)
 
     @command
-    def read(self):
+    def read_baro(self):
         self.pressure = self._sensor.pressure
         
         self.trigger_event('rea_status')

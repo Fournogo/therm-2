@@ -14,7 +14,7 @@ class TemperatureSensor(Component):
         super().__init__(name, device_name)
 
     @command
-    def read(self, units="f"):
+    def read_temp(self, units="f"):
         self.temperature = self._sensor.temperature
         self.humidity = self._sensor.relative_humidity
 
