@@ -33,22 +33,6 @@ class Fan(Component):
             "voltage": self.voltage  # Added voltage for completeness
         }
 
-    @status(auto_publish=True, trigger_on=['read_temp'])
-    def temp_status(self):
-        """Get current sensor state - auto-published when read event occurs"""
-        return {
-            "event": "read_temp",
-            "timestamp": time.time(),
-            "temperature": self.voltage,  # This seems wrong - should be actual temp?
-            "humidity": self.humidity     # Fixed: now this attribute exists
-        }
-
-    @command
-    def read_temp(self):
-        """Read sensor data - triggers auto-publish of read_status"""
-        self.trigger_event('read_temp')
-        self.auto_publish_on_event('read_temp')
-
     @command
     def set_voltage(self, voltage):
         self.voltage = voltage
