@@ -120,6 +120,16 @@ class InfluxSensorWriter:
                 'wait_method': 'read_status',
                 'timeout': 5,
                 'location_tag': 'server_closet'
+            },
+            {
+                'command_path': 'hvac.fan.read_fan',
+                'command_args': {},
+                'influx_fields': {
+                    'power': 'fan_power'
+                },
+                'wait_method': 'fan_status',
+                'timeout': 5,
+                'location_tag': 'server_closet'
             }
         ]
     

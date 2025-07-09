@@ -7,3 +7,15 @@ OSError: [Errno 126] Required key not available
 2025-07-03 20:54:44,846 - INFO - Created device 'living_room' with MQTT topics
 2025-07-03 20:54:44,847 - INFO - Device manager initialized successfully
 2025-07-03 20:54:44,847 - INFO - MQTT clients are running...
+2025-07-03 23:45:18,791 - INFO - Received signal 15, shutting down gracefully...
+2025-07-03 23:45:19,029 - INFO - Cleaning up device manager...
+2025-07-03 23:45:19,064 - INFO - Device service stopped
+2025-07-03 23:45:19,839 - INFO - Starting device service with config: /home/scrumpi/containers/therm-2/configs/scrumpi.yaml
+2025-07-03 23:45:19,978 - WARNING - Error with socket 18 (('10.176.8.1', 5353))): [Errno 126] Required key not available
+Traceback (most recent call last):
+  File "/usr/lib/python3.9/asyncio/selector_events.py", line 1056, in sendto
+    self._sock.sendto(data, addr)
+OSError: [Errno 126] Required key not available
+2025-07-03 23:45:20,355 - INFO - Created device 'living_room' with MQTT topics
+2025-07-03 23:45:20,359 - INFO - Device manager initialized successfully
+2025-07-03 23:45:20,361 - INFO - MQTT clients are running...

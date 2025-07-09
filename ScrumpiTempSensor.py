@@ -20,16 +20,16 @@ class ScrumpiTempSensor(Component):
         if units == "f" or units == "F":
             self.temperature = self.temperature * 1.8 + 32
         
-        self.trigger_event('read')
+        self.trigger_event('read_temp')
         
         # Auto-publish any status methods triggered by 'read' event
-        self.auto_publish_on_event('read')
+        self.auto_publish_on_event('read_temp')
 
-    @status(auto_publish=True, trigger_on=['read'])
-    def read_status(self):
+    @status(auto_publish=True, trigger_on=['read_temp'])
+    def temp_status(self):
         """Status method that publishes when sensor read command is received"""
         return {
-            "event": "read_status",
+            "event": "read_temp",
             "timestamp": time.time(),
             "temperature": self.temperature,
             "humidity": self.humidity
