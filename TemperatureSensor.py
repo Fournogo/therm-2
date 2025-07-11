@@ -13,7 +13,7 @@ class TemperatureSensor(Component):
 
         super().__init__(name, device_name)
 
-    @command
+    @command(data_command=True, events=['temp_status'])
     def read_temp(self, units="f"):
         self.temperature = self._sensor.temperature
         self.humidity = self._sensor.relative_humidity

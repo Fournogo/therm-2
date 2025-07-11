@@ -22,7 +22,7 @@ def temperature_monitor_example(controller):
             print("Sending read command to temperature sensor...")
             
             # Send the read command
-            temp_sensor.read(units="f")
+            temp_sensor.read_temp(units="f")
             
             # Wait for the status response (with 10 second timeout)
             print("Waiting for temperature data...")

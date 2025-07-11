@@ -16,7 +16,7 @@ class Fan(Component):
         self.DAC.set_DAC_outrange(OUTPUT_RANGE_10V)
         self.DAC.set_DAC_out_voltage(self.voltage, self.channel)
 
-    @command
+    @command(data_command=True, events=['fan_status'])
     def read_fan(self):
         """Read fan status - triggers auto-publish of fan_status"""
         self.trigger_event('fan_status')  # Fixed: use underscore, not space
@@ -33,13 +33,13 @@ class Fan(Component):
             "voltage": self.voltage  # Added voltage for completeness
         }
 
-    @command
+    @command()
     def set_voltage(self, voltage):
         self.voltage = voltage
         self.power = self.voltage / 1000
         self.DAC.set_DAC_out_voltage(int(self.voltage), self.channel)
 
-    @command
+    @command()
     def set_power(self, power):
         self.power = power
         self.voltage = self.power * 1000

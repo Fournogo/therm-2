@@ -2,10 +2,14 @@ from abc import ABC, abstractmethod
 from MQTTManager import MQTTManager
 import logging
 
-def command(func):
+def command(data_command=False, events=None):
     """Decorator to automatically register a method as an MQTT command"""
-    func._is_mqtt_command = True
-    return func
+    def decorator(func):
+        func._is_mqtt_command = True
+        func._is_data_command = data_command
+        func._events = events
+        return func
+    return decorator
 
 def status(auto_publish=False, trigger_on=None):
     """Decorator for status methods that server should monitor

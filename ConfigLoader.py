@@ -78,13 +78,77 @@ class ConfigLoader:
         for manager in self.device_managers.values():
             manager.disconnect()
 
+    def list_data_commands(self):
+        """
+        Generate a list of all available data commands with their proxy methods
+        
+        Returns:
+            List of data command info with proxy method references
+        """
+        commands = []
+        
+        # Iterate through all loaded devices
+        for device_name, device_proxy in self.all_devices.items():
+            # Get the device config to find component types
+            device_config = self._get_device_config(device_name)
+            if not device_config:
+                continue
+                
+            components_config = device_config.get('components', {})
+            
+            for component_name, component_config in components_config.items():
+                component_type = component_config.get('type')
+                if not component_type:
+                    continue
+                    
+                # Use ComponentInspector to discover methods
+                data_methods = ComponentInspector.discover_data_methods(component_type)
+                
+                # Add data methods
+                for data_method in data_methods:
+                    command_method_name = data_method['command_method_name']
+                    status_method_name = data_method['status_method_name']
+
+                    # Get signatures from the component class
+                    command_signature = self._get_method_signature(component_type, command_method_name)
+                    status_signature = self._get_method_signature(component_type, status_method_name)
+
+                    # Build the command/status strings
+                    command_str = f"{device_name}.{component_name}.{command_method_name}{command_signature}"
+                    status_str = f"{device_name}.{component_name}.{status_method_name}{status_signature}"
+                    component_path = f"{device_name}.{component_name}"
+                    status_path = f"{device_name}.{component_name}.{status_method_name}"
+
+                    # Get the actual proxy methods from the loaded device
+                    try:
+                        # Get the component proxy from the device proxy
+                        component_proxy = getattr(device_proxy, component_name)
+                        
+                        # Get the actual proxy methods
+                        command_proxy_method = getattr(component_proxy, command_method_name)
+                        
+                        commands.append({
+                            "command_str": command_str,
+                            "status_str": status_str,
+                            "command_method_name": command_method_name,
+                            "command_method": command_proxy_method,  # Proxy method
+                            "status_method_name": status_method_name,
+                            "status_path": status_path,
+                            "component_path": component_path
+                        })
+                        
+                    except AttributeError as e:
+                        print(f"Warning: Could not get proxy methods for {device_name}.{component_name}: {e}")
+                        continue
+        
+        return commands
+
     def list_all_commands(self, include_status=True):
         """
         Generate a list of all available commands using ComponentInspector
         
         Args:
             include_status: Whether to include @status decorated methods
-            
         Returns:
             List of command strings with proper signatures
         """
@@ -221,6 +285,10 @@ class ConfigLoader:
     def get_commands_json(self, include_status=True):
         """Get all commands as JSON string for API endpoints"""
         import json
+        
+        return json.dumps(self.get_commands(include_status), indent=2)
+
+    def get_commands(self, include_status=True):
         commands = self.list_all_commands(include_status)
         
         # Separate commands and status methods
@@ -232,12 +300,12 @@ class ConfigLoader:
                 status_list.append(cmd)
             else:
                 command_list.append(cmd)
-        
-        return json.dumps({
+
+        return {
             "commands": command_list,
             "status_methods": status_list,
             "total": len(commands)
-        }, indent=2)
+        }
     
 # Example usage function
 def create_device_controller(config_directory: str = "configs", component_path: str = "."):

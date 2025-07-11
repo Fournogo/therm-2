@@ -21,7 +21,7 @@ class MultiTempSensor(Component):
 
         super().__init__(name, device_name)
 
-    @command
+    @command(data_command=True, events=['temp_status'])
     def read_temp(self, units="f"):
 
         for sensor in self.sensors:

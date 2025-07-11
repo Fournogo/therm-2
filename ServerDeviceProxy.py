@@ -18,6 +18,65 @@ class ComponentInspector:
             sys.path.insert(0, path)
     
     @staticmethod
+    def discover_data_methods(component_type: str) -> list:
+        """Discover all @command decorated methods in a component class with the data command tag and their respective status"""
+        try:
+            # Try to import the component module
+            module = importlib.import_module(component_type)
+            component_class = getattr(module, component_type)
+            
+            # Find all methods decorated with @command
+            data_methods = []
+            for method_name in dir(component_class):
+                method = getattr(component_class, method_name)
+                if callable(method) and getattr(method, '_is_data_command', False):
+                    # Get the event name from the data command
+                    event_names = getattr(method, '_events', None)
+                    if event_names:
+                        for event_name in event_names:
+                            # Find the corresponding status method
+                            status_method = None
+                            for status_method_name in dir(component_class):
+                                status_method_obj = getattr(component_class, status_method_name)
+                                if (callable(status_method_obj) and 
+                                    getattr(status_method_obj, '_is_mqtt_status', False)):
+                                    # Check if this status method triggers on our event
+                                    trigger_events = getattr(status_method_obj, '_trigger_events', [])
+                                    if event_name in trigger_events:
+                                        status_method = status_method_name
+                                        break
+                            
+                            # Add the pairing to our results
+                            data_methods.append({
+                                'command_method_name': method_name,
+                                'command_method': method,
+                                'event': event_name,
+                                'status_method_name': status_method,
+                                'status_method': status_method_obj    # Will be None if not found
+                            })
+                    else:
+                        # Data command without event - add without pairing
+                        data_methods.append({
+                                'command_method_name': method_name,
+                                'command_method': method,
+                                'event': None,
+                                'status_method_name': None,
+                                'status_method': None 
+                        })
+            
+            return data_methods
+            
+        except ImportError as e:
+            logging.warning(f"Could not import {component_type}: {e}")
+            return []
+        except AttributeError as e:
+            logging.warning(f"Could not find class {component_type}: {e}")
+            return []
+        except Exception as e:
+            logging.error(f"Error inspecting {component_type}: {e}")
+            return []
+
+    @staticmethod
     def discover_command_methods(component_type: str) -> list:
         """Discover all @command decorated methods in a component class"""
         try:
@@ -142,6 +201,34 @@ class ComponentProxy:
         # We'll need to pass this up to the device manager
         if hasattr(self.mqtt_client, '_proxy_subscribe'):
             self.mqtt_client._proxy_subscribe(topic, callback)
+    
+    def execute_and_wait_for_status(self, command_method_name: str, status_method_name: str, timeout: float = 10, **kwargs):
+        """Execute a command and wait for its corresponding status update
+        
+        Args:
+            command_method_name: Name of the command method to call
+            status_method_name: Name of the status method to wait for
+            timeout: Maximum time to wait for status
+            **kwargs: Arguments to pass to the command method
+            
+        Returns:
+            Status data if received, None if timeout
+        """
+        if status_method_name not in self.status_events:
+            raise ValueError(f"No status method '{status_method_name}' found")
+        
+        # Clear any previous event BEFORE executing command
+        self.status_events[status_method_name].clear()
+        
+        # Execute the command
+        command_method = getattr(self, command_method_name)
+        command_result = command_method(**kwargs)
+        
+        # Now wait for the status
+        if self.wait_for_status(status_method_name, timeout):
+            return self.get_latest_status(status_method_name)
+        else:
+            return None
     
     def wait_for_status(self, status_method: str, timeout: float = None) -> bool:
         """Wait for a specific status event to occur
