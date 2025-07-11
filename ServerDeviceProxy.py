@@ -255,6 +255,176 @@ class ComponentProxy:
         """Manually clear a status event"""
         if status_method in self.status_events:
             self.status_events[status_method].clear()
+
+    def wait_for(self, status_method: str, callback, timeout: float = None):
+        """Wait for a status event and execute callback (single use, non-blocking)
+        
+        Args:
+            status_method: Name of the status method to wait for (e.g., 'pressed_status')
+            callback: Function to call when event occurs. Will receive (status_data) as argument
+            timeout: Optional timeout in seconds. If exceeded, callback is called with None
+            
+        Returns:
+            threading.Thread: The thread handling the wait (for reference)
+        """
+        if status_method not in self.status_events:
+            raise ValueError(f"No status method '{status_method}' found for {self.component_type}")
+        
+        def wait_thread():
+            try:
+                # Clear any previous event
+                self.status_events[status_method].clear()
+                
+                # Wait for the event
+                if self.status_events[status_method].wait(timeout):
+                    # Event occurred - get the data and call callback
+                    status_data = self.get_latest_status(status_method)
+                    callback(status_data)
+                else:
+                    # Timeout occurred
+                    callback(None)
+                    
+            except Exception as e:
+                print(f"Error in wait_for thread for {status_method}: {e}")
+                callback(None)
+        
+        # Start the thread
+        thread = threading.Thread(
+            target=wait_thread,
+            name=f"WaitFor-{self.component_name}-{status_method}",
+            daemon=True
+        )
+        thread.start()
+        
+        print(f"Started wait_for thread for {self.component_name}.{status_method}")
+        return thread
+
+    def wait_for_continuous(self, status_method: str, callback, stop_condition=None):
+        """Wait for a status event continuously and execute callback each time (non-blocking)
+        
+        Args:
+            status_method: Name of the status method to wait for (e.g., 'pressed_status')
+            callback: Function to call when event occurs. Will receive (status_data) as argument
+            stop_condition: Optional function that returns True when waiting should stop.
+                        If None, will run indefinitely until stop_continuous_wait() is called
+            
+        Returns:
+            str: A unique ID for this continuous wait (use with stop_continuous_wait)
+        """
+        if status_method not in self.status_events:
+            raise ValueError(f"No status method '{status_method}' found for {self.component_type}")
+        
+        # Create unique ID for this continuous wait
+        import uuid
+        wait_id = str(uuid.uuid4())
+        
+        # Initialize continuous waits dict if it doesn't exist
+        if not hasattr(self, 'continuous_waits'):
+            self.continuous_waits = {}
+            self.continuous_wait_stop_flags = {}
+        
+        # Create stop flag for this wait
+        self.continuous_wait_stop_flags[wait_id] = threading.Event()
+        
+        def continuous_wait_thread():
+            try:
+                while not self.continuous_wait_stop_flags[wait_id].is_set():
+                    # Clear the event before waiting
+                    self.status_events[status_method].clear()
+                    
+                    # Wait for the event (with short timeout to check stop condition)
+                    if self.status_events[status_method].wait(timeout=1.0):
+                        # Event occurred - get the data and call callback
+                        status_data = self.get_latest_status(status_method)
+                        
+                        try:
+                            callback(status_data)
+                        except Exception as e:
+                            print(f"Error in callback for {status_method}: {e}")
+                    
+                    # Check external stop condition if provided
+                    if stop_condition and stop_condition():
+                        break
+                        
+            except Exception as e:
+                print(f"Error in continuous wait thread for {status_method}: {e}")
+            finally:
+                # Clean up
+                if wait_id in self.continuous_waits:
+                    del self.continuous_waits[wait_id]
+                if wait_id in self.continuous_wait_stop_flags:
+                    del self.continuous_wait_stop_flags[wait_id]
+        
+        # Start the thread
+        thread = threading.Thread(
+            target=continuous_wait_thread,
+            name=f"ContinuousWait-{self.component_name}-{status_method}-{wait_id[:8]}",
+            daemon=True
+        )
+        
+        # Store thread reference
+        self.continuous_waits[wait_id] = thread
+        thread.start()
+        
+        print(f"Started continuous wait for {self.component_name}.{status_method} (ID: {wait_id[:8]})")
+        return wait_id
+
+    def stop_continuous_wait(self, wait_id: str):
+        """Stop a specific continuous wait
+        
+        Args:
+            wait_id: The ID returned by wait_for_continuous()
+        """
+        if not hasattr(self, 'continuous_wait_stop_flags') or wait_id not in self.continuous_wait_stop_flags:
+            print(f"No continuous wait found with ID: {wait_id}")
+            return
+        
+        # Signal the thread to stop
+        self.continuous_wait_stop_flags[wait_id].set()
+        
+        # Wait for thread to finish
+        if hasattr(self, 'continuous_waits') and wait_id in self.continuous_waits:
+            thread = self.continuous_waits[wait_id]
+            thread.join(timeout=2.0)
+            if thread.is_alive():
+                print(f"Warning: Continuous wait thread {wait_id} did not stop cleanly")
+            else:
+                print(f"Stopped continuous wait {wait_id[:8]}")
+
+    def stop_all_continuous_waits(self):
+        """Stop all continuous waits for this component"""
+        if not hasattr(self, 'continuous_waits'):
+            return
+        
+        wait_ids = list(self.continuous_waits.keys())
+        for wait_id in wait_ids:
+            self.stop_continuous_wait(wait_id)
+        
+        print(f"Stopped all continuous waits for {self.component_name}")
+
+    def list_active_waits(self):
+        """List all active continuous waits for this component"""
+        if not hasattr(self, 'continuous_waits'):
+            print(f"No active waits for {self.component_name}")
+            return []
+        
+        active_waits = []
+        for wait_id, thread in self.continuous_waits.items():
+            if thread.is_alive():
+                active_waits.append({
+                    'id': wait_id,
+                    'thread_name': thread.name,
+                    'is_alive': thread.is_alive()
+                })
+        
+        if active_waits:
+            print(f"Active waits for {self.component_name}:")
+            for wait in active_waits:
+                print(f"  - {wait['id'][:8]}: {wait['thread_name']}")
+        else:
+            print(f"No active waits for {self.component_name}")
+        
+        return active_waits
     
     def _publish_command(self, command: str, params: dict = None):
         """Publish a command to the MQTT topic"""
