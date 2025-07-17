@@ -1154,3 +1154,75 @@ NameError: name 'emit_state_update' is not defined
 2025-07-16 22:35:48,451 - INFO - State update emitted via WebSocket
 2025-07-16 22:35:48,537 - INFO - emitting event "state_update" to all [/]
 2025-07-16 22:35:48,538 - INFO - State update emitted via WebSocket
+2025-07-16 22:36:18,636 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:36:18,638 - INFO - State update emitted via WebSocket
+2025-07-16 22:36:18,678 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:36:18,679 - INFO - State update emitted via WebSocket
+2025-07-16 22:36:18,701 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:36:18,703 - INFO - State update emitted via WebSocket
+2025-07-16 22:36:18,890 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:36:18,891 - INFO - State update emitted via WebSocket
+2025-07-16 22:36:48,958 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:36:48,960 - INFO - State update emitted via WebSocket
+2025-07-16 22:36:49,060 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:36:49,063 - INFO - State update emitted via WebSocket
+2025-07-16 22:36:49,083 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:36:49,085 - INFO - State update emitted via WebSocket
+2025-07-16 22:36:49,172 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:36:49,173 - INFO - State update emitted via WebSocket
+2025-07-16 22:37:19,268 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:37:19,271 - INFO - State update emitted via WebSocket
+2025-07-16 22:37:19,315 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:37:19,317 - INFO - State update emitted via WebSocket
+2025-07-16 22:37:19,337 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:37:19,339 - INFO - State update emitted via WebSocket
+2025-07-16 22:37:19,515 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:37:19,516 - INFO - State update emitted via WebSocket
+2025-07-16 22:37:49,581 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:37:49,583 - INFO - State update emitted via WebSocket
+2025-07-16 22:37:49,683 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:37:49,686 - INFO - State update emitted via WebSocket
+2025-07-16 22:37:49,706 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:37:49,709 - INFO - State update emitted via WebSocket
+2025-07-16 22:37:49,791 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:37:49,793 - INFO - State update emitted via WebSocket
+2025-07-16 22:38:19,893 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:38:19,895 - INFO - State update emitted via WebSocket
+2025-07-16 22:38:19,996 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:38:20,001 - INFO - State update emitted via WebSocket
+2025-07-16 22:38:20,026 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:38:20,031 - INFO - State update emitted via WebSocket
+2025-07-16 22:38:20,139 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:38:20,141 - INFO - State update emitted via WebSocket
+2025-07-16 22:38:50,203 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:38:50,206 - INFO - State update emitted via WebSocket
+2025-07-16 22:38:50,303 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:38:50,305 - INFO - State update emitted via WebSocket
+2025-07-16 22:38:50,328 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:38:50,330 - INFO - State update emitted via WebSocket
+2025-07-16 22:38:50,414 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:38:50,416 - INFO - State update emitted via WebSocket
+2025-07-16 22:39:20,516 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:39:20,520 - INFO - State update emitted via WebSocket
+2025-07-16 22:39:20,565 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:39:20,569 - INFO - State update emitted via WebSocket
+2025-07-16 22:39:20,591 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:39:20,593 - INFO - State update emitted via WebSocket
+2025-07-16 22:39:20,758 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:39:20,759 - INFO - State update emitted via WebSocket
+2025-07-16 22:39:50,828 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:39:50,831 - INFO - State update emitted via WebSocket
+2025-07-16 22:39:50,874 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:39:50,879 - INFO - State update emitted via WebSocket
+2025-07-16 22:39:50,900 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:39:50,903 - INFO - State update emitted via WebSocket
+2025-07-16 22:39:50,989 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:39:50,990 - INFO - State update emitted via WebSocket
+2025-07-16 22:40:21,134 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:40:21,137 - INFO - State update emitted via WebSocket
+2025-07-16 22:40:21,238 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:40:21,242 - INFO - State update emitted via WebSocket
+2025-07-16 22:40:21,261 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:40:21,262 - INFO - State update emitted via WebSocket
+2025-07-16 22:40:21,385 - INFO - emitting event "state_update" to all [/]
+2025-07-16 22:40:21,389 - INFO - State update emitted via WebSocket

@@ -39,11 +39,15 @@ class Fan(Component):
         self.power = self.voltage / 1000
         self.DAC.set_DAC_out_voltage(int(self.voltage), self.channel)
 
+        self.auto_publish_on_event('fan_status')
+
     @command()
     def set_power(self, power):
         self.power = power
         self.voltage = self.power * 1000
         self.DAC.set_DAC_out_voltage(int(self.voltage), self.channel)
+
+        self.auto_publish_on_event('fan_status')
 
     def cleanup(self):
         pass
