@@ -63,6 +63,11 @@ class AsyncStateManager:
         self.running = False
         self.refresh_task = None
         self.event_listeners = {}  # Track active event listeners
+        
+        # Heartbeat management
+        self.heartbeat_definitions = self._discover_heartbeat_devices()
+        self.heartbeat_listeners = {}  # Track heartbeat listeners
+        
         self._initialized = True
         
         # Create nested attribute structure
@@ -77,6 +82,7 @@ class AsyncStateManager:
             if cls._instance is None:
                 instance = cls(controller, config)
                 await instance._setup_event_listeners()
+                await instance._setup_heartbeat_listeners()
                 return instance
             return cls._instance
     
@@ -89,12 +95,42 @@ class AsyncStateManager:
             if cls._instance and cls._instance.running:
                 await cls._instance.stop_continuous_refresh()
             cls._instance = None
+    
+    def _discover_heartbeat_devices(self):
+        """
+        Discover all devices that have heartbeat functionality.
+        Returns a list of heartbeat definitions similar to external_state_definitions.
+        """
+        heartbeat_definitions = []
+        
+        # Iterate through all devices in the controller
+        for device_name, device_proxy in self.controller.all_devices.items():
+            # Check if this device has heartbeat methods
+            if hasattr(device_proxy, 'heartbeat') and callable(device_proxy.heartbeat):
+                heartbeat_definitions.append({
+                    'device_name': device_name,
+                    'device_proxy': device_proxy,
+                    'status_path': f"{device_name}.heartbeat_status",
+                    'command_str': f"{device_name}.heartbeat()",
+                    'command_method': device_proxy.heartbeat,
+                    'execute_and_wait_method': device_proxy.execute_heartbeat_and_wait,
+                    'get_latest_method': device_proxy.get_latest_heartbeat
+                })
+                print(f"Discovered heartbeat for device: {device_name}")
+        
+        return heartbeat_definitions
         
     def _create_nested_attributes(self):
         """Create nested attribute structure to mirror controller"""
+        # Create component-level attributes
         for method_info in self.external_state_definitions:
             # Create nested attributes: self.hvac.temp_sensor.temp_status
             self._create_nested_path(method_info['status_path'])
+        
+        # Create device-level heartbeat attributes
+        for heartbeat_info in self.heartbeat_definitions:
+            # Create nested attributes: self.therm.heartbeat_status
+            self._create_nested_path(heartbeat_info['status_path'])
     
     def _create_nested_path(self, path):
         """Create nested attributes dynamically"""
@@ -121,7 +157,7 @@ class AsyncStateManager:
     
     async def _setup_event_listeners(self):
         """
-        Setup event-driven listeners for all status methods.
+        Setup event-driven listeners for all component status methods.
         This replaces the need for constant polling.
         """
         print("Setting up event-driven state listeners...")
@@ -176,14 +212,127 @@ class AsyncStateManager:
             except Exception as e:
                 print(f"Error setting up listener for {status_path}: {e}")
 
+    async def _setup_heartbeat_listeners(self):
+        """
+        Setup event-driven listeners for heartbeat responses.
+        Each device manager has its own heartbeat response topic.
+        """
+        print("Setting up heartbeat listeners...")
+        
+        # Track device managers we've already set up listeners for
+        setup_managers = set()
+        
+        for heartbeat_info in self.heartbeat_definitions:
+            device_name = heartbeat_info['device_name']
+            device_proxy = heartbeat_info['device_proxy']
+            status_path = heartbeat_info['status_path']
+            
+            # Get the device manager (mqtt_manager)
+            device_manager = device_proxy.mqtt_manager
+            
+            # Only setup one listener per device manager (since heartbeats are shared)
+            manager_id = id(device_manager)
+            if manager_id in setup_managers:
+                continue
+                
+            try:
+                # Create a callback for heartbeat updates
+                def make_heartbeat_callback(device_name_local, status_path_local):
+                    async def heartbeat_callback(heartbeat_data):
+                        if heartbeat_data is not None:
+                            print(f"Heartbeat update: {device_name_local} = {heartbeat_data}")
+                            # Update nested attributes
+                            self._set_nested_value(status_path_local, heartbeat_data)
+                            # Update external states dictionary
+                            new_states = {**self._external_states}
+                            new_states[status_path_local] = heartbeat_data
+                            self.external_states = new_states
+                        else:
+                            print(f"No heartbeat data received for {device_name_local}")
+                    return heartbeat_callback
+                
+                callback = make_heartbeat_callback(device_name, status_path)
+                
+                # Use the device manager's heartbeat queue for continuous monitoring
+                wait_id = self._setup_heartbeat_continuous_wait(device_manager, callback)
+                
+                # Track the listener for cleanup
+                self.heartbeat_listeners[status_path] = {
+                    'device_manager': device_manager,
+                    'wait_id': wait_id,
+                    'device_name': device_name
+                }
+                
+                setup_managers.add(manager_id)
+                print(f"Started heartbeat listener for {device_name}")
+                
+            except Exception as e:
+                print(f"Error setting up heartbeat listener for {device_name}: {e}")
+    
+    def _setup_heartbeat_continuous_wait(self, device_manager, callback):
+        """
+        Setup continuous monitoring of heartbeat responses for a device manager.
+        Returns a unique wait ID for cleanup.
+        """
+        import uuid
+        wait_id = str(uuid.uuid4())
+        
+        async def heartbeat_monitor_task():
+            try:
+                while self.running:
+                    try:
+                        # Wait for heartbeat data from the device manager's queue
+                        heartbeat_data = await asyncio.wait_for(
+                            device_manager.heartbeat_queue.get(), 
+                            timeout=1.0  # Check stop condition periodically
+                        )
+                        
+                        try:
+                            if asyncio.iscoroutinefunction(callback):
+                                await callback(heartbeat_data)
+                            else:
+                                callback(heartbeat_data)
+                        except Exception as e:
+                            print(f"Error in heartbeat callback: {e}")
+                    
+                    except asyncio.TimeoutError:
+                        # Timeout is normal - just continue monitoring
+                        pass
+                        
+            except Exception as e:
+                print(f"Error in heartbeat monitor task: {e}")
+        
+        # Start the monitoring task
+        task = asyncio.create_task(heartbeat_monitor_task())
+        
+        # Store the task for cleanup (we'll clean it up in stop_continuous_refresh)
+        if not hasattr(self, '_heartbeat_monitor_tasks'):
+            self._heartbeat_monitor_tasks = {}
+        self._heartbeat_monitor_tasks[wait_id] = task
+        
+        return wait_id
+
     async def refresh_all_data(self):
         """
         Manually refresh all data by sending commands and waiting for responses.
-        This is now used for initial state loading and manual refreshes only.
+        This now includes both component data and heartbeat data.
         """
         print("Manual refresh: requesting all device states...")
         new_external_states = {}
         
+        # Refresh component data
+        await self._refresh_component_data(new_external_states)
+        
+        # Refresh heartbeat data
+        await self._refresh_heartbeat_data(new_external_states)
+        
+        # Update external states (this will trigger queue update if changed)
+        if new_external_states:
+            self.external_states = new_external_states
+            print(f"Manual refresh completed: {len(new_external_states)} states updated")
+    
+    async def _refresh_component_data(self, new_external_states):
+        """Refresh component-level data"""
         # Group commands by device to send them concurrently per device
         device_commands = defaultdict(list)
         
@@ -201,11 +350,58 @@ class AsyncStateManager:
         
         # Wait for all devices to complete
         await asyncio.gather(*tasks, return_exceptions=True)
+    
+    async def _refresh_heartbeat_data(self, new_external_states):
+        """Refresh heartbeat data for all devices"""
+        print("Refreshing heartbeat data...")
         
-        # Update external states (this will trigger queue update if changed)
-        if new_external_states:
-            self.external_states = new_external_states
-            print(f"Manual refresh completed: {len(new_external_states)} states updated")
+        # Create tasks for all heartbeat requests
+        tasks = []
+        for heartbeat_info in self.heartbeat_definitions:
+            task = asyncio.create_task(
+                self._refresh_single_heartbeat(heartbeat_info, new_external_states)
+            )
+            tasks.append(task)
+        
+        # Wait for all heartbeat requests to complete
+        await asyncio.gather(*tasks, return_exceptions=True)
+    
+    async def _refresh_single_heartbeat(self, heartbeat_info, new_external_states):
+        """Refresh heartbeat data for a single device"""
+        device_name = heartbeat_info['device_name']
+        status_path = heartbeat_info['status_path']
+        
+        try:
+            print(f"Requesting heartbeat for {device_name}...")
+            
+            # Send heartbeat and wait for response
+            heartbeat_data = await heartbeat_info['execute_and_wait_method'](timeout=5)
+            
+            if heartbeat_data is not None:
+                # Update nested attributes
+                self._set_nested_value(status_path, heartbeat_data)
+                # Store in external states
+                new_external_states[status_path] = heartbeat_data
+                print(f"Heartbeat updated {status_path} = {heartbeat_data}")
+            else:
+                print(f"Heartbeat timeout for {device_name}")
+                # Store timeout/offline status
+                offline_status = {
+                    "status": "offline",
+                    "timestamp": time.time(),
+                    "request_id": "timeout"
+                }
+                new_external_states[status_path] = offline_status
+                
+        except Exception as e:
+            print(f"Error refreshing heartbeat for {device_name}: {e}")
+            # Store error status
+            error_status = {
+                "status": "error",
+                "timestamp": time.time(),
+                "error": str(e)
+            }
+            new_external_states[status_path] = error_status
     
     async def _refresh_device_data(self, device_name: str, commands: list, new_external_states: dict):
         """Refresh data for a specific device"""
@@ -255,13 +451,15 @@ class AsyncStateManager:
     async def _periodic_refresh_loop(self):
         """
         Optional periodic refresh loop for devices that don't auto-publish status.
-        This runs much less frequently than the old polling approach.
+        This now includes heartbeat monitoring.
         """
         while self.running:
             try:
                 print("Periodic refresh check...")
-                # Only refresh devices that haven't been updated recently
+                # Refresh stale component data
                 await self._refresh_stale_data()
+                # Refresh heartbeat data periodically
+                await self._refresh_periodic_heartbeats()
             except Exception as e:
                 print(f"Error during periodic refresh: {e}")
             
@@ -270,7 +468,7 @@ class AsyncStateManager:
     
     async def _refresh_stale_data(self):
         """
-        Refresh data that hasn't been updated recently.
+        Refresh component data that hasn't been updated recently.
         This is a fallback for devices that don't auto-publish.
         """
         current_time = time.time()
@@ -280,10 +478,6 @@ class AsyncStateManager:
         
         for cmd_info in self.external_state_definitions:
             status_path = cmd_info['status_path']
-            
-            # Check if this status path has been updated recently
-            # You could track last_updated timestamps here
-            # For now, we'll just do a lighter refresh cycle
             
             # Only refresh critical sensors or those marked as needing periodic refresh
             if self._needs_periodic_refresh(cmd_info):
@@ -298,6 +492,29 @@ class AsyncStateManager:
                 current_states = {**self._external_states}
                 current_states.update(new_states)
                 self.external_states = current_states
+    
+    async def _refresh_periodic_heartbeats(self):
+        """
+        Periodically refresh heartbeat data to check device connectivity.
+        """
+        heartbeat_refresh_interval = getattr(self, 'heartbeat_refresh_interval', 30)  # 30 seconds default
+        
+        # Check if it's time for heartbeat refresh
+        current_time = time.time()
+        if not hasattr(self, '_last_heartbeat_refresh'):
+            self._last_heartbeat_refresh = 0
+        
+        if current_time - self._last_heartbeat_refresh >= heartbeat_refresh_interval:
+            print("Refreshing heartbeat data...")
+            new_states = {}
+            await self._refresh_heartbeat_data(new_states)
+            
+            if new_states:
+                current_states = {**self._external_states}
+                current_states.update(new_states)
+                self.external_states = current_states
+                
+            self._last_heartbeat_refresh = current_time
     
     def _needs_periodic_refresh(self, cmd_info: dict) -> bool:
         """
@@ -351,8 +568,8 @@ class AsyncStateManager:
             except asyncio.CancelledError:
                 pass
         
-        # Stop all event listeners
-        print("Stopping event listeners...")
+        # Stop all component event listeners
+        print("Stopping component event listeners...")
         for status_path, listener_info in self.event_listeners.items():
             try:
                 component_proxy = listener_info['component_proxy']
@@ -362,7 +579,20 @@ class AsyncStateManager:
             except Exception as e:
                 print(f"Error stopping listener for {status_path}: {e}")
         
+        # Stop heartbeat monitor tasks
+        if hasattr(self, '_heartbeat_monitor_tasks'):
+            print("Stopping heartbeat monitor tasks...")
+            for wait_id, task in self._heartbeat_monitor_tasks.items():
+                if not task.done():
+                    task.cancel()
+                    try:
+                        await task
+                    except asyncio.CancelledError:
+                        pass
+            self._heartbeat_monitor_tasks.clear()
+        
         self.event_listeners.clear()
+        self.heartbeat_listeners.clear()
         self.refresh_task = None
         print("State management stopped")
     
@@ -440,7 +670,10 @@ async def main():
     
     config = {
         "internal_state": {"control": "MANUAL"},
-        "config": {"refresh_interval": 30}  # Much longer interval now
+        "config": {
+            "refresh_interval": 30,  # Component refresh interval
+            "heartbeat_refresh_interval": 15  # Heartbeat refresh interval
+        }
     }
     
     # Create state manager
@@ -456,6 +689,10 @@ async def main():
     async def monitor_changes():
         async for new_state in state_manager.get_state_updates():
             print(f"State update received: {len(new_state)} states")
+            # Check for heartbeat updates
+            heartbeat_keys = [k for k in new_state.keys() if 'heartbeat_status' in k]
+            if heartbeat_keys:
+                print(f"Heartbeat states: {heartbeat_keys}")
     
     # Run for a while
     monitor_task = asyncio.create_task(monitor_changes())

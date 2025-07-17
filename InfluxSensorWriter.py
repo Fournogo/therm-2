@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Clean InfluxDB sensor data writer using the new device library
+Async InfluxDB sensor data writer using the new async device library
 """
 
 import influxdb_client
@@ -8,10 +8,11 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 from influxdb_client.domain.write_precision import WritePrecision
 import time
 import datetime
+import asyncio
+import aiohttp
 from ConfigLoader import create_device_controller
-import requests
 
-class InfluxSensorWriter:
+class AsyncInfluxSensorWriter:
     def __init__(self):
         # InfluxDB Configuration (from your original script)
         self.bucket = "temp"
@@ -27,12 +28,21 @@ class InfluxSensorWriter:
         )
         self.write_api = self.client.write_api(write_options=SYNCHRONOUS)
         
-        # Setup device controller
-        self.controller = create_device_controller('/home/scrumpi/containers/therm-2/configs', component_path='/home/scrumpi/containers/therm-2')
+        # Controller will be initialized in async context
+        self.controller = None
         
         # Configuration for sensor readings and external APIs
         self.sensor_configs = self._setup_sensor_configs()
         self.external_api_configs = self._setup_external_api_configs()
+        
+    async def initialize(self):
+        """Initialize the async controller"""
+        print("Initializing async device controller...")
+        self.controller = await create_device_controller(
+            '/home/scrumpi/containers/therm-2/configs', 
+            component_path='/home/scrumpi/containers/therm-2'
+        )
+        print("✅ Controller initialized")
         
     def _setup_sensor_configs(self):
         """
@@ -184,8 +194,8 @@ class InfluxSensorWriter:
             # Add more external APIs here...
         ]
     
-    def _execute_sensor_command(self, command_path, command_args=None):
-        """Execute a sensor command using dot notation"""
+    async def _execute_sensor_command(self, command_path, command_args=None):
+        """Execute a sensor command using dot notation (now async)"""
         try:
             # Parse the command path: 'hvac.temp_sensor.read'
             parts = command_path.split('.')
@@ -201,18 +211,18 @@ class InfluxSensorWriter:
             component = getattr(device, component_name)
             method = getattr(component, method_name)
             
-            # Execute the command with arguments
+            # Execute the command with arguments (now async)
             if command_args:
-                return method(**command_args)
+                return await method(**command_args)
             else:
-                return method()
+                return await method()
                 
         except Exception as e:
             print(f"Error executing command {command_path}: {e}")
             return None
     
-    def _wait_for_sensor_data(self, command_path, wait_method, timeout):
-        """Wait for sensor data after command execution"""
+    async def _wait_for_sensor_data(self, command_path, wait_method, timeout):
+        """Wait for sensor data after command execution (now async)"""
         try:
             # Parse the command path to get component
             parts = command_path.split('.')
@@ -222,42 +232,74 @@ class InfluxSensorWriter:
             device = getattr(self.controller, device_name)
             component = getattr(device, component_name)
             
-            # Wait for the status
-            if component.wait_for_status(wait_method, timeout=timeout):
-                status_data = component.get_latest_status(wait_method)
-                component.clear_status_event(wait_method)
-                return status_data
-            else:
-                print(f"Timeout waiting for {command_path} status")
-                return None
+            # Use the new async execute_and_wait_for_status method
+            # This replaces the old wait_for_status + get_latest_status + clear_status_event pattern
+            status_data = await component.execute_and_wait_for_status(
+                None,  # No command to execute (already executed above)
+                wait_method,
+                timeout=timeout
+            )
+            
+            return status_data
                 
         except Exception as e:
             print(f"Error waiting for {command_path} data: {e}")
             return None
     
-    def read_all_sensors(self):
-        """Read data from all configured sensors"""
+    async def read_all_sensors(self):
+        """Read data from all configured sensors (now async)"""
         current_time = datetime.datetime.utcnow().isoformat() + "Z"
         all_sensor_data = {}
         
         print(f"Reading sensor data at {current_time}")
         
-        # Read each configured sensor
+        # Create tasks for concurrent sensor reading
+        tasks = []
         for config in self.sensor_configs:
-            command_path = config['command_path']
-            print(f"Reading {command_path}...")
-            
+            task = asyncio.create_task(self._read_single_sensor(config))
+            tasks.append((config, task))
+        
+        # Wait for all sensor readings to complete
+        for config, task in tasks:
+            try:
+                sensor_data = await task
+                if sensor_data:
+                    all_sensor_data.update(sensor_data)
+            except Exception as e:
+                print(f"Error reading sensor {config['command_path']}: {e}")
+        
+        return all_sensor_data, current_time
+    
+    async def _read_single_sensor(self, config):
+        """Read data from a single sensor configuration"""
+        command_path = config['command_path']
+        print(f"Reading {command_path}...")
+        
+        sensor_data = {}
+        
+        try:
             # Execute the sensor read command
-            self._execute_sensor_command(
+            await self._execute_sensor_command(
                 command_path, 
                 config.get('command_args', {})
             )
             
-            # Wait for the status data
-            status_data = self._wait_for_sensor_data(
-                command_path,
+            # Wait for the status data using the new async method
+            parts = command_path.split('.')
+            device_name = parts[0]
+            component_name = parts[1]
+            
+            device = getattr(self.controller, device_name)
+            component = getattr(device, component_name)
+            
+            # Use execute_and_wait_for_status with no command (since we already executed above)
+            # Or better yet, combine the command execution and waiting:
+            method_name = parts[2]
+            status_data = await component.execute_and_wait_for_status(
+                method_name,
                 config['wait_method'],
-                config['timeout']
+                timeout=config['timeout'],
+                **config.get('command_args', {})
             )
             
             if status_data:
@@ -267,15 +309,18 @@ class InfluxSensorWriter:
                     value = self._get_nested_value(status_data, status_key_path)
                     
                     if value is not None:
-                        all_sensor_data[influx_field] = value
+                        sensor_data[influx_field] = value
                         print(f"  {status_key_path}: {value} -> {influx_field}")
                     else:
                         print(f"  Warning: {status_key_path} not found in status data")
                         print(f"    Available keys: {list(status_data.keys()) if isinstance(status_data, dict) else 'Not a dict'}")
             else:
                 print(f"  Failed to get data from {command_path}")
-        
-        return all_sensor_data, current_time
+                
+        except Exception as e:
+            print(f"Error reading {command_path}: {e}")
+            
+        return sensor_data
     
     def _get_nested_value(self, data, key_path):
         """
@@ -309,19 +354,39 @@ class InfluxSensorWriter:
         except Exception:
             return None
     
-    def get_external_data(self):
-        """Get data from all configured external sources"""
+    async def get_external_data(self):
+        """Get data from all configured external sources (now async)"""
         external_data = {}
         
         print("Reading external API data...")
         
-        # Process each configured external API
+        # Create tasks for concurrent API calls
+        tasks = []
         for config in self.external_api_configs:
-            name = config['name']
-            print(f"Calling {name} API...")
-            
-            # Call the API
-            api_response = self._call_external_api(config)
+            task = asyncio.create_task(self._call_single_api(config))
+            tasks.append((config, task))
+        
+        # Wait for all API calls to complete
+        for config, task in tasks:
+            try:
+                api_data = await task
+                if api_data:
+                    external_data.update(api_data)
+            except Exception as e:
+                print(f"Error calling {config['name']} API: {e}")
+        
+        return external_data
+    
+    async def _call_single_api(self, config):
+        """Call a single external API"""
+        name = config['name']
+        print(f"Calling {name} API...")
+        
+        api_data = {}
+        
+        try:
+            # Call the API using aiohttp
+            api_response = await self._call_external_api_async(config)
             
             if api_response:
                 # Map the JSON response to InfluxDB field names (supports nested paths)
@@ -330,17 +395,51 @@ class InfluxSensorWriter:
                     value = self._get_nested_value(api_response, json_key_path)
                     
                     if value is not None:
-                        external_data[influx_field] = value
+                        api_data[influx_field] = value
                         print(f"  {json_key_path}: {value} -> {influx_field}")
                     else:
                         print(f"  Warning: {json_key_path} not found in {name} response")
             else:
                 print(f"  Failed to get data from {name}")
-        
-        return external_data
+                
+        except Exception as e:
+            print(f"Error calling {name}: {e}")
+            
+        return api_data
+    
+    async def _call_external_api_async(self, config):
+        """Make an async HTTP call to an external API"""
+        try:
+            timeout = aiohttp.ClientTimeout(total=config.get('timeout', 5))
+            
+            async with aiohttp.ClientSession(timeout=timeout) as session:
+                if config['method'].upper() == 'GET':
+                    async with session.get(config['url']) as response:
+                        if response.status == 200:
+                            return await response.json()
+                        else:
+                            print(f"API {config['name']} returned status {response.status}")
+                            return None
+                elif config['method'].upper() == 'POST':
+                    async with session.post(config['url']) as response:
+                        if response.status == 200:
+                            return await response.json()
+                        else:
+                            print(f"API {config['name']} returned status {response.status}")
+                            return None
+                else:
+                    print(f"Unsupported HTTP method: {config['method']}")
+                    return None
+                    
+        except asyncio.TimeoutError:
+            print(f"Timeout calling {config['name']} API")
+            return None
+        except Exception as e:
+            print(f"Error calling {config['name']} API: {e}")
+            return None
     
     def write_to_influx(self, sensor_data, external_data, timestamp):
-        """Write all collected data to InfluxDB"""
+        """Write all collected data to InfluxDB (kept synchronous)"""
         
         # Combine all data
         all_data = {
@@ -378,18 +477,21 @@ class InfluxSensorWriter:
             print(f"❌ Error writing to InfluxDB: {e}")
             return False
     
-    def run_data_collection(self):
-        """Main method to collect and write all sensor data"""
+    async def run_data_collection(self):
+        """Main method to collect and write all sensor data (now async)"""
         try:
-            print("=== Starting Sensor Data Collection ===")
+            print("=== Starting Async Sensor Data Collection ===")
             
-            # Read all sensor data
-            sensor_data, timestamp = self.read_all_sensors()
+            # Initialize controller
+            await self.initialize()
             
-            # Get external data
-            external_data = self.get_external_data()
+            # Read all sensor data concurrently
+            sensor_data, timestamp = await self.read_all_sensors()
             
-            # Write to InfluxDB
+            # Get external data concurrently
+            external_data = await self.get_external_data()
+            
+            # Write to InfluxDB (still synchronous)
             success = self.write_to_influx(sensor_data, external_data, timestamp)
             
             if success:
@@ -404,12 +506,13 @@ class InfluxSensorWriter:
             return False
         finally:
             # Clean up
-            self.controller.disconnect_all()
+            if self.controller:
+                await self.controller.disconnect_all()
 
-def main():
-    """Main function for standalone execution"""
-    writer = InfluxSensorWriter()
-    writer.run_data_collection()
+async def main():
+    """Main async function for standalone execution"""
+    writer = AsyncInfluxSensorWriter()
+    await writer.run_data_collection()
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

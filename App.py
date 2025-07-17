@@ -139,10 +139,26 @@ class AsyncThermostatApp:
                 logging.error(f"Error processing command: {e}")
                 raise HTTPException(status_code=500, detail=str(e))
         
-        # Mount static files
+        # Mount static files for React build
         static_folder = self.flask_config.get('static_folder', './front-end/build')
         if os.path.exists(static_folder):
-            self.app.mount("/static", StaticFiles(directory=static_folder), name="static")
+            # Check if there's a static subfolder (typical React build structure)
+            static_subfolder = os.path.join(static_folder, "static")
+            if os.path.exists(static_subfolder):
+                # Mount the static subfolder to /static
+                self.app.mount("/static", StaticFiles(directory=static_subfolder), name="static")
+                print(f"Mounted static files from: {static_subfolder}")
+            else:
+                # Fallback: mount the entire build directory
+                self.app.mount("/static", StaticFiles(directory=static_folder), name="static")
+                print(f"Mounted static files from: {static_folder}")
+            
+            # Also serve other assets like manifest.json, favicon.ico, etc.
+            try:
+                self.app.mount("/", StaticFiles(directory=static_folder, html=True), name="frontend")
+                print(f"Mounted frontend files from: {static_folder}")
+            except Exception as e:
+                print(f"Could not mount frontend files: {e}")
     
     def _setup_socketio(self):
         """Setup SocketIO event handlers"""
@@ -316,7 +332,7 @@ def main():
     """Main application entry point"""
     # Parse command line arguments
     if len(sys.argv) != 2:
-        print("Usage: python3 AsyncApp.py <config.yaml>")
+        print("Usage: python3 App.py <config.yaml>")
         sys.exit(1)
     
     config_path = sys.argv[1]

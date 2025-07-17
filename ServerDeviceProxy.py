@@ -491,6 +491,34 @@ class AsyncDeviceProxy:
         
         # Create component proxies
         self._create_components()
+        
+        # Add heartbeat methods that delegate to the mqtt_manager
+        self._setup_heartbeat_methods()
+    
+    def _setup_heartbeat_methods(self):
+        """Setup heartbeat methods that delegate to the device manager"""
+        
+        async def heartbeat():
+            """Send heartbeat request"""
+            return await self.mqtt_manager.heartbeat()
+        
+        async def wait_for_heartbeat(timeout: float = 10):
+            """Wait for heartbeat response"""
+            return await self.mqtt_manager.wait_for_heartbeat(timeout)
+        
+        async def execute_heartbeat_and_wait(timeout: float = 10):
+            """Send heartbeat and wait for response"""
+            return await self.mqtt_manager.execute_heartbeat_and_wait(timeout)
+        
+        def get_latest_heartbeat():
+            """Get latest heartbeat data"""
+            return self.mqtt_manager.get_latest_heartbeat()
+        
+        # Add methods to this device proxy
+        self.heartbeat = heartbeat
+        self.wait_for_heartbeat = wait_for_heartbeat
+        self.execute_heartbeat_and_wait = execute_heartbeat_and_wait
+        self.get_latest_heartbeat = get_latest_heartbeat
     
     def _create_components(self):
         """Create proxy objects for each component"""
@@ -558,12 +586,6 @@ class AsyncDeviceProxy:
                 task.cancel()
             return None
 
-import asyncio
-import aiomqtt
-import json
-import logging
-from typing import Dict, Any, Optional, Callable, Tuple
-
 class AsyncServerDeviceManager:
     """Async version of ServerDeviceManager - manages device proxies on the server side"""
     
@@ -576,9 +598,17 @@ class AsyncServerDeviceManager:
         self._mqtt_task = None
         self._client_context = None
         
+        # Heartbeat setup
+        self.heartbeat_request_topic = f"{self.device_prefix}/heartbeat/request"
+        self.heartbeat_response_topic = f"{self.device_prefix}/heartbeat/response"
+        self.heartbeat_event = asyncio.Event()
+        self.heartbeat_queue = asyncio.Queue()
+        self.latest_heartbeat_data = None
+        
     async def initialize(self):
         """Initialize the MQTT connection"""
         await self._setup_mqtt()
+        self._setup_heartbeat_subscription()
     
     async def _setup_mqtt(self):
         """Setup async MQTT client connection"""
@@ -624,7 +654,7 @@ class AsyncServerDeviceManager:
                 self.is_connected = True
                 print("MQTT client connected successfully")
                 
-                # Subscribe to all pending topics
+                # Subscribe to all pending topics (including heartbeat)
                 for topic in self.topic_callbacks.keys():
                     await client.subscribe(topic)
                     print(f"Subscribed to topic: {topic}")
@@ -639,6 +669,85 @@ class AsyncServerDeviceManager:
         finally:
             self.is_connected = False
             print("MQTT client disconnected")
+    
+    def _setup_heartbeat_subscription(self):
+        """Setup heartbeat response subscription"""
+        async def heartbeat_callback(topic, payload):
+            print(f"Heartbeat response received: {payload}")
+            self.latest_heartbeat_data = payload
+            
+            # Put in queue for continuous listeners
+            try:
+                self.heartbeat_queue.put_nowait(payload)
+            except asyncio.QueueFull:
+                # Remove oldest item and add new one
+                try:
+                    self.heartbeat_queue.get_nowait()
+                    self.heartbeat_queue.put_nowait(payload)
+                except asyncio.QueueEmpty:
+                    pass
+            
+            # Set event for one-time waiters
+            self.heartbeat_event.set()
+        
+        # Subscribe to heartbeat response topic
+        self._proxy_subscribe(self.heartbeat_response_topic, heartbeat_callback)
+        print(f"Setup heartbeat subscription: {self.heartbeat_response_topic}")
+    
+    async def heartbeat(self):
+        """Send heartbeat request to physical devices"""
+        try:
+            # Send empty payload to heartbeat request topic
+            await self.publish(self.heartbeat_request_topic, "")
+            print(f"Heartbeat request sent to: {self.heartbeat_request_topic}")
+            return True
+        except Exception as e:
+            print(f"Error sending heartbeat: {e}")
+            return False
+    
+    async def wait_for_heartbeat(self, timeout: float = 10) -> bool:
+        """Wait for heartbeat response
+        
+        Args:
+            timeout: Maximum time to wait for heartbeat response
+            
+        Returns:
+            True if heartbeat received, False if timeout
+        """
+        # Clear any previous event
+        self.heartbeat_event.clear()
+        
+        try:
+            await asyncio.wait_for(self.heartbeat_event.wait(), timeout=timeout)
+            return True
+        except asyncio.TimeoutError:
+            return False
+    
+    async def execute_heartbeat_and_wait(self, timeout: float = 10):
+        """Send heartbeat and wait for response
+        
+        Args:
+            timeout: Maximum time to wait for response
+            
+        Returns:
+            Heartbeat response data if received, None if timeout
+        """
+        # Clear any previous event
+        self.heartbeat_event.clear()
+        
+        # Send heartbeat
+        await self.heartbeat()
+        
+        # Wait for response
+        try:
+            await asyncio.wait_for(self.heartbeat_event.wait(), timeout=timeout)
+            return self.latest_heartbeat_data
+        except asyncio.TimeoutError:
+            return None
+    
+    def get_latest_heartbeat(self):
+        """Get the latest heartbeat response data"""
+        return self.latest_heartbeat_data
     
     def _proxy_subscribe(self, topic: str, callback):
         """Subscribe to a topic with callback for component proxies"""

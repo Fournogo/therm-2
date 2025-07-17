@@ -9,7 +9,7 @@ app:
   # Flask application configuration
   flask:
     static_folder: './front-end/build'
-    static_url_path: '/'
+    static_url_path: '/static'
     secret_key: 'your-secret-key-here'
     cors_origins: "*"
     html_path: './front-end/build/index.html'
@@ -55,3 +55,4 @@ state:
     control: "MANUAL"
   config:
     refresh_interval: 30
+    heartbeat_refresh_interval: 15
