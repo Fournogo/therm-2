@@ -1,21 +1,37 @@
 import yaml
 import os
 import glob
-from ServerDeviceProxy import ServerDeviceManager, ComponentInspector
+from ServerDeviceProxy import AsyncServerDeviceManager, ComponentInspector
 import json
+import asyncio
 
-class ConfigLoader:
-    """Loads multiple config files and creates device proxies"""
+class AsyncConfigLoader:
+    """Async version of ConfigLoader - loads multiple config files and creates device proxies"""
     
     def __init__(self, config_directory: str = "configs", component_path: str = "."):
         self.config_directory = config_directory
         self.device_managers = {}  # One per device_prefix
         self.all_devices = {}  # All devices accessible by name
+        self._initialized = False
         
         # Add component path for imports
         ComponentInspector.add_component_path(component_path)
     
-    def load_all_configs(self):
+    async def initialize(self):
+        """Initialize all device managers"""
+        if self._initialized:
+            return
+        
+        await self.load_all_configs()
+        
+        # Initialize all device managers
+        for manager in self.device_managers.values():
+            await manager.initialize()
+        
+        self._initialized = True
+        print("AsyncConfigLoader initialized successfully")
+    
+    async def load_all_configs(self):
         """Load all YAML config files from the directory"""
         if not os.path.exists(self.config_directory):
             print(f"Config directory '{self.config_directory}' not found")
@@ -29,11 +45,11 @@ class ConfigLoader:
         
         for config_file in config_files:
             try:
-                self.load_config_file(config_file)
+                await self.load_config_file(config_file)
             except Exception as e:
                 print(f"Failed to load config file {config_file}: {e}")
     
-    def load_config_file(self, config_file: str):
+    async def load_config_file(self, config_file: str):
         """Load a single config file"""
         print(f"Loading config: {config_file}")
         
@@ -46,11 +62,11 @@ class ConfigLoader:
         
         # Create or get device manager for this prefix
         if device_prefix not in self.device_managers:
-            # Add broker_host if not specified (you might want to set this)
+            # Add broker_host if not specified
             if 'broker_host' not in mqtt_config:
-                mqtt_config['broker_host'] = 'localhost'  # or however you want to handle this
+                mqtt_config['broker_host'] = 'localhost'
             
-            self.device_managers[device_prefix] = ServerDeviceManager(mqtt_config)
+            self.device_managers[device_prefix] = AsyncServerDeviceManager(mqtt_config)
         
         # Load devices into the appropriate manager
         device_manager = self.device_managers[device_prefix]
@@ -73,10 +89,14 @@ class ConfigLoader:
             print(f"\nDevice Prefix: {prefix}")
             manager.list_devices()
     
-    def disconnect_all(self):
+    async def disconnect_all(self):
         """Disconnect all MQTT connections"""
+        tasks = []
         for manager in self.device_managers.values():
-            manager.disconnect()
+            tasks.append(manager.disconnect())
+        
+        if tasks:
+            await asyncio.gather(*tasks, return_exceptions=True)
 
     def list_data_commands(self):
         """
@@ -131,7 +151,7 @@ class ConfigLoader:
                             "command_str": command_str,
                             "status_str": status_str,
                             "command_method_name": command_method_name,
-                            "command_method": command_proxy_method,  # Proxy method
+                            "command_method": command_proxy_method,  # Async proxy method
                             "status_method_name": status_method_name,
                             "status_path": status_path,
                             "component_path": component_path
@@ -143,20 +163,13 @@ class ConfigLoader:
         
         return commands
 
+    # ... rest of the methods remain the same since they're just for listing/inspection ...
+    
     def list_all_commands(self, include_status=True):
-        """
-        Generate a list of all available commands using ComponentInspector
-        
-        Args:
-            include_status: Whether to include @status decorated methods
-        Returns:
-            List of command strings with proper signatures
-        """
+        """Generate a list of all available commands using ComponentInspector"""
         commands = []
         
-        # Iterate through all loaded devices
         for device_name, device_proxy in self.all_devices.items():
-            # Get the device config to find component types
             device_config = self._get_device_config(device_name)
             if not device_config:
                 continue
@@ -168,27 +181,23 @@ class ConfigLoader:
                 if not component_type:
                     continue
                     
-                # Use ComponentInspector to discover methods
                 command_methods = ComponentInspector.discover_command_methods(component_type)
                 status_methods = ComponentInspector.discover_status_methods(component_type) if include_status else []
                 
-                # Add command methods
                 for method_name in command_methods:
                     signature = self._get_method_signature(component_type, method_name)
-                    command_str = f"{device_name}.{component_name}.{method_name}{signature}"
+                    command_str = f"await {device_name}.{component_name}.{method_name}{signature}"  # Add await prefix
                     commands.append(command_str)
                 
-                # Add status methods
                 for method_name in status_methods:
                     signature = self._get_method_signature(component_type, method_name)
-                    command_str = f"{device_name}.{component_name}.{method_name}{signature}"
+                    command_str = f"await {device_name}.{component_name}.{method_name}{signature}"  # Add await prefix
                     commands.append(command_str)
         
         return sorted(commands)
 
     def _get_device_config(self, device_name: str):
         """Get the original config for a device"""
-        # Look through all device managers to find the config
         for manager in self.device_managers.values():
             if hasattr(manager, 'devices') and device_name in manager.devices:
                 device_proxy = manager.devices[device_name]
@@ -202,31 +211,26 @@ class ConfigLoader:
             import importlib
             import inspect
             
-            # Import the component module
             module = importlib.import_module(component_type)
             component_class = getattr(module, component_type)
             method = getattr(component_class, method_name)
             
-            # Get the signature
             sig = inspect.signature(method)
             
-            # Filter out 'self' and '**kwargs' parameters, show actual parameters
             params = []
             for name, param in sig.parameters.items():
                 if name == 'self':
                     continue
-                if param.kind == param.VAR_KEYWORD:  # Skip **kwargs
+                if param.kind == param.VAR_KEYWORD:
                     continue
                 params.append(str(param))
             
-            # Return clean signature
             if params:
                 return f"({', '.join(params)})"
             else:
                 return "()"
                 
         except Exception as e:
-            # Fallback to empty parentheses if we can't inspect
             return "()"
 
     def print_all_commands(self, include_status=True):
@@ -235,11 +239,12 @@ class ConfigLoader:
         
         print(f"\nAvailable Commands ({len(commands)} total):")
         print("=" * 50)
+        print("Note: All commands are now async and must be awaited!")
+        print("=" * 50)
         
-        # Group by device for better readability
         by_device = {}
         for cmd in commands:
-            device = cmd.split('.')[0]
+            device = cmd.split('.')[0].replace('await ', '')  # Remove await for grouping
             if device not in by_device:
                 by_device[device] = []
             by_device[device].append(cmd)
@@ -247,7 +252,6 @@ class ConfigLoader:
         for device, cmds in by_device.items():
             print(f"\n{device.upper()}:")
             for cmd in cmds:
-                # Mark status methods differently
                 if self._is_status_method(cmd):
                     print(f"  {cmd} [STATUS]")
                 else:
@@ -256,15 +260,16 @@ class ConfigLoader:
     def _is_status_method(self, command_str: str):
         """Check if a command string represents a status method"""
         try:
-            parts = command_str.split('.')
+            # Remove 'await ' prefix for parsing
+            clean_cmd = command_str.replace('await ', '')
+            parts = clean_cmd.split('.')
             if len(parts) < 3:
                 return False
                 
             device_name = parts[0]
             component_name = parts[1]
-            method_name = parts[2].split('(')[0]  # Remove signature
+            method_name = parts[2].split('(')[0]
             
-            # Get component type
             device_config = self._get_device_config(device_name)
             if not device_config:
                 return False
@@ -275,7 +280,6 @@ class ConfigLoader:
             if not component_type:
                 return False
                 
-            # Check if it's in status methods
             status_methods = ComponentInspector.discover_status_methods(component_type)
             return method_name in status_methods
             
@@ -285,13 +289,11 @@ class ConfigLoader:
     def get_commands_json(self, include_status=True):
         """Get all commands as JSON string for API endpoints"""
         import json
-        
         return json.dumps(self.get_commands(include_status), indent=2)
 
     def get_commands(self, include_status=True):
         commands = self.list_all_commands(include_status)
         
-        # Separate commands and status methods
         command_list = []
         status_list = []
         
@@ -306,10 +308,44 @@ class ConfigLoader:
             "status_methods": status_list,
             "total": len(commands)
         }
-    
-# Example usage function
-def create_device_controller(config_directory: str = "configs", component_path: str = "."):
-    """Simple function to create and return a configured device controller"""
-    loader = ConfigLoader(config_directory, component_path)
-    loader.load_all_configs()
+
+# Updated factory function
+async def create_device_controller(config_directory: str = "configs", component_path: str = "."):
+    """Create and return a configured async device controller"""
+    loader = AsyncConfigLoader(config_directory, component_path)
+    await loader.initialize()
     return loader
+
+# Convenience function for testing
+async def test_controller():
+    """Test function to create controller and show usage"""
+    controller = await create_device_controller()
+    
+    print("\n=== Testing Controller ===")
+    controller.print_all_commands()
+    
+    # Example usage:
+    try:
+        # This is how you call methods now:
+        result = await controller.hvac.avery_valve.on()
+        print(f"Command result: {result}")
+    except AttributeError as e:
+        print(f"Device/component not found: {e}")
+    except Exception as e:
+        print(f"Error executing command: {e}")
+    
+    return controller
+
+# Test in async context
+if __name__ == "__main__":
+    async def main():
+        controller = await test_controller()
+        
+        # Keep alive for testing
+        print("\nController ready for testing. Use 'await controller.device.component.method()' syntax")
+        
+        # Example interactive session:
+        # await controller.hvac.avery_valve.on()
+        # await controller.hvac.temp_sensor.get_temperature()
+        
+    asyncio.run(main())

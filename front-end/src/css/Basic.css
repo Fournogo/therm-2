@@ -1,0 +1,953 @@
+/* Light Theme */
+:root {
+    --background-color: #660e69;
+    --text-color: #ffffff;
+    --gray-box-color: #5e5e5e;
+    --red-box-color: #f44343;
+    --green-box-color: #5eca38;
+    --orange-box-color: #f4a343;;
+    --blue-box-color: #4d49f3;
+    --pink-box-color: #b03ab4;
+    --outline-color: #801184;
+    --gray-hover: #858585;
+    --gray-clicked: #5a5a5a;
+    --green-box-hover: #336e1d;
+    --blue-box-hover: #18174d;
+    --pink-box-hover: #451746;
+    --orange-box-hover: #3c2911;
+    --red-box-hover: #3e1010;
+    --super-disabled-red: #f44343;
+    --disabled-button: #2c2c2c;
+  }
+    
+/* Dark Theme */
+  :root.dark-mode {
+    --background-color: #121212;
+    --text-color: #ffffff;
+    --gray-box-color: #5e5e5e;
+    --red-box-color: #bb3333;
+    --green-box-color: #499a2b;
+    --orange-box-color: #c48436;;
+    --blue-box-color: #3d3bc5;
+    --pink-box-color: #333d4c;
+    --outline-color: #212121;
+    --gray-hover: #858585;
+    --gray-clicked: #5a5a5a;
+    --blue-box-hover: #18174d;
+    --pink-box-hover: #222a35;
+    --orange-box-hover: #3c2911;
+    --red-box-hover: #3e1010;
+    --super-disabled-red: #bb3333;
+    --disabled-button: #161414;
+  }
+
+/* Hide the arrows in Chrome, Safari, Edge, and other WebKit browsers */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Hide the arrows in Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* For a more consistent look across all browsers */
+input[type="number"] {
+    appearance: textfield;
+}
+
+@keyframes fade-alert {
+    0% {
+      background-color: rgb(92, 6, 6);
+    }
+    50% {
+      background-color: black;
+    }
+    100% {
+      background-color: rgb(92, 6, 6);
+    }
+}
+
+.Red-Alert {
+    animation: fade-alert 2s infinite;
+}
+
+.Background {
+    font-family: "futura-pt-bold", sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color) ;
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    overflow: hidden;
+}
+
+button {
+    font-size: inherit;
+    font-family: "futura-pt-bold", sans-serif;
+    color: var(--text-color) ;
+    border: auto;
+}
+
+.Box {
+    background-color: var(--gray-box-color) ;
+    box-shadow: -5px 5px rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    height: 60px;
+    width: 320px;
+    user-select: none;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none;
+  font-family: "futura-pt"
+}
+
+.Redbox {
+    background-color: var(--red-box-color);
+    box-shadow: -5px 5px rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    height: 60px;
+    width: 320px;
+    user-select: none;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none;
+  font-family: "futura-pt"
+}
+
+.Greenbox {
+    background-color: var(--green-box-color);
+    box-shadow: -5px 5px rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    height: 60px;
+    width: 320px;
+    user-select: none;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none;
+  font-family: "futura-pt"
+}
+
+.Orangebox {
+    background-color: var(--orange-box-color);
+    box-shadow: -5px 5px rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    height: 60px;
+    width: 320px;
+    user-select: none;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none;
+  font-family: "futura-pt"
+}
+
+.Bluebox {
+    background-color: var(--blue-box-color);
+    box-shadow: -5px 5px rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    height: 60px;
+    width: 320px;
+    user-select: none;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none;
+  font-family: "futura-pt"
+}
+
+.Pinkbox {
+    background-color: var(--pink-box-color);
+    box-shadow: -5px 5px rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    width: 320px;
+    user-select: none;
+    height: fit-content;
+    padding: 10px;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none;
+  font-family: "futura-pt"
+}
+
+.Page {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: auto;
+    height: 100%;
+    margin-left: 15%;
+    margin-right: 15%;
+    outline: solid var(--outline-color) 1px;
+    overflow-x: hidden;
+}
+
+.Header {
+    display: flex;
+    align-items: flex-end;
+    flex-grow: 1;
+    font-size: 70px;
+    margin: 10px;
+    margin-left: 40px;
+}
+
+.Footer {
+    display: flex;
+    font-size: 60px;
+    margin: 10px;
+    margin-left: 40px;
+    flex-grow: 1;
+}
+
+.GrafanaLink {
+    display: flex;
+    font-size: 60px;
+    margin: 10px;
+    margin-right: 40px;
+}
+
+.GrafanaLink:hover {
+    color: var(--gray-hover);
+    cursor: pointer;
+}
+
+.GrafanaLink:active {
+    color: var(--gray-clicked);
+}
+
+.HeaderContainer {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    outline: solid var(--outline-color) 1px;
+}
+
+.MainContainer {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+
+}
+
+.FooterContainer {
+    width: 100%;
+    outline: solid var(--outline-color) 1px;
+    display: flex;
+}
+
+.LeftContainer {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    align-items: center;
+    box-shadow: inset -1px 0 0 0 var(--outline-color);
+}
+
+.RightContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 40%;
+    font-size: 28px;
+}
+
+#Left-Accent-1 {
+    position: absolute;
+    left: -220px;
+    top: 200px;
+}
+
+#Left-Accent-2 {
+    position: absolute;
+    left: -220px;
+    top: 110px;
+}
+
+#Right-Accent-1 {
+    position: absolute;
+    right: -220px;
+    bottom: 220px;
+    overflow: hidden;
+}
+
+#Right-Accent-2 {
+    position: absolute;
+    right: -220px;
+    bottom: 140px;
+    overflow: hidden;
+}
+
+#Right-Accent-3 {
+    position: absolute;
+    right: -220px;
+    bottom: 60px;
+    overflow: hidden;
+}
+
+.Left-Line-1 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    width: calc(100% - 80px);
+    padding-left: 40px;
+    padding-right: 40px;
+    font-size: 34px;
+}
+
+.Left-Line-2 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    align-items: center;
+    width: calc(100% - 80px);
+    padding-left: 40px;
+    padding-right: 40px;
+    font-size: 34px;
+    margin-top: 20px;
+}
+
+.Right-Mid {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    font-size: 30px;
+    margin-top: 17px;
+    margin-bottom: 28px;
+}
+
+#SetTemp {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 120px;
+    height: 45px;
+    align-items: flex-end;
+    flex-basis: 120px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    font-size: 28px;
+    padding: 0;
+    margin-left: 5px;
+    color: var(--text-color) ;
+    font-family: "futura-pt-bold", sans-serif;
+}
+
+#DryTime {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 86px;
+    height: 45px;
+    align-items: flex-end;
+    flex-grow: 0;
+    flex-shrink: 0;
+    font-size: 28px;
+    padding: 0;
+    margin: 0;
+    margin-left: 20px;
+    color: var(--text-color) ;
+    font-family: "futura-pt-bold", sans-serif;
+}
+
+#CurrentTemp {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 120px;
+    height: 40px;
+    align-items: flex-end;
+    padding-bottom: 5px;
+    flex-basis: 120px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    font-size: 28px;
+    font-family: "futura-pt-bold"
+}
+
+.Pinkbox.Left-Line-3 {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    flex-grow: 1;
+    margin-top: 70px;
+    margin-bottom: 20px;
+    width: 370px;
+    height: 240px;
+    font-size: 26px;
+    font-family: "futura-pt-bold"
+}
+
+.Pink-Line-1 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: 26px;
+}
+
+.Pink-Line-2 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: 26px;
+}
+
+#HVAC-Status {
+    align-items: flex-end;
+    margin-right: 26px;
+}
+
+#Fan-Status {
+    align-items: flex-end;
+    margin-right: 26px;
+}
+
+.Left-Line-3 {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 26px;
+    text-align: center;
+    width: 100%;
+}
+
+.Left-Line-4 {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    font-size: 26px;
+    text-align: center;
+    width: 100%;
+}
+
+.Equip-Grid .Grid-Item {
+    width: auto; /* Remove any width settings */
+    flex: none; /* Disable any flex settings */
+    display: flex; /* Optional: for centering content */
+    justify-content: center;
+    align-items: center;
+}
+
+.Equip-Grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: auto auto; 
+    gap: 20px;
+    padding-top: 20px;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-bottom: 30px;
+    width: calc(100% - 80px);
+}
+
+.Grid-Item {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+}
+
+.Right-Line-1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    width: calc(100% - 80px);
+    padding: 20px;
+    padding-left: 40px;
+    padding-right: 40px;
+    flex-grow: 1;
+}
+
+.HVAC-Mode {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 26px;
+    margin-top: 0;
+}
+
+.Right-Line-1-Auto {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    width: calc(100% - 80px);
+    padding: 20px;
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+.Right-Line-2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    width: calc(100% - 80px);
+    padding-top: 0;
+    padding: 20px;
+    padding-left: 40px;
+    padding-right: 40px;
+    flex-grow: 1;
+}
+
+.Countdown-Container {
+    text-align: center;
+    width: 100%;
+    padding: 0px;
+    padding-bottom: 5px;
+}
+
+#AC-Button {
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    cursor: pointer;
+}
+
+#Mode-Check-Button {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin-top: 0;
+    margin-bottom: 30px;
+    width: 390px;
+    font-size: 22px;
+}
+
+.Bold {
+    font-family: futura-pt-bold;
+}
+
+#Heat-Button {
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    cursor: pointer;
+}
+
+#Dry-Button {
+    font-family: futura-pt-bold;
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    cursor: pointer;
+}
+
+#OFF-Button {
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    cursor: pointer;
+}
+
+#Basic-Control {
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+}
+
+#Manual-Control {
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+}
+
+#Auto-Control {
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+}
+
+.therm-dropdown {
+    font-family: "futura-pt-bold";
+    font-size: 14px;
+    text-align: center;
+    justify-content: center;
+    border-radius: 8px;
+    padding: 6px;    
+    width: 120px;
+    height: 45px;
+    background-color: var(--pink-box-color);
+    color: white;
+}
+
+.time-selector {
+    font-family: "futura-pt-bold";
+    font-size: 1.0rem; 
+    text-align: center;
+    justify-content: center;
+    padding: 0px;    
+    width: 116px;
+    height: 45px;
+    background-color: var(--pink-box-color);
+    color: white;
+    border-radius: 8px;
+}
+
+#HVAC-Enable:hover {
+    background-color: var(--green-box-hover);
+    cursor: pointer;
+}
+
+#Fan-Enable:hover {
+    background-color: var(--pink-box-hover);
+    cursor: pointer;
+}
+
+#Basic-Control:hover {
+    background-color: var(--pink-box-hover);
+    cursor: pointer;
+}
+
+#Manual-Control:hover {
+    background-color: var(--pink-box-hover);
+    cursor: pointer;
+}
+
+#Auto-Control:hover {
+    background-color: var(--pink-box-hover);
+    cursor: pointer;
+}
+
+#AC-Button:hover {
+    background-color: var(--blue-box-hover) ;
+    cursor: pointer;
+}
+
+#Mode-Check-Button:hover {
+    background-color: var(--blue-box-hover) ;
+    cursor: pointer;
+}
+
+#Heat-Button:hover {
+    background-color: var(--orange-box-hover);
+    cursor: pointer;
+}
+
+#Dry-Button:hover {
+    background-color: var(--orange-box-hover);
+    cursor: pointer;
+}
+
+#OFF-Button:hover {
+    background-color: var(--red-box-hover);
+    cursor: pointer;
+}
+
+#HVAC-Enable:active {
+    background-color: var(--pink-box-hover);
+    transform: translate(-5px, 5px);
+    box-shadow: 0 0;
+}
+
+#Fan-Enable:active {
+    background-color: var(--pink-box-hover);
+    transform: translate(-5px, 5px);
+    box-shadow: 0 0;
+}
+
+#Basic-Control:active {
+    background-color: var(--pink-box-hover);
+    transform: translate(-5px, 5px);
+    box-shadow: 0 0;
+}
+
+#Manual-Control:active {
+    background-color: var(--pink-box-hover);
+    transform: translate(-5px, 5px);
+    box-shadow: 0 0;
+}
+
+#Auto-Control:active {
+    background-color: var(--pink-box-hover);
+    transform: translate(-5px, 5px);
+    box-shadow: 0 0;
+}
+
+#AC-Button:active {
+    background-color: var(--blue-box-hover);
+    transform: translate(-5px, 5px);
+    box-shadow: 0 0;
+}
+
+#Mode-Check-Button:active {
+    background-color: var(--blue-box-hover);
+    transform: translate(-5px, 5px);
+    box-shadow: 0 0;
+}
+
+#Heat-Button:active {
+    background-color: var(--orange-box-hover);
+    transform: translate(-5px, 5px);
+    box-shadow: 0 0;
+}
+
+#Dry-Button:active {
+    background-color: var(--orange-box-hover);
+    transform: translate(-5px, 5px);
+    box-shadow: 0 0;
+}
+
+#OFF-Button:active {
+    background-color: var(--red-box-hover);
+    transform: translate(-5px, 5px);
+    box-shadow: 0 0;
+}
+
+#HVAC-Enable:disabled {
+    background-color: var(--disabled-button);
+}
+
+#HVAC-Enable[data-super-disabled="true"] {
+    background-color: var(--disabled-button);
+}
+
+#Fan-Enable:disabled {
+    background-color: var(--disabled-button);
+}
+
+#Fan-Enable[data-super-disabled="true"] {
+    background-color: var(--super-disabled-red);
+}
+
+#Manual-Control[data-super-disabled="true"] {
+    background-color: var(--super-disabled-red);
+}
+
+#Auto-Control[data-super-disabled="true"] {
+    background-color: var(--super-disabled-red);
+}
+
+#AC-Button:disabled {
+    background-color: var(--disabled-button);
+}
+
+#Mode-Check-Button:disabled {
+    background-color: var(--disabled-button);
+}
+
+#Heat-Button:disabled {
+    background-color: var(--disabled-button);
+}
+
+#Dry-Button:disabled {
+    background-color: var(--disabled-button);
+}
+
+#OFF-Button:disabled {
+    background-color: var(--disabled-button);
+}
+
+#Basic-Control:disabled {
+    background-color: var(--disabled-button);
+}
+
+#Manual-Control:disabled {
+    background-color: var(--disabled-button);
+}
+
+#Auto-Control:disabled {
+    background-color: var(--disabled-button);
+}
+
+@media (max-width: 1305px) {
+    .Left-Line-1 {
+        font-size: 28px;
+    }
+    .Left-Line-2 {
+        font-size: 28px;
+    }
+    .Left-Line-3 {
+        font-size: 28px;
+    }
+    .Header {
+        font-size: 55px;
+    }
+    .Footer {
+        font-size: 40px;
+    }
+    .GrafanaLink {
+        font-size: 40px;
+    }
+    .Pinkbox.Left-Line-3 {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 1150px) {
+    .Page {
+        margin-left: 0;
+        margin-right: 0;
+    }
+    #Left-Accent-1 {
+        display: none;
+    }
+    #Left-Accent-2 {
+        display: none;
+    }
+    #Right-Accent-1 {
+        display: none;
+    }
+    #Right-Accent-2 {
+        display: none;
+    }
+    #Right-Accent-3 {
+        display: none;
+    }
+    #AC-Button {
+        width: 100%;
+    }
+    #Heat-Button {
+        width: 100%;
+    }
+    #Dry-Button {
+        width: 100%;
+    }
+    #OFF-Button {
+        width: 100%;
+    }
+    #Manual-Control {
+        width: 100%;
+    }
+    #Auto-Control {
+        width: 100%;
+    }
+    #Basic-Control {
+        width: 100%;
+    }
+    .RightContainer {
+        justify-content: normal;
+    }
+}
+
+@media (orientation: portrait) {
+    .MainContainer {
+        flex-direction: column;
+    }
+    .RightContainer {
+        width: 100%;
+        border-top: 1px solid var(--outline-color);
+    }
+    .LeftContainer {
+        box-shadow: 0;
+    }
+    .Pinkbox.Left-Line-3 {
+        margin-top: 38px;
+        margin-bottom: 22px;
+    }
+  }
+
+@media (max-width: 480px) {
+    .Left-Line-1 {
+        font-size: 23px;
+    }
+    .Left-Line-2 {
+        font-size: 23px;
+    }
+    .Left-Line-3 {
+        font-size: 23px;
+    }
+    .Header {
+        font-size: 50px;
+    }
+    .Footer {
+        font-size: 30px;
+    }
+    .GrafanaLink {
+        font-size: 30px;
+    }
+    .Pinkbox.Left-Line-3 {
+        font-size: 22px;
+    }
+    .Left-Line-4 {
+        font-size: 22px;
+    }
+    .RightContainer {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 394px) {
+    .Pinkbox.Left-Line-3 {
+        width: 260px;
+    }
+    #Mode-Check-Button {
+        width: 280px;
+    }
+    .Left-Line-1 {
+        font-size: 21px;
+    }
+    .Left-Line-2 {
+        font-size: 21px;
+    }
+    .Left-Line-3 {
+        font-size: 21px;
+    }
+}
+
+@media (max-height: 500px) {
+    .Pinkbox.Left-Line-3 {
+        margin-top: 38px;
+        margin-bottom: 22px;
+    }
+    .Header {
+        font-size: 50px;
+    }
+}
+
+@media (max-height: 780px) {
+    .Pinkbox.Left-Line-3 {
+        margin-top: 78px;
+        margin-bottom: 30px;
+    }
+}
+
+@media (max-height: 480px) {
+    .Pinkbox.Left-Line-3 {
+        margin-top: 38px;
+        margin-bottom: 38px;
+    }
+    .Header {
+        display: none;
+    }
+    .Right-Mid {
+        font-size: 26px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+}
+
+.Extra-Bottom {
+    margin-bottom: 30px;
+}

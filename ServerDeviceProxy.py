@@ -1,12 +1,13 @@
-import paho.mqtt.client as mqtt
+import asyncio
+import aiomqtt
 import json
 import time
 import logging
 import importlib
 import sys
 import os
-import threading
-from typing import Dict, Any
+from typing import Dict, Any, Optional, Callable, Tuple
+import uuid
 
 class ComponentInspector:
     """Helper class to inspect component classes and discover decorated methods"""
@@ -122,20 +123,25 @@ class ComponentInspector:
             logging.error(f"Error inspecting status methods for {component_type}: {e}")
             return []
 
-class ComponentProxy:
-    """Represents a component on the server side - creates methods that publish MQTT commands"""
+class AsyncComponentProxy:
+    """Async version of ComponentProxy - represents a component on the server side"""
     
-    def __init__(self, device_name: str, component_name: str, component_config: dict, mqtt_client, device_prefix: str):
+    def __init__(self, device_name: str, component_name: str, component_config: dict, mqtt_manager, device_prefix: str):
         self.device_name = device_name
         self.component_name = component_name
         self.component_config = component_config
-        self.mqtt_client = mqtt_client
+        self.mqtt_manager = mqtt_manager
         self.device_prefix = device_prefix
         self.component_type = component_config.get('type')
         
-        # Threading events for status methods
-        self.status_events = {}
-        self.latest_status_data = {}
+        # Async events for status methods
+        self.status_events: Dict[str, asyncio.Event] = {}
+        self.latest_status_data: Dict[str, Any] = {}
+        self.status_queues: Dict[str, asyncio.Queue] = {}
+        
+        # Continuous wait management
+        self.continuous_waits: Dict[str, asyncio.Task] = {}
+        self.continuous_wait_stop_flags: Dict[str, asyncio.Event] = {}
         
         # Generate proxy methods based on component type
         self._create_proxy_methods()
@@ -153,8 +159,8 @@ class ComponentProxy:
             for method_name in command_methods:
                 # Create a closure to capture the method name
                 def make_method(method):
-                    def proxy_method(**kwargs):
-                        return self._publish_command(method, kwargs)
+                    async def proxy_method(**kwargs):
+                        return await self._publish_command(method, kwargs)
                     return proxy_method
                 
                 # Add the method to this instance
@@ -165,7 +171,7 @@ class ComponentProxy:
             print(f"No @command methods found for {self.component_type} (or could not inspect class)")
     
     def _setup_status_subscriptions(self):
-        """Setup MQTT subscriptions for status methods and create threading events"""
+        """Setup MQTT subscriptions for status methods and create async events"""
         # Discover status methods from the actual component class
         status_methods = ComponentInspector.discover_status_methods(self.component_type)
         
@@ -173,9 +179,11 @@ class ComponentProxy:
             print(f"Found @status methods in {self.component_type}: {status_methods}")
             
             for method_name in status_methods:
-                # Create a threading event for this status method
-                event = threading.Event()
+                # Create async event and queue for this status method
+                event = asyncio.Event()
+                queue = asyncio.Queue()
                 self.status_events[method_name] = event
+                self.status_queues[method_name] = queue
                 
                 # Initialize latest status data
                 self.latest_status_data[method_name] = None
@@ -184,25 +192,37 @@ class ComponentProxy:
                 status_topic = f"{self.device_prefix}/{self.device_name}/{self.component_name}/status/{method_name}"
                 
                 # Create callback for this specific status method
-                def make_status_callback(status_method, status_event):
-                    def status_callback(topic, payload):
+                def make_status_callback(status_method, status_event, status_queue):
+                    async def status_callback(topic, payload):
                         print(f"Status update: {status_method} -> {payload}")
                         self.latest_status_data[status_method] = payload
-                        status_event.set()  # Trigger the event
+                        
+                        # Put in queue for continuous listeners
+                        try:
+                            status_queue.put_nowait(payload)
+                        except asyncio.QueueFull:
+                            # Remove oldest item and add new one
+                            try:
+                                status_queue.get_nowait()
+                                status_queue.put_nowait(payload)
+                            except asyncio.QueueEmpty:
+                                pass
+                        
+                        # Set event for one-time waiters
+                        status_event.set()
                     return status_callback
                 
-                callback = make_status_callback(method_name, event)
+                callback = make_status_callback(method_name, event, queue)
                 self._subscribe_to_topic(status_topic, callback)
                 
-                print(f"Created event for status method: {method_name}")
+                print(f"Created async event for status method: {method_name}")
     
     def _subscribe_to_topic(self, topic: str, callback):
         """Subscribe to a topic with callback (delegate to device manager)"""
-        # We'll need to pass this up to the device manager
-        if hasattr(self.mqtt_client, '_proxy_subscribe'):
-            self.mqtt_client._proxy_subscribe(topic, callback)
+        if hasattr(self.mqtt_manager, '_proxy_subscribe'):
+            self.mqtt_manager._proxy_subscribe(topic, callback)
     
-    def execute_and_wait_for_status(self, command_method_name: str, status_method_name: str, timeout: float = 10, **kwargs):
+    async def execute_and_wait_for_status(self, command_method_name: str, status_method_name: str, timeout: float = 10, **kwargs):
         """Execute a command and wait for its corresponding status update
         
         Args:
@@ -222,15 +242,19 @@ class ComponentProxy:
         
         # Execute the command
         command_method = getattr(self, command_method_name)
-        command_result = command_method(**kwargs)
+        await command_method(**kwargs)
         
         # Now wait for the status
-        if self.wait_for_status(status_method_name, timeout):
+        try:
+            await asyncio.wait_for(
+                self.status_events[status_method_name].wait(), 
+                timeout=timeout
+            )
             return self.get_latest_status(status_method_name)
-        else:
+        except asyncio.TimeoutError:
             return None
     
-    def wait_for_status(self, status_method: str, timeout: float = None) -> bool:
+    async def wait_for_status(self, status_method: str, timeout: float = None) -> bool:
         """Wait for a specific status event to occur
         
         Args:
@@ -245,7 +269,15 @@ class ComponentProxy:
         
         event = self.status_events[status_method]
         event.clear()  # Clear any previous event
-        return event.wait(timeout)
+        
+        try:
+            if timeout:
+                await asyncio.wait_for(event.wait(), timeout=timeout)
+            else:
+                await event.wait()
+            return True
+        except asyncio.TimeoutError:
+            return False
     
     def get_latest_status(self, status_method: str):
         """Get the latest status data for a method"""
@@ -256,98 +288,111 @@ class ComponentProxy:
         if status_method in self.status_events:
             self.status_events[status_method].clear()
 
-    def wait_for(self, status_method: str, callback, timeout: float = None):
-        """Wait for a status event and execute callback (single use, non-blocking)
+    async def wait_for(self, status_method: str, callback: Callable, timeout: float = None):
+        """Wait for a status event and execute callback (single use)
         
         Args:
-            status_method: Name of the status method to wait for (e.g., 'pressed_status')
+            status_method: Name of the status method to wait for
             callback: Function to call when event occurs. Will receive (status_data) as argument
             timeout: Optional timeout in seconds. If exceeded, callback is called with None
             
         Returns:
-            threading.Thread: The thread handling the wait (for reference)
+            asyncio.Task: The task handling the wait (for reference)
         """
         if status_method not in self.status_events:
             raise ValueError(f"No status method '{status_method}' found for {self.component_type}")
         
-        def wait_thread():
+        async def wait_task():
             try:
                 # Clear any previous event
                 self.status_events[status_method].clear()
                 
                 # Wait for the event
-                if self.status_events[status_method].wait(timeout):
+                try:
+                    if timeout:
+                        await asyncio.wait_for(
+                            self.status_events[status_method].wait(), 
+                            timeout=timeout
+                        )
+                    else:
+                        await self.status_events[status_method].wait()
+                    
                     # Event occurred - get the data and call callback
                     status_data = self.get_latest_status(status_method)
-                    callback(status_data)
-                else:
+                    if asyncio.iscoroutinefunction(callback):
+                        await callback(status_data)
+                    else:
+                        callback(status_data)
+                except asyncio.TimeoutError:
                     # Timeout occurred
-                    callback(None)
-                    
+                    if asyncio.iscoroutinefunction(callback):
+                        await callback(None)
+                    else:
+                        callback(None)
+                        
             except Exception as e:
-                print(f"Error in wait_for thread for {status_method}: {e}")
-                callback(None)
+                print(f"Error in wait_for task for {status_method}: {e}")
+                if asyncio.iscoroutinefunction(callback):
+                    await callback(None)
+                else:
+                    callback(None)
         
-        # Start the thread
-        thread = threading.Thread(
-            target=wait_thread,
-            name=f"WaitFor-{self.component_name}-{status_method}",
-            daemon=True
-        )
-        thread.start()
-        
-        print(f"Started wait_for thread for {self.component_name}.{status_method}")
-        return thread
+        # Create and start the task
+        task = asyncio.create_task(wait_task())
+        print(f"Started wait_for task for {self.component_name}.{status_method}")
+        return task
 
-    def wait_for_continuous(self, status_method: str, callback, stop_condition=None):
-        """Wait for a status event continuously and execute callback each time (non-blocking)
+    def wait_for_continuous(self, status_method: str, callback: Callable, stop_condition: Callable = None):
+        """Wait for a status event continuously and execute callback each time
         
         Args:
-            status_method: Name of the status method to wait for (e.g., 'pressed_status')
+            status_method: Name of the status method to wait for
             callback: Function to call when event occurs. Will receive (status_data) as argument
-            stop_condition: Optional function that returns True when waiting should stop.
-                        If None, will run indefinitely until stop_continuous_wait() is called
+            stop_condition: Optional function that returns True when waiting should stop
             
         Returns:
             str: A unique ID for this continuous wait (use with stop_continuous_wait)
         """
-        if status_method not in self.status_events:
+        if status_method not in self.status_queues:
             raise ValueError(f"No status method '{status_method}' found for {self.component_type}")
         
         # Create unique ID for this continuous wait
-        import uuid
         wait_id = str(uuid.uuid4())
         
-        # Initialize continuous waits dict if it doesn't exist
-        if not hasattr(self, 'continuous_waits'):
-            self.continuous_waits = {}
-            self.continuous_wait_stop_flags = {}
-        
         # Create stop flag for this wait
-        self.continuous_wait_stop_flags[wait_id] = threading.Event()
+        self.continuous_wait_stop_flags[wait_id] = asyncio.Event()
         
-        def continuous_wait_thread():
+        async def continuous_wait_task():
             try:
-                while not self.continuous_wait_stop_flags[wait_id].is_set():
-                    # Clear the event before waiting
-                    self.status_events[status_method].clear()
-                    
-                    # Wait for the event (with short timeout to check stop condition)
-                    if self.status_events[status_method].wait(timeout=1.0):
-                        # Event occurred - get the data and call callback
-                        status_data = self.get_latest_status(status_method)
+                queue = self.status_queues[status_method]
+                stop_flag = self.continuous_wait_stop_flags[wait_id]
+                
+                while not stop_flag.is_set():
+                    try:
+                        # Wait for new status data or stop signal
+                        status_data = await asyncio.wait_for(
+                            queue.get(), 
+                            timeout=1.0  # Check stop condition periodically
+                        )
                         
                         try:
-                            callback(status_data)
+                            if asyncio.iscoroutinefunction(callback):
+                                await callback(status_data)
+                            else:
+                                callback(status_data)
                         except Exception as e:
                             print(f"Error in callback for {status_method}: {e}")
+                    
+                    except asyncio.TimeoutError:
+                        # Timeout is normal - just check stop condition
+                        pass
                     
                     # Check external stop condition if provided
                     if stop_condition and stop_condition():
                         break
                         
             except Exception as e:
-                print(f"Error in continuous wait thread for {status_method}: {e}")
+                print(f"Error in continuous wait task for {status_method}: {e}")
             finally:
                 # Clean up
                 if wait_id in self.continuous_waits:
@@ -355,78 +400,65 @@ class ComponentProxy:
                 if wait_id in self.continuous_wait_stop_flags:
                     del self.continuous_wait_stop_flags[wait_id]
         
-        # Start the thread
-        thread = threading.Thread(
-            target=continuous_wait_thread,
-            name=f"ContinuousWait-{self.component_name}-{status_method}-{wait_id[:8]}",
-            daemon=True
-        )
-        
-        # Store thread reference
-        self.continuous_waits[wait_id] = thread
-        thread.start()
+        # Create and start the task
+        task = asyncio.create_task(continuous_wait_task())
+        self.continuous_waits[wait_id] = task
         
         print(f"Started continuous wait for {self.component_name}.{status_method} (ID: {wait_id[:8]})")
         return wait_id
 
-    def stop_continuous_wait(self, wait_id: str):
-        """Stop a specific continuous wait
-        
-        Args:
-            wait_id: The ID returned by wait_for_continuous()
-        """
-        if not hasattr(self, 'continuous_wait_stop_flags') or wait_id not in self.continuous_wait_stop_flags:
+    async def stop_continuous_wait(self, wait_id: str):
+        """Stop a specific continuous wait"""
+        if wait_id not in self.continuous_wait_stop_flags:
             print(f"No continuous wait found with ID: {wait_id}")
             return
         
-        # Signal the thread to stop
+        # Signal the task to stop
         self.continuous_wait_stop_flags[wait_id].set()
         
-        # Wait for thread to finish
-        if hasattr(self, 'continuous_waits') and wait_id in self.continuous_waits:
-            thread = self.continuous_waits[wait_id]
-            thread.join(timeout=2.0)
-            if thread.is_alive():
-                print(f"Warning: Continuous wait thread {wait_id} did not stop cleanly")
-            else:
+        # Wait for task to finish
+        if wait_id in self.continuous_waits:
+            task = self.continuous_waits[wait_id]
+            try:
+                await asyncio.wait_for(task, timeout=2.0)
                 print(f"Stopped continuous wait {wait_id[:8]}")
+            except asyncio.TimeoutError:
+                print(f"Warning: Continuous wait task {wait_id} did not stop cleanly")
+                task.cancel()
 
-    def stop_all_continuous_waits(self):
+    async def stop_all_continuous_waits(self):
         """Stop all continuous waits for this component"""
-        if not hasattr(self, 'continuous_waits'):
-            return
-        
         wait_ids = list(self.continuous_waits.keys())
-        for wait_id in wait_ids:
-            self.stop_continuous_wait(wait_id)
-        
+        tasks = [self.stop_continuous_wait(wait_id) for wait_id in wait_ids]
+        if tasks:
+            await asyncio.gather(*tasks, return_exceptions=True)
         print(f"Stopped all continuous waits for {self.component_name}")
 
     def list_active_waits(self):
         """List all active continuous waits for this component"""
-        if not hasattr(self, 'continuous_waits'):
+        if not self.continuous_waits:
             print(f"No active waits for {self.component_name}")
             return []
         
         active_waits = []
-        for wait_id, thread in self.continuous_waits.items():
-            if thread.is_alive():
+        for wait_id, task in self.continuous_waits.items():
+            if not task.done():
                 active_waits.append({
                     'id': wait_id,
-                    'thread_name': thread.name,
-                    'is_alive': thread.is_alive()
+                    'task': task,
+                    'is_done': task.done()
                 })
         
         if active_waits:
             print(f"Active waits for {self.component_name}:")
             for wait in active_waits:
-                print(f"  - {wait['id'][:8]}: {wait['thread_name']}")
+                print(f"  - {wait['id'][:8]}: Active task")
         else:
             print(f"No active waits for {self.component_name}")
         
         return active_waits
     
-    def _publish_command(self, command: str, params: dict = None):
+    async def _publish_command(self, command: str, params: dict = None):
         """Publish a command to the MQTT topic"""
         topic = f"{self.device_prefix}/{self.device_name}/{self.component_name}/{command}"
         
@@ -440,26 +472,21 @@ class ComponentProxy:
             else:
                 message = ""
             
-            result = self.mqtt_client.publish(topic, message)
-            
-            if result.rc == mqtt.MQTT_ERR_SUCCESS:
-                print(f"Published command: {topic} -> {message}")
-                return True
-            else:
-                print(f"Failed to publish command: {topic}")
-                return False
+            await self.mqtt_manager.publish(topic, message)
+            print(f"Published command: {topic} -> {message}")
+            return True
                 
         except Exception as e:
             logging.error(f"Error publishing command {command} to {topic}: {e}")
             return False
 
-class DeviceProxy:
-    """Represents a device on the server side - contains component proxies"""
+class AsyncDeviceProxy:
+    """Async version of DeviceProxy - represents a device on the server side"""
     
-    def __init__(self, device_name: str, device_config: dict, mqtt_client, device_prefix: str):
+    def __init__(self, device_name: str, device_config: dict, mqtt_manager, device_prefix: str):
         self.device_name = device_name
         self.device_config = device_config
-        self.mqtt_client = mqtt_client
+        self.mqtt_manager = mqtt_manager
         self.device_prefix = device_prefix
         
         # Create component proxies
@@ -470,92 +497,148 @@ class DeviceProxy:
         components_config = self.device_config.get('components', {})
         
         for component_name, component_config in components_config.items():
-            component_proxy = ComponentProxy(
+            component_proxy = AsyncComponentProxy(
                 self.device_name,
                 component_name, 
                 component_config,
-                self.mqtt_client,
+                self.mqtt_manager,
                 self.device_prefix
             )
             
             # Add component as attribute to this device
             setattr(self, component_name, component_proxy)
-            print(f"Created component proxy: {self.device_name}.{component_name} ({component_config['type']})")
+            print(f"Created async component proxy: {self.device_name}.{component_name} ({component_config['type']})")
     
-    def wait_for_any_status(self, timeout: float = None) -> tuple:
+    async def wait_for_any_status(self, timeout: float = None) -> Optional[Tuple[str, str, Any]]:
         """Wait for any status event from any component
         
         Returns:
             (component_name, status_method, status_data) if event occurs, None if timeout
         """
         # Collect all events from all components
-        all_events = {}
+        tasks = []
+        component_info = {}
+        
         for comp_name in dir(self):
             comp = getattr(self, comp_name)
             if hasattr(comp, 'status_events'):
                 for status_method, event in comp.status_events.items():
-                    all_events[f"{comp_name}.{status_method}"] = (comp_name, status_method, event, comp)
+                    task_name = f"{comp_name}.{status_method}"
+                    task = asyncio.create_task(event.wait())
+                    tasks.append(task)
+                    component_info[task] = (comp_name, status_method, comp)
         
-        if not all_events:
+        if not tasks:
             return None
         
-        # Wait for any event to be set
-        start_time = time.time()
-        while True:
-            for event_key, (comp_name, status_method, event, comp) in all_events.items():
-                if event.is_set():
-                    status_data = comp.get_latest_status(status_method)
-                    return (comp_name, status_method, status_data)
+        try:
+            # Wait for any event to be set
+            done, pending = await asyncio.wait(
+                tasks, 
+                timeout=timeout, 
+                return_when=asyncio.FIRST_COMPLETED
+            )
             
-            if timeout and (time.time() - start_time) > timeout:
-                return None
+            # Cancel pending tasks
+            for task in pending:
+                task.cancel()
             
-            time.sleep(0.01)  # Small sleep to prevent busy waiting
+            if done:
+                # Get the first completed task
+                completed_task = next(iter(done))
+                comp_name, status_method, comp = component_info[completed_task]
+                status_data = comp.get_latest_status(status_method)
+                return (comp_name, status_method, status_data)
+            
+            return None
+            
+        except asyncio.TimeoutError:
+            # Cancel all tasks on timeout
+            for task in tasks:
+                task.cancel()
+            return None
 
-class ServerDeviceManager:
-    """Manages device proxies on the server side"""
+import asyncio
+import aiomqtt
+import json
+import logging
+from typing import Dict, Any, Optional, Callable, Tuple
+
+class AsyncServerDeviceManager:
+    """Async version of ServerDeviceManager - manages device proxies on the server side"""
     
     def __init__(self, mqtt_config: dict = None):
         self.devices = {}
-        self.mqtt_client = None
         self.mqtt_config = mqtt_config or {}
         self.device_prefix = self.mqtt_config.get('device_prefix', 'devices')
-        self.topic_callbacks = {}  # Store topic callbacks for status subscriptions
+        self.topic_callbacks = {}
+        self.is_connected = False
+        self._mqtt_task = None
+        self._client_context = None
         
-        self._setup_mqtt()
+    async def initialize(self):
+        """Initialize the MQTT connection"""
+        await self._setup_mqtt()
     
-    def _setup_mqtt(self):
-        """Setup MQTT client connection"""
+    async def _setup_mqtt(self):
+        """Setup async MQTT client connection"""
         try:
-            self.mqtt_client = mqtt.Client()
+            broker_host = self.mqtt_config.get('broker_host', 'localhost')
+            broker_port = self.mqtt_config.get('broker_port', 1883)
+            username = self.mqtt_config.get('username')
+            password = self.mqtt_config.get('password')
+            
+            print(f"Connecting to MQTT broker: {broker_host}:{broker_port}")
+            
+            # Create async MQTT client
+            client_args = {
+                'hostname': broker_host,
+                'port': broker_port,
+            }
+            
+            if username and password:
+                client_args['username'] = username
+                client_args['password'] = password
+            
+            self.mqtt_client = aiomqtt.Client(**client_args)
             
             # Add proxy subscribe method
             self.mqtt_client._proxy_subscribe = self._proxy_subscribe
             
-            # Set authentication if provided
-            username = self.mqtt_config.get('username')
-            password = self.mqtt_config.get('password')
-            if username and password:
-                self.mqtt_client.username_pw_set(username, password)
+            # Start the client context and message processing
+            self._mqtt_task = asyncio.create_task(self._mqtt_context())
             
-            # Set callbacks
-            self.mqtt_client.on_connect = self._on_connect
-            self.mqtt_client.on_disconnect = self._on_disconnect
-            self.mqtt_client.on_message = self._on_message
+            # Wait a bit for connection to establish
+            await asyncio.sleep(0.5)
             
-            # Connect to broker
-            broker_host = self.mqtt_config.get('broker_host', 'localhost')
-            broker_port = self.mqtt_config.get('broker_port', 1883)
-            
-            print(f"Connecting to MQTT broker: {broker_host}:{broker_port}")
-            self.mqtt_client.connect(broker_host, broker_port, 60)
-            
-            # Start the network loop
-            self.mqtt_client.loop_start()
+            print("Async MQTT setup initiated")
             
         except Exception as e:
-            print(f"Failed to setup MQTT: {e}")
+            print(f"Failed to setup async MQTT: {e}")
             raise
+    
+    async def _mqtt_context(self):
+        """Handle the MQTT client context and message processing"""
+        try:
+            async with self.mqtt_client as client:
+                self.is_connected = True
+                print("MQTT client connected successfully")
+                
+                # Subscribe to all pending topics
+                for topic in self.topic_callbacks.keys():
+                    await client.subscribe(topic)
+                    print(f"Subscribed to topic: {topic}")
+                
+                # Process messages
+                async for message in client.messages:
+                    await self._handle_message(message)
+                    
+        except Exception as e:
+            print(f"Error in MQTT context: {e}")
+            self.is_connected = False
+        finally:
+            self.is_connected = False
+            print("MQTT client disconnected")
     
     def _proxy_subscribe(self, topic: str, callback):
         """Subscribe to a topic with callback for component proxies"""
@@ -564,48 +647,58 @@ class ServerDeviceManager:
         
         self.topic_callbacks[topic].append(callback)
         
-        if hasattr(self.mqtt_client, 'is_connected') and self.mqtt_client.is_connected():
-            self.mqtt_client.subscribe(topic)
+        if self.is_connected:
+            # Subscribe in background
+            asyncio.create_task(self._subscribe_topic(topic))
+    
+    async def _subscribe_topic(self, topic: str):
+        """Subscribe to a single topic"""
+        try:
+            await self.mqtt_client.subscribe(topic)
             print(f"Subscribed to status topic: {topic}")
+        except Exception as e:
+            print(f"Error subscribing to {topic}: {e}")
     
-    def _on_connect(self, client, userdata, flags, rc):
-        """Callback when MQTT client connects"""
-        if rc == 0:
-            print("Server MQTT connected successfully")
-            
-            # Subscribe to all pending topics
-            for topic in self.topic_callbacks.keys():
-                client.subscribe(topic)
-                print(f"Subscribed to topic: {topic}")
-        else:
-            print(f"Server MQTT connection failed with code: {rc}")
-    
-    def _on_disconnect(self, client, userdata, rc):
-        """Callback when MQTT client disconnects"""
-        print("Server MQTT disconnected")
-    
-    def _on_message(self, client, userdata, msg):
+    async def _handle_message(self, message):
         """Handle incoming MQTT messages for status updates"""
-        topic = msg.topic
+        topic = message.topic.value
         try:
             # Try to decode as JSON, fall back to string
             try:
-                payload = json.loads(msg.payload.decode())
+                payload = json.loads(message.payload.decode())
             except json.JSONDecodeError:
-                payload = msg.payload.decode()
+                payload = message.payload.decode()
             
-            print(f"Server MQTT received: {topic} -> {payload}")
+            print(f"Async MQTT received: {topic} -> {payload}")
             
             # Call all callbacks for this topic
             if topic in self.topic_callbacks:
+                tasks = []
                 for callback in self.topic_callbacks[topic]:
                     try:
-                        callback(topic, payload)
+                        if asyncio.iscoroutinefunction(callback):
+                            tasks.append(callback(topic, payload))
+                        else:
+                            # For non-async callbacks, run in executor or call directly
+                            callback(topic, payload)
                     except Exception as e:
                         logging.error(f"Error in status callback for {topic}: {e}")
+                
+                # Wait for all async callbacks
+                if tasks:
+                    await asyncio.gather(*tasks, return_exceptions=True)
                         
         except Exception as e:
             logging.error(f"Error processing MQTT message: {e}")
+    
+    async def publish(self, topic: str, message: str):
+        """Publish a message to MQTT"""
+        try:
+            await self.mqtt_client.publish(topic, message)
+            return True
+        except Exception as e:
+            logging.error(f"Error publishing to {topic}: {e}")
+            return False
     
     def load_device_config(self, config: dict):
         """Load devices from a single config dictionary"""
@@ -614,10 +707,10 @@ class ServerDeviceManager:
         
         for device_name, device_config in devices_config.items():
             try:
-                device_proxy = DeviceProxy(
+                device_proxy = AsyncDeviceProxy(
                     device_name,
                     device_config,
-                    self.mqtt_client,
+                    self,  # Pass self as mqtt_manager
                     device_prefix
                 )
                 
@@ -626,7 +719,7 @@ class ServerDeviceManager:
                 # Also add as attribute to this manager for easy access
                 setattr(self, device_name, device_proxy)
                 
-                print(f"Created device proxy: {device_name}")
+                print(f"Created async device proxy: {device_name}")
                 
             except Exception as e:
                 logging.error(f"Failed to create device proxy '{device_name}': {e}")
@@ -643,11 +736,19 @@ class ServerDeviceManager:
             for attr_name in dir(device):
                 if not attr_name.startswith('_') and hasattr(getattr(device, attr_name), 'component_type'):
                     component = getattr(device, attr_name)
-                    methods = [method for method in dir(component) if not method.startswith('_') and callable(getattr(component, method)) and method not in ['component_name', 'device_name', 'component_config', 'mqtt_client', 'device_prefix', 'component_type']]
+                    methods = [method for method in dir(component) if not method.startswith('_') and callable(getattr(component, method)) and method not in ['component_name', 'device_name', 'component_config', 'mqtt_manager', 'device_prefix', 'component_type']]
                     print(f"  - {attr_name} ({component.component_type}): {', '.join(methods)}")
     
-    def disconnect(self):
+    async def disconnect(self):
         """Disconnect from MQTT"""
-        if self.mqtt_client:
-            self.mqtt_client.loop_stop()
-            self.mqtt_client.disconnect()
+        try:
+            self.is_connected = False
+            if self._mqtt_task and not self._mqtt_task.done():
+                self._mqtt_task.cancel()
+                try:
+                    await self._mqtt_task
+                except asyncio.CancelledError:
+                    pass
+            print("Async MQTT disconnected")
+        except Exception as e:
+            print(f"Error disconnecting MQTT: {e}")

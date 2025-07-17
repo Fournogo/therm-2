@@ -1,0 +1,14 @@
+#SettingsBack {
+    margin: 20px;
+    font-family: futura-pt-bold;
+    width: 80%;
+}
+
+.AbilityButton {
+        margin: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 80%;
+        cursor: pointer;
+}

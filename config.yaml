@@ -1,29 +1,57 @@
-mqtt:
-  username: "scrumpi"
-  password: "Th3rm"
-  port: 1883
-  device_prefix: "therm"
+app:
+  # Logging configuration
+  logging:
+    level: 'INFO'
+    format: '%(asctime)s - %(levelname)s - %(message)s'
+    filename: 'app.log'
+    filemode: 'a'
+  
+  # Flask application configuration
+  flask:
+    static_folder: './front-end/build'
+    static_url_path: '/'
+    secret_key: 'your-secret-key-here'
+    cors_origins: "*"
+    html_path: './front-end/build/index.html'
+    
+    # SocketIO configuration
+    socketio:
+      async_mode: 'eventlet'
+      cors_allowed_origins:
+        - "*"
+        - "https://therm.cfd:5023"
+        - "http://therm.cfd:5023"
+        - "http://therm.cfd"
+        - "https://therm.cfd"
+        - "http://localhost:3001"
+        - "http://10.1.1.11:3001"
+    
+    # Server configuration
+    server:
+      host: '0.0.0.0'
+      port: 5023
+      debug: true
 
-devices:
-  stink_button:
-    components:
-      button:
-        type: "Button"
-        pin: 14
-        pull_up: false
-      light:
-        type: "Relay"
-        signal: "LOW"
-        pin: 27
-  bathroom:
-    components:
-      valve:
-        type: "Relay"
-        signal: "LOW"
-        pin: 10
-  averys-room:
-    components:
-      valve:
-          type: "Relay"
-          signal: "LOW"
-          pin: 9
+# Path configuration
+paths:
+  config_dir: '/home/scrumpi/containers/therm-2/configs'
+  component_path: '/home/scrumpi/containers/therm-2'
+
+# Control loop configuration
+control:
+  command_loop_delay: 0.1  # seconds
+  basic_threshold_range: 1.0  # degrees
+  auto_threshold_range: 1.0  # degrees
+  hvac_time_delta: 10.0  # minutes
+  hvac_check_time: 60.0  # minutes
+  max_dewp: 65.0  # degrees F
+  critical_hvac_temp: 32.0  # degrees F
+  critical_hvac_heat_diff: 10.0  # degrees
+  mode_change_time_delta: 15.0  # minutes
+  hvac_event_mode_change_lag: 5.0  # minutes
+
+state:
+  internal_state:
+    control: "MANUAL"
+  config:
+    refresh_interval: 30

@@ -29,12 +29,16 @@ class Relay(Component):
         GPIO.output(self.pin, self.signal_value_on)
         self._state = True
         self.trigger_event('turned_on')
+        
+        self.auto_publish_on_event('relay_status')
     
     @command()
     def off(self):
         GPIO.output(self.pin, self.signal_value_off)
         self._state = False
         self.trigger_event('turned_off')
+
+        self.auto_publish_on_event('relay_status')
 
     @command(data_command=True, events=['relay_status'])
     def read(self):

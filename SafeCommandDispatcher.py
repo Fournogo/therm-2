@@ -1,10 +1,13 @@
 import re
+import asyncio
+import inspect
 from typing import Dict, Callable, Any
 
 class SafeCommandDispatcher:
     """
     Safe command dispatcher that executes predefined commands without eval().
     Supports dot notation like: controller.stink_button.light.on()
+    Now supports both sync and async operations.
     """
     
     def __init__(self):
@@ -17,7 +20,7 @@ class SafeCommandDispatcher:
         
     def execute_command(self, command_string: str) -> Any:
         """
-        Execute a command string safely
+        Execute a command string safely (synchronous version)
         
         Args:
             command_string: String like "controller.stink_button.light.on()" or "dac.set_voltage(3.3, 0)"
@@ -43,8 +46,74 @@ class SafeCommandDispatcher:
         # Navigate to the method
         method = self._get_method_from_path(method_path)
         
-        # Execute the method
+        # Execute the method (sync only)
+        if asyncio.iscoroutinefunction(method):
+            raise ValueError(f"Method '{method_path}' is async - use execute_command_async() instead")
+        
         return method(*args, **kwargs)
+    
+    async def execute_command_async(self, command_string: str) -> Any:
+        """
+        Execute a command string safely (asynchronous version)
+        
+        Args:
+            command_string: String like "controller.stink_button.light.on()" or "dac.set_voltage(3.3, 0)"
+            
+        Returns:
+            Result of the command execution
+            
+        Raises:
+            ValueError: If command format is invalid
+            AttributeError: If object/method doesn't exist
+        """
+        # Parse the command
+        match = self.command_pattern.match(command_string.strip())
+        if not match:
+            raise ValueError(f"Invalid command format: {command_string}")
+            
+        method_path = match.group(1)
+        args_string = match.group(2).strip()
+        
+        # Parse arguments
+        args, kwargs = self._parse_arguments(args_string) if args_string else ([], {})
+        
+        # Navigate to the method
+        method = self._get_method_from_path(method_path)
+        
+        # Execute the method (async-aware)
+        if asyncio.iscoroutinefunction(method):
+            print(f"Executing async command: {command_string}")
+            result = await method(*args, **kwargs)
+        else:
+            print(f"Executing sync command: {command_string}")
+            # Run sync method in executor to avoid blocking
+            result = await asyncio.get_event_loop().run_in_executor(None, lambda: method(*args, **kwargs))
+        
+        return result
+    
+    async def execute_command_auto(self, command_string: str) -> Any:
+        """
+        Execute a command string safely, automatically detecting sync vs async
+        
+        Args:
+            command_string: String like "controller.stink_button.light.on()" or "dac.set_voltage(3.3, 0)"
+            
+        Returns:
+            Result of the command execution
+        """
+        # Parse the command to get the method
+        match = self.command_pattern.match(command_string.strip())
+        if not match:
+            raise ValueError(f"Invalid command format: {command_string}")
+            
+        method_path = match.group(1)
+        method = self._get_method_from_path(method_path)
+        
+        # Choose appropriate execution method
+        if asyncio.iscoroutinefunction(method):
+            return await self.execute_command_async(command_string)
+        else:
+            return self.execute_command(command_string)
         
     def _get_method_from_path(self, path: str) -> Callable:
         """Navigate through dot notation to find the method"""
@@ -152,3 +221,93 @@ class SafeCommandDispatcher:
             except ValueError:
                 # Treat as string if can't parse as number
                 return value
+    
+    def is_method_async(self, command_string: str) -> bool:
+        """
+        Check if a command string would execute an async method
+        
+        Args:
+            command_string: Command string to check
+            
+        Returns:
+            True if the method is async, False if sync
+        """
+        try:
+            match = self.command_pattern.match(command_string.strip())
+            if not match:
+                return False
+                
+            method_path = match.group(1)
+            method = self._get_method_from_path(method_path)
+            return asyncio.iscoroutinefunction(method)
+        except:
+            return False
+    
+    def get_method_info(self, command_string: str) -> dict:
+        """
+        Get information about a method from a command string
+        
+        Args:
+            command_string: Command string to analyze
+            
+        Returns:
+            Dictionary with method information
+        """
+        try:
+            match = self.command_pattern.match(command_string.strip())
+            if not match:
+                return {"error": "Invalid command format"}
+                
+            method_path = match.group(1)
+            method = self._get_method_from_path(method_path)
+            
+            return {
+                "path": method_path,
+                "is_async": asyncio.iscoroutinefunction(method),
+                "signature": str(inspect.signature(method)),
+                "callable": True,
+                "type": type(method).__name__
+            }
+        except Exception as e:
+            return {"error": str(e)}
+
+# Example usage and testing
+if __name__ == "__main__":
+    # Example test with mock objects
+    class MockDevice:
+        def sync_method(self, value):
+            return f"Sync result: {value}"
+        
+        async def async_method(self, value):
+            await asyncio.sleep(0.1)  # Simulate async work
+            return f"Async result: {value}"
+    
+    class MockController:
+        def __init__(self):
+            self.device = MockDevice()
+    
+    async def test_dispatcher():
+        dispatcher = SafeCommandDispatcher()
+        controller = MockController()
+        dispatcher.register_controller('controller', controller)
+        
+        # Test sync command
+        result1 = dispatcher.execute_command('controller.device.sync_method("test")')
+        print(f"Sync command result: {result1}")
+        
+        # Test async command
+        result2 = await dispatcher.execute_command_async('controller.device.async_method("test")')
+        print(f"Async command result: {result2}")
+        
+        # Test auto detection
+        result3 = await dispatcher.execute_command_auto('controller.device.sync_method("auto")')
+        result4 = await dispatcher.execute_command_auto('controller.device.async_method("auto")')
+        print(f"Auto sync result: {result3}")
+        print(f"Auto async result: {result4}")
+        
+        # Test method info
+        info = dispatcher.get_method_info('controller.device.async_method("test")')
+        print(f"Method info: {info}")
+    
+    # Uncomment to run test
+    # asyncio.run(test_dispatcher())
