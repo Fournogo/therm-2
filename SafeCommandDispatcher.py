@@ -129,15 +129,17 @@ class SafeCommandDispatcher:
         current_obj = self.controllers[parts[0]]
         
         # Navigate through the path
-        for part in parts[1:]:
+        for i, part in enumerate(parts[1:], 1):
+            
             if not hasattr(current_obj, part):
                 raise AttributeError(f"'{type(current_obj).__name__}' has no attribute '{part}'")
+            
             current_obj = getattr(current_obj, part)
             
         # Ensure it's callable
         if not callable(current_obj):
             raise AttributeError(f"'{path}' is not callable")
-            
+        
         return current_obj
         
     def _parse_arguments(self, args_string: str) -> tuple:

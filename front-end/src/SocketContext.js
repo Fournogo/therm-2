@@ -4,7 +4,7 @@ import io from 'socket.io-client';
 
 const SocketContext = createContext();
 
-const SERVER_IP = 'therm.cfd';
+const SERVER_IP = `${window.location.hostname}`;
 const SERVER_PORT = '5023';
 
 export const SocketProvider = ({ children }) => {

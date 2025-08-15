@@ -694,6 +694,40 @@ class AsyncServerDeviceManager:
         self._proxy_subscribe(self.heartbeat_response_topic, heartbeat_callback)
         print(f"Setup heartbeat subscription: {self.heartbeat_response_topic}")
     
+    # And add this method to AsyncServerDeviceManager in ServerDeviceProxy.py:
+    def create_esphome_component_proxy(device_name: str, component_name: str, component_config: dict, mqtt_manager, device_prefix: str):
+        """Create an ESPHome component that acts like a regular component proxy"""
+        
+        class ESPHomeComponentProxy:
+            def __init__(self, esphome_component):
+                self.device_name = device_name
+                self.component_name = component_name
+                self.component_config = component_config
+                self.mqtt_manager = mqtt_manager
+                self.device_prefix = device_prefix
+                self.component_type = component_config.get('type')
+                
+                # Wrap the ESPHome component
+                self.esphome_component = esphome_component
+                
+                # Copy all the command and status methods from the ESPHome component
+                self._copy_methods()
+            
+            def _copy_methods(self):
+                """Copy all decorated methods from the ESPHome component"""
+                for method_name in dir(self.esphome_component):
+                    method = getattr(self.esphome_component, method_name)
+                    if callable(method) and (hasattr(method, '_is_mqtt_command') or hasattr(method, '_is_mqtt_status')):
+                        # Copy the method to this proxy
+                        setattr(self, method_name, method)
+            
+            async def disconnect(self):
+                """Disconnect the ESPHome component"""
+                if hasattr(self.esphome_component, 'disconnect'):
+                    await self.esphome_component.disconnect()
+        
+        return ESPHomeComponentProxy
+
     async def heartbeat(self):
         """Send heartbeat request to physical devices"""
         try:

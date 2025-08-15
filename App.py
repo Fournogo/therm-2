@@ -1,3 +1,4 @@
+# App.py - Updated imports section
 import asyncio
 import logging
 import os
@@ -12,10 +13,12 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 import socketio
 
-# Import your async components
-from ConfigLoader import create_device_controller
-from State import create_async_state_manager
-from ControlLoop import AsyncCommandProcessor
+# Import your async components - UPDATED
+from ConfigLoader import create_device_controller  # Changed from ConfigLoader
+from State import create_state_manager      # Changed from State
+from ControlLoop import AsyncCommandProcessor  # Changed from State
+
+from GlobalRegistry import GlobalRegistry
 
 class AsyncThermostatApp:
     """Async thermostat application using FastAPI and SocketIO"""
@@ -76,7 +79,8 @@ class AsyncThermostatApp:
             "http://therm.cfd",
             "https://therm.cfd",
             "http://localhost:3001",
-            "http://10.1.1.11:3001"
+            "http://10.1.1.11:3001",
+            "http://10.1.1.11:5023"
         ])
     
     def _setup_logging(self):
@@ -209,7 +213,8 @@ class AsyncThermostatApp:
             
             # Initialize state manager
             print("Creating async state manager...")
-            self.state_manager = await create_async_state_manager(self.controller, self.state_config)
+            self.state_manager = await create_state_manager(self.controller, self.state_config)
+            GlobalRegistry.set_state_manager(self.state_manager)
             print("✅ State manager initialized")
             
             # Initialize command processor

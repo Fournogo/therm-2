@@ -322,7 +322,7 @@ button {
     margin-bottom: 28px;
 }
 
-.text-outline {
+.text-with-outline {
   position: relative;
   color: white; /* Your text color */
 }
@@ -366,7 +366,6 @@ button {
     font-size: 28px;
     padding: 0;
     margin: 20px;
-    margin-right: 0;
     color: var(--text-color) ;
     font-family: "futura-pt-bold", sans-serif;
 }
@@ -827,6 +826,24 @@ button {
     background-color: var(--disabled-button);
 }
 
+.boolean-toggle {
+    width: 200px;
+}
+
+.Pink-Line-2.sel-text {
+    font-size: 28px;
+}
+
+@media (max-width: 1300px) {
+    .boolean-toggle {
+        width: 100px;
+        font-size: 24px;
+    }
+    .Pink-Line-2.sel-text {
+        font-size: 24px;
+    }
+}
+
 @media (max-width: 1305px) {
     .Left-Line-1 {
         font-size: 28px;
@@ -941,6 +958,10 @@ button {
     }
     .RightContainer {
         font-size: 22px;
+    }
+    #ManualLeftLine3 {
+        height: 450px;
+        width: 300px;
     }
 }
 

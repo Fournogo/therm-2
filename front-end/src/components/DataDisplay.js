@@ -1,5 +1,6 @@
 // components/DataDisplay.js
 import React, { useState, useEffect } from 'react';
+import "../css/Basic.css"
 
   const interpolateHSLColor = (value, min=60, max=80, startHue=360, endHue=0) => {
     // Clamp the value within the range
@@ -154,8 +155,9 @@ export const NumberInput = ({
 
   return (
 <>
-      {label && <span className={`number-input ${className}`}>{label}:</span>}
-      <input className="Box" 
+    <div className="temperature-display" style={{width: "100%"}}>
+      {label && <span className={`number-input`} style={{flexGrow: 1}}>{label}:</span>}
+      <input className={`Box ${className}`}
         style={{ backgroundColor: currentBackgroundColor }}
         id="SetTemp" 
         type="number"
@@ -170,6 +172,7 @@ export const NumberInput = ({
         step={step}
         enterKeyHint="done"
         ></input>
+        </div>
 </>
   );
 };
@@ -210,7 +213,7 @@ export const BooleanToggle = ({
 
   return (
     <div className="boolean-toggle-container">
-      {label && <span className="toggle-label">{label}:</span>}
+      {label && <span style={{marginRight: '20px'}} className="toggle-label">{label}:</span>}
       <button
         onClick={handleClick}
         disabled={disabled || loading}
@@ -222,7 +225,7 @@ export const BooleanToggle = ({
           border: 'none',
           cursor: disabled ? 'not-allowed' : 'pointer',
           opacity: disabled ? 0.6 : 1,
-          width: '200px'
+          marginRight: '20px'
         }}
       >
         {loading ? 'Loading...' : (value ? onText : offText)}

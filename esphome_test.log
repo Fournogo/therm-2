@@ -1,0 +1,192 @@
+2025-07-22 10:35:01,095 - INFO - 🚀 Starting ESPHome device_info() test for 10.1.1.175:6053
+2025-07-22 10:35:01,095 - INFO -    Test interval: 5s
+2025-07-22 10:35:01,095 - INFO -    Max tests: unlimited
+2025-07-22 10:35:01,096 - INFO -    Reconnect on failure: True
+2025-07-22 10:35:04,158 - ERROR - ❌ Failed to connect to ESPHome device 10.1.1.175: Error connecting to [AddrInfo(family=<AddressFamily.AF_INET: 2>, type=<SocketKind.SOCK_STREAM: 1>, proto=6, sockaddr=IPv4Sockaddr(address='10.1.1.175', port=6053))]: [Errno 113] Connect call failed ('10.1.1.175', 6053)
+2025-07-22 10:35:04,159 - ERROR - Failed to establish initial connection. Exiting.
+2025-07-22 10:36:16,387 - INFO - 🚀 Starting ESPHome device_info() test for 10.1.1.175:6053
+2025-07-22 10:36:16,388 - INFO -    Test interval: 5s
+2025-07-22 10:36:16,389 - INFO -    Max tests: unlimited
+2025-07-22 10:36:16,390 - INFO -    Reconnect on failure: True
+2025-07-22 10:36:19,454 - ERROR - ❌ Failed to connect to ESPHome device 10.1.1.175: Error connecting to [AddrInfo(family=<AddressFamily.AF_INET: 2>, type=<SocketKind.SOCK_STREAM: 1>, proto=6, sockaddr=IPv4Sockaddr(address='10.1.1.175', port=6053))]: [Errno 113] Connect call failed ('10.1.1.175', 6053)
+2025-07-22 10:36:19,455 - ERROR - Failed to establish initial connection. Exiting.
+2025-07-22 10:39:36,424 - INFO - 🚀 Starting ESPHome device_info() test for 10.1.1.175:6053
+2025-07-22 10:39:36,425 - INFO -    Test interval: 5s
+2025-07-22 10:39:36,426 - INFO -    Max tests: unlimited
+2025-07-22 10:39:36,427 - INFO -    Reconnect on failure: True
+2025-07-22 10:40:06,494 - ERROR - ❌ Failed to connect to ESPHome device 10.1.1.175: Timeout waiting for HelloResponse, ConnectResponse after 30.0s
+2025-07-22 10:40:06,495 - ERROR - Failed to establish initial connection. Exiting.
+2025-07-22 10:40:06,496 - WARNING - 10.1.1.175: Connection error occurred: 10.1.1.175: Connection lost
+2025-07-22 10:43:17,962 - INFO - 🚀 Starting ESPHome device_info() test for 10.1.1.175:6053
+2025-07-22 10:43:17,962 - INFO -    Test interval: 5s
+2025-07-22 10:43:17,963 - INFO -    Max tests: unlimited
+2025-07-22 10:43:17,964 - INFO -    Reconnect on failure: True
+2025-07-22 10:43:18,000 - INFO - ✅ Test #1: device_info() success (Response time: 14.9ms) - air-conditioner-fae7bf
+2025-07-22 10:43:23,011 - INFO - ✅ Test #2: device_info() success (Response time: 5.4ms) - air-conditioner-fae7bf
+2025-07-22 10:43:28,039 - INFO - ✅ Test #3: device_info() success (Response time: 21.8ms) - air-conditioner-fae7bf
+2025-07-22 10:43:33,050 - INFO - ✅ Test #4: device_info() success (Response time: 5.4ms) - air-conditioner-fae7bf
+2025-07-22 10:43:38,063 - INFO - ✅ Test #5: device_info() success (Response time: 11.9ms) - air-conditioner-fae7bf
+2025-07-22 10:43:43,074 - INFO - ✅ Test #6: device_info() success (Response time: 5.4ms) - air-conditioner-fae7bf
+2025-07-22 10:43:48,091 - INFO - ✅ Test #7: device_info() success (Response time: 11.3ms) - air-conditioner-fae7bf
+2025-07-22 10:43:53,116 - INFO - ✅ Test #8: device_info() success (Response time: 19.1ms) - air-conditioner-fae7bf
+2025-07-22 10:43:58,123 - INFO - ✅ Test #9: device_info() success (Response time: 5.8ms) - air-conditioner-fae7bf
+2025-07-22 10:44:03,134 - INFO - ✅ Test #10: device_info() success (Response time: 5.6ms) - air-conditioner-fae7bf
+2025-07-22 10:44:03,134 - INFO - 📊 Stats after 45s: Tests: 10, Success: 10, Failures: 0, Success Rate: 100.0%
+2025-07-22 10:44:08,153 - INFO - ✅ Test #11: device_info() success (Response time: 12.3ms) - air-conditioner-fae7bf
+2025-07-22 10:44:13,165 - INFO - ✅ Test #12: device_info() success (Response time: 6.9ms) - air-conditioner-fae7bf
+2025-07-22 10:44:18,180 - INFO - ✅ Test #13: device_info() success (Response time: 13.9ms) - air-conditioner-fae7bf
+2025-07-22 10:44:23,196 - INFO - ✅ Test #14: device_info() success (Response time: 9.9ms) - air-conditioner-fae7bf
+2025-07-22 10:44:28,208 - INFO - ✅ Test #15: device_info() success (Response time: 5.7ms) - air-conditioner-fae7bf
+2025-07-22 10:44:33,223 - INFO - ✅ Test #16: device_info() success (Response time: 8.6ms) - air-conditioner-fae7bf
+2025-07-22 10:44:38,235 - INFO - ✅ Test #17: device_info() success (Response time: 10.6ms) - air-conditioner-fae7bf
+2025-07-22 10:44:43,250 - INFO - ✅ Test #18: device_info() success (Response time: 9.3ms) - air-conditioner-fae7bf
+2025-07-22 10:44:48,270 - INFO - ✅ Test #19: device_info() success (Response time: 13.8ms) - air-conditioner-fae7bf
+2025-07-22 10:44:53,288 - INFO - ✅ Test #20: device_info() success (Response time: 12.1ms) - air-conditioner-fae7bf
+2025-07-22 10:44:53,288 - INFO - 📊 Stats after 95s: Tests: 20, Success: 20, Failures: 0, Success Rate: 100.0%
+2025-07-22 10:44:58,307 - INFO - ✅ Test #21: device_info() success (Response time: 16.5ms) - air-conditioner-fae7bf
+2025-07-22 10:45:03,339 - INFO - ✅ Test #22: device_info() success (Response time: 25.5ms) - air-conditioner-fae7bf
+2025-07-22 10:45:08,363 - INFO - ✅ Test #23: device_info() success (Response time: 17.9ms) - air-conditioner-fae7bf
+2025-07-22 10:45:13,376 - INFO - ✅ Test #24: device_info() success (Response time: 7.5ms) - air-conditioner-fae7bf
+2025-07-22 10:45:18,385 - INFO - ✅ Test #25: device_info() success (Response time: 7.5ms) - air-conditioner-fae7bf
+2025-07-22 10:45:33,402 - ERROR - ❌ Test #26: APIConnectionError - Timeout waiting for DeviceInfoResponse after 10.0s
+2025-07-22 10:45:33,403 - INFO - 🔄 Attempting to reconnect...
+2025-07-22 10:45:43,410 - ERROR - air-conditioner-fae7bf @ 10.1.1.175: disconnect request failed
+Traceback (most recent call last):
+  File "aioesphomeapi/connection.py", line 861, in aioesphomeapi.connection.APIConnection.send_messages_await_response_complex
+TimeoutError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "aioesphomeapi/connection.py", line 1066, in aioesphomeapi.connection.APIConnection.disconnect
+  File "aioesphomeapi/connection.py", line 879, in send_message_await_response
+  File "aioesphomeapi/connection.py", line 865, in send_messages_await_response_complex
+aioesphomeapi.core.TimeoutAPIError: Timeout waiting for DisconnectResponse after 10.0s
+2025-07-22 10:45:58,692 - INFO - ✅ Test #27: device_info() success (Response time: 17.0ms) - air-conditioner-fae7bf
+2025-07-22 10:46:03,718 - INFO - ✅ Test #28: device_info() success (Response time: 20.6ms) - air-conditioner-fae7bf
+2025-07-22 10:46:08,729 - INFO - ✅ Test #29: device_info() success (Response time: 5.5ms) - air-conditioner-fae7bf
+2025-07-22 10:46:13,749 - INFO - ✅ Test #30: device_info() success (Response time: 13.7ms) - air-conditioner-fae7bf
+2025-07-22 10:46:13,750 - INFO - 📊 Stats after 176s: Tests: 30, Success: 29, Failures: 1, Success Rate: 96.7%
+2025-07-22 10:46:18,772 - INFO - ✅ Test #31: device_info() success (Response time: 20.3ms) - air-conditioner-fae7bf
+2025-07-22 10:46:23,790 - INFO - ✅ Test #32: device_info() success (Response time: 12.2ms) - air-conditioner-fae7bf
+2025-07-22 10:46:28,803 - INFO - ✅ Test #33: device_info() success (Response time: 11.2ms) - air-conditioner-fae7bf
+2025-07-22 10:46:33,816 - INFO - ✅ Test #34: device_info() success (Response time: 7.1ms) - air-conditioner-fae7bf
+2025-07-22 10:46:38,832 - INFO - ✅ Test #35: device_info() success (Response time: 15.4ms) - air-conditioner-fae7bf
+2025-07-22 10:46:43,849 - INFO - ✅ Test #36: device_info() success (Response time: 10.9ms) - air-conditioner-fae7bf
+2025-07-22 10:46:48,860 - INFO - ✅ Test #37: device_info() success (Response time: 6.6ms) - air-conditioner-fae7bf
+2025-07-22 10:46:53,871 - INFO - ✅ Test #38: device_info() success (Response time: 5.7ms) - air-conditioner-fae7bf
+2025-07-22 10:46:58,880 - INFO - ✅ Test #39: device_info() success (Response time: 7.7ms) - air-conditioner-fae7bf
+2025-07-22 10:47:03,903 - INFO - ✅ Test #40: device_info() success (Response time: 17.9ms) - air-conditioner-fae7bf
+2025-07-22 10:47:03,904 - INFO - 📊 Stats after 226s: Tests: 40, Success: 39, Failures: 1, Success Rate: 97.5%
+2025-07-22 10:47:08,921 - INFO - ✅ Test #41: device_info() success (Response time: 11.2ms) - air-conditioner-fae7bf
+2025-07-22 10:47:13,942 - INFO - ✅ Test #42: device_info() success (Response time: 16.6ms) - air-conditioner-fae7bf
+2025-07-22 10:47:18,959 - INFO - ✅ Test #43: device_info() success (Response time: 16.1ms) - air-conditioner-fae7bf
+2025-07-22 10:47:23,977 - INFO - ✅ Test #44: device_info() success (Response time: 11.8ms) - air-conditioner-fae7bf
+2025-07-22 10:47:29,002 - INFO - ✅ Test #45: device_info() success (Response time: 19.8ms) - air-conditioner-fae7bf
+2025-07-22 10:47:34,025 - INFO - ✅ Test #46: device_info() success (Response time: 18.5ms) - air-conditioner-fae7bf
+2025-07-22 10:47:39,046 - INFO - ✅ Test #47: device_info() success (Response time: 18.5ms) - air-conditioner-fae7bf
+2025-07-22 10:47:44,057 - INFO - ✅ Test #48: device_info() success (Response time: 5.8ms) - air-conditioner-fae7bf
+2025-07-22 10:47:49,070 - INFO - ✅ Test #49: device_info() success (Response time: 8.4ms) - air-conditioner-fae7bf
+2025-07-22 10:47:54,080 - INFO - ✅ Test #50: device_info() success (Response time: 8.0ms) - air-conditioner-fae7bf
+2025-07-22 10:47:54,080 - INFO - 📊 Stats after 276s: Tests: 50, Success: 49, Failures: 1, Success Rate: 98.0%
+2025-07-22 10:47:59,095 - INFO - ✅ Test #51: device_info() success (Response time: 13.2ms) - air-conditioner-fae7bf
+2025-07-22 10:48:04,118 - INFO - ✅ Test #52: device_info() success (Response time: 16.4ms) - air-conditioner-fae7bf
+2025-07-22 10:48:09,162 - INFO - ✅ Test #53: device_info() success (Response time: 38.9ms) - air-conditioner-fae7bf
+2025-07-22 10:48:14,177 - INFO - ✅ Test #54: device_info() success (Response time: 10.4ms) - air-conditioner-fae7bf
+2025-07-22 10:48:19,189 - INFO - ✅ Test #55: device_info() success (Response time: 9.9ms) - air-conditioner-fae7bf
+2025-07-22 10:48:24,211 - INFO - ✅ Test #56: device_info() success (Response time: 17.6ms) - air-conditioner-fae7bf
+2025-07-22 10:48:29,219 - INFO - ✅ Test #57: device_info() success (Response time: 4.9ms) - air-conditioner-fae7bf
+2025-07-22 10:48:34,240 - INFO - ✅ Test #58: device_info() success (Response time: 18.7ms) - air-conditioner-fae7bf
+2025-07-22 10:48:39,262 - INFO - ✅ Test #59: device_info() success (Response time: 18.9ms) - air-conditioner-fae7bf
+2025-07-22 10:48:44,274 - INFO - ✅ Test #60: device_info() success (Response time: 8.8ms) - air-conditioner-fae7bf
+2025-07-22 10:48:44,275 - INFO - 📊 Stats after 326s: Tests: 60, Success: 59, Failures: 1, Success Rate: 98.3%
+2025-07-22 10:48:49,298 - INFO - ✅ Test #61: device_info() success (Response time: 20.1ms) - air-conditioner-fae7bf
+2025-07-22 10:48:54,325 - INFO - ✅ Test #62: device_info() success (Response time: 23.3ms) - air-conditioner-fae7bf
+2025-07-22 10:48:59,382 - INFO - ✅ Test #63: device_info() success (Response time: 55.2ms) - air-conditioner-fae7bf
+2025-07-22 10:49:04,446 - INFO - ✅ Test #64: device_info() success (Response time: 57.4ms) - air-conditioner-fae7bf
+2025-07-22 10:49:09,459 - INFO - ✅ Test #65: device_info() success (Response time: 7.1ms) - air-conditioner-fae7bf
+2025-07-22 10:49:14,483 - INFO - ✅ Test #66: device_info() success (Response time: 19.3ms) - air-conditioner-fae7bf
+2025-07-22 10:49:19,496 - INFO - ✅ Test #67: device_info() success (Response time: 11.7ms) - air-conditioner-fae7bf
+2025-07-22 10:49:24,521 - INFO - ✅ Test #68: device_info() success (Response time: 19.1ms) - air-conditioner-fae7bf
+2025-07-22 10:49:29,537 - INFO - ✅ Test #69: device_info() success (Response time: 9.9ms) - air-conditioner-fae7bf
+2025-07-22 10:49:34,583 - INFO - ✅ Test #70: device_info() success (Response time: 40.0ms) - air-conditioner-fae7bf
+2025-07-22 10:49:34,583 - INFO - 📊 Stats after 377s: Tests: 70, Success: 69, Failures: 1, Success Rate: 98.6%
+2025-07-22 10:49:39,603 - INFO - ✅ Test #71: device_info() success (Response time: 17.7ms) - air-conditioner-fae7bf
+2025-07-22 10:49:44,650 - INFO - ✅ Test #72: device_info() success (Response time: 45.6ms) - air-conditioner-fae7bf
+2025-07-22 10:49:49,692 - INFO - ✅ Test #73: device_info() success (Response time: 36.1ms) - air-conditioner-fae7bf
+2025-07-22 10:49:54,746 - INFO - ✅ Test #74: device_info() success (Response time: 48.0ms) - air-conditioner-fae7bf
+2025-07-22 10:49:59,799 - INFO - ✅ Test #75: device_info() success (Response time: 49.8ms) - air-conditioner-fae7bf
+2025-07-22 10:50:04,820 - INFO - ✅ Test #76: device_info() success (Response time: 16.6ms) - air-conditioner-fae7bf
+2025-07-22 10:50:09,830 - INFO - ✅ Test #77: device_info() success (Response time: 7.9ms) - air-conditioner-fae7bf
+2025-07-22 10:50:14,839 - INFO - ✅ Test #78: device_info() success (Response time: 5.3ms) - air-conditioner-fae7bf
+2025-07-22 10:50:19,861 - INFO - ✅ Test #79: device_info() success (Response time: 19.8ms) - air-conditioner-fae7bf
+2025-07-22 10:50:24,872 - INFO - ✅ Test #80: device_info() success (Response time: 7.6ms) - air-conditioner-fae7bf
+2025-07-22 10:50:24,873 - INFO - 📊 Stats after 427s: Tests: 80, Success: 79, Failures: 1, Success Rate: 98.8%
+2025-07-22 10:50:29,900 - INFO - ✅ Test #81: device_info() success (Response time: 21.2ms) - air-conditioner-fae7bf
+2025-07-22 10:50:34,924 - INFO - ✅ Test #82: device_info() success (Response time: 18.8ms) - air-conditioner-fae7bf
+2025-07-22 10:50:39,957 - INFO - ✅ Test #83: device_info() success (Response time: 30.3ms) - air-conditioner-fae7bf
+2025-07-22 10:50:44,972 - INFO - ✅ Test #84: device_info() success (Response time: 8.5ms) - air-conditioner-fae7bf
+2025-07-22 10:50:50,014 - INFO - ✅ Test #85: device_info() success (Response time: 35.1ms) - air-conditioner-fae7bf
+2025-07-22 10:50:55,064 - INFO - ✅ Test #86: device_info() success (Response time: 44.0ms) - air-conditioner-fae7bf
+2025-07-22 10:51:00,114 - INFO - ✅ Test #87: device_info() success (Response time: 47.1ms) - air-conditioner-fae7bf
+2025-07-22 10:51:05,156 - INFO - ✅ Test #88: device_info() success (Response time: 35.6ms) - air-conditioner-fae7bf
+2025-07-22 10:51:20,165 - ERROR - ❌ Test #89: APIConnectionError - Timeout waiting for DeviceInfoResponse after 10.0s
+2025-07-22 10:51:20,166 - INFO - 🔄 Attempting to reconnect...
+2025-07-22 10:51:30,177 - ERROR - air-conditioner-fae7bf @ 10.1.1.175: disconnect request failed
+Traceback (most recent call last):
+  File "aioesphomeapi/connection.py", line 861, in aioesphomeapi.connection.APIConnection.send_messages_await_response_complex
+TimeoutError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "aioesphomeapi/connection.py", line 1066, in aioesphomeapi.connection.APIConnection.disconnect
+  File "aioesphomeapi/connection.py", line 879, in send_message_await_response
+  File "aioesphomeapi/connection.py", line 865, in send_messages_await_response_complex
+aioesphomeapi.core.TimeoutAPIError: Timeout waiting for DisconnectResponse after 10.0s
+2025-07-22 10:51:47,253 - ERROR - ❌ Failed to connect to ESPHome device 10.1.1.175: Error connecting to [AddrInfo(family=<AddressFamily.AF_INET: 2>, type=<SocketKind.SOCK_STREAM: 1>, proto=6, sockaddr=IPv4Sockaddr(address='10.1.1.175', port=6053))]: [Errno 111] Connect call failed ('10.1.1.175', 6053)
+2025-07-22 10:51:47,254 - INFO - 📊 Stats after 509s: Tests: 89, Success: 87, Failures: 2, Success Rate: 97.8%
+2025-07-22 10:51:52,256 - ERROR - ❌ Test #90: APIConnectionError - Not connected to 10.1.1.175!
+2025-07-22 10:51:52,256 - INFO - 🔄 Attempting to reconnect...
+2025-07-22 10:51:52,336 - INFO - ✅ Test #91: device_info() success (Response time: 17.9ms) - air-conditioner-fae7bf
+2025-07-22 10:51:57,386 - INFO - ✅ Test #92: device_info() success (Response time: 44.6ms) - air-conditioner-fae7bf
+2025-07-22 10:52:02,436 - INFO - ✅ Test #93: device_info() success (Response time: 42.8ms) - air-conditioner-fae7bf
+2025-07-22 10:52:07,478 - INFO - ✅ Test #94: device_info() success (Response time: 36.9ms) - air-conditioner-fae7bf
+2025-07-22 10:52:12,526 - INFO - ✅ Test #95: device_info() success (Response time: 46.5ms) - air-conditioner-fae7bf
+2025-07-22 10:52:17,548 - INFO - ✅ Test #96: device_info() success (Response time: 16.0ms) - air-conditioner-fae7bf
+2025-07-22 10:52:22,559 - INFO - ✅ Test #97: device_info() success (Response time: 5.4ms) - air-conditioner-fae7bf
+2025-07-22 10:52:27,582 - INFO - ✅ Test #98: device_info() success (Response time: 16.7ms) - air-conditioner-fae7bf
+2025-07-22 10:52:32,596 - INFO - ✅ Test #99: device_info() success (Response time: 13.0ms) - air-conditioner-fae7bf
+2025-07-22 10:52:37,612 - INFO - ✅ Test #100: device_info() success (Response time: 10.2ms) - air-conditioner-fae7bf
+2025-07-22 10:52:37,612 - INFO - 📊 Stats after 560s: Tests: 100, Success: 97, Failures: 3, Success Rate: 97.0%
+2025-07-22 10:52:42,645 - INFO - ✅ Test #101: device_info() success (Response time: 27.0ms) - air-conditioner-fae7bf
+2025-07-22 10:52:47,710 - INFO - ✅ Test #102: device_info() success (Response time: 58.5ms) - air-conditioner-fae7bf
+2025-07-22 10:52:52,769 - INFO - ✅ Test #103: device_info() success (Response time: 57.5ms) - air-conditioner-fae7bf
+2025-07-22 10:52:57,820 - INFO - ✅ Test #104: device_info() success (Response time: 45.5ms) - air-conditioner-fae7bf
+2025-07-22 10:53:02,865 - INFO - ✅ Test #105: device_info() success (Response time: 38.9ms) - air-conditioner-fae7bf
+2025-07-22 10:53:07,928 - INFO - ✅ Test #106: device_info() success (Response time: 57.5ms) - air-conditioner-fae7bf
+2025-07-22 10:53:12,979 - INFO - ✅ Test #107: device_info() success (Response time: 48.9ms) - air-conditioner-fae7bf
+2025-07-22 10:53:18,025 - INFO - ✅ Test #108: device_info() success (Response time: 40.4ms) - air-conditioner-fae7bf
+2025-07-22 10:53:23,037 - INFO - ✅ Test #109: device_info() success (Response time: 5.6ms) - air-conditioner-fae7bf
+2025-07-22 10:53:28,051 - INFO - ✅ Test #110: device_info() success (Response time: 7.9ms) - air-conditioner-fae7bf
+2025-07-22 10:53:28,051 - INFO - 📊 Stats after 610s: Tests: 110, Success: 107, Failures: 3, Success Rate: 97.3%
+2025-07-22 10:53:33,063 - INFO - ✅ Test #111: device_info() success (Response time: 9.4ms) - air-conditioner-fae7bf
+2025-07-22 10:53:38,080 - INFO - ✅ Test #112: device_info() success (Response time: 11.1ms) - air-conditioner-fae7bf
+2025-07-22 10:53:43,100 - INFO - ✅ Test #113: device_info() success (Response time: 13.9ms) - air-conditioner-fae7bf
+2025-07-22 10:53:48,116 - INFO - ✅ Test #114: device_info() success (Response time: 10.5ms) - air-conditioner-fae7bf
+2025-07-22 10:53:53,128 - INFO - ✅ Test #115: device_info() success (Response time: 9.1ms) - air-conditioner-fae7bf
+2025-07-22 10:53:58,151 - INFO - ✅ Test #116: device_info() success (Response time: 17.4ms) - air-conditioner-fae7bf
+2025-07-22 10:54:03,192 - INFO - ✅ Test #117: device_info() success (Response time: 34.8ms) - air-conditioner-fae7bf
+2025-07-22 10:54:08,247 - INFO - ✅ Test #118: device_info() success (Response time: 49.9ms) - air-conditioner-fae7bf
+2025-07-22 10:54:13,297 - INFO - ✅ Test #119: device_info() success (Response time: 47.1ms) - air-conditioner-fae7bf
+2025-07-22 10:54:18,331 - INFO - ✅ Test #120: device_info() success (Response time: 29.0ms) - air-conditioner-fae7bf
+2025-07-22 10:54:18,331 - INFO - 📊 Stats after 660s: Tests: 120, Success: 117, Failures: 3, Success Rate: 97.5%
+2025-07-22 10:54:23,387 - INFO - ✅ Test #121: device_info() success (Response time: 49.7ms) - air-conditioner-fae7bf
+2025-07-22 10:54:28,447 - INFO - ✅ Test #122: device_info() success (Response time: 54.6ms) - air-conditioner-fae7bf
+2025-07-22 10:54:33,455 - INFO - ✅ Test #123: device_info() success (Response time: 5.4ms) - air-conditioner-fae7bf
+2025-07-22 10:54:38,482 - INFO - ✅ Test #124: device_info() success (Response time: 20.7ms) - air-conditioner-fae7bf
+2025-07-22 10:54:43,533 - INFO - ✅ Test #125: device_info() success (Response time: 45.8ms) - air-conditioner-fae7bf
+2025-07-22 10:54:48,594 - INFO - ✅ Test #126: device_info() success (Response time: 55.6ms) - air-conditioner-fae7bf
+2025-07-22 10:54:53,645 - INFO - ✅ Test #127: device_info() success (Response time: 48.3ms) - air-conditioner-fae7bf
+2025-07-22 10:54:54,027 - INFO - 📊 Stats after 696s: Tests: 127, Success: 124, Failures: 3, Success Rate: 97.6%
+2025-07-22 10:54:54,034 - INFO - 🔌 Disconnected from device

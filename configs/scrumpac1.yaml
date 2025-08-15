@@ -1,0 +1,7 @@
+devices:
+  living_room_ac:
+    components:
+      ac:
+        type: "ESPHomeACComponent"
+        host: "10.1.1.176"
+        port: 6053

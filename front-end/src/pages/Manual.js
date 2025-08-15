@@ -1,6 +1,6 @@
 import "../css/Basic.css"
 import "../css/Manual.css"
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSocket } from '../SocketContext';
 import DarkModeToggle from "../components/ThemeSwitch";
 import { isMobile } from 'react-device-detect';
@@ -36,7 +36,35 @@ function Manual({ onOpenSettings }) {
     const [averyRoomHeartbeat, setAveryRoomHeartbeat] = useState(false);
     const [livingRoomHeartbeat, setLivingRoomHeartbeat] = useState(false);
     const [hvacHeartbeat, setHvacHeartbeat] = useState(false);
+    const [ac1Heartbeat, setac1Heartbeat] = useState(false);
+    const [ac2Heartbeat, setac2Heartbeat] = useState(false);
+
     const [fanPower, setFanPower] = useState(0);
+
+    const [ac1Mode, setac1Mode] = useState(false);
+    const [ac2Mode, setac2Mode] = useState(false);
+
+    const [ac1Preset, setac1Preset] = useState(false);
+    const [ac2Preset, setac2Preset] = useState(false);
+
+    const [ac1SetTemp, setac1SetTemp] = useState(60.0);
+    const [ac2SetTemp, setac2SetTemp] = useState(60.0);
+
+    const delayUpdate = useRef(false);
+    const delayTimeoutId = useRef(null);
+
+    async function handleDelayUpdate(delay = 10000) {
+        if (delayTimeoutId.current) {
+            clearTimeout(delayTimeoutId.current);
+        }
+
+        delayUpdate.current = true;
+
+        delayTimeoutId.current = setTimeout(() => {
+            delayUpdate.current = false;
+            delayTimeoutId.current = null;
+        }, delay);
+    }
 
     // useEffect to update state when socketData changes
     useEffect(() => {
@@ -46,7 +74,25 @@ function Manual({ onOpenSettings }) {
                 setCurrentMode(socketData.control);
             }
 
-            const hvacData = socketData['hvac.heartbeat_status'];
+            const ac1HeartbeatData = socketData['living_room_ac.ac.heartbeat_status'];
+            if (ac1HeartbeatData) {
+                if (ac1HeartbeatData.status == "online") {
+                    setac1Heartbeat(true);
+                } else {
+                    setac1Heartbeat(false);
+                }
+            }
+
+            const ac2HeartbeatData = socketData['avery_room_ac.ac.heartbeat_status'];
+            if (ac2HeartbeatData) {
+                if (ac2HeartbeatData.status == "online") {
+                    setac2Heartbeat(true);
+                } else {
+                    setac2Heartbeat(false);
+                }
+            }
+
+            const hvacData = socketData['therm.heartbeat_status'];
             if (hvacData) {
                 if (hvacData.status == "alive") {
                     setHvacHeartbeat(true);
@@ -55,7 +101,7 @@ function Manual({ onOpenSettings }) {
                 }
             }
 
-            const ryanRoomHeartbeat = socketData['ryans_room.heartbeat_status'];
+            const ryanRoomHeartbeat = socketData['ems2.heartbeat_status'];
             if (ryanRoomHeartbeat) {
                 if (ryanRoomHeartbeat.status == "alive") {
                     setRyanRoomHeartbeat(true);
@@ -64,7 +110,7 @@ function Manual({ onOpenSettings }) {
                 }
             }
 
-            const averyRoomHeartbeat = socketData['averys_room.heartbeat_status'];
+            const averyRoomHeartbeat = socketData['ems.heartbeat_status'];
             if (averyRoomHeartbeat) {
                 if (averyRoomHeartbeat.status == "alive") {
                     setAveryRoomHeartbeat(true);
@@ -73,7 +119,7 @@ function Manual({ onOpenSettings }) {
                 }
             }
 
-            const livingRoomHeartbeat = socketData['living_room.heartbeat_status'];
+            const livingRoomHeartbeat = socketData['scrumpi.heartbeat_status'];
             if (livingRoomHeartbeat) {
                 if (livingRoomHeartbeat.status == "alive") {
                     setLivingRoomHeartbeat(true);
@@ -96,7 +142,7 @@ function Manual({ onOpenSettings }) {
                 }
             }
 
-                        // Update temperature data from living room sensor
+            // Update temperature data from avery room sensor
             const averyRoomData = socketData['averys_room.temp_sensor.temp_status'];
             if (averyRoomData) {
                 if (averyRoomData.sensor_0 !== undefined) {
@@ -107,7 +153,7 @@ function Manual({ onOpenSettings }) {
                 }
             }
 
-                                    // Update temperature data from living room sensor
+            // Update temperature data from ryan room sensor
             const ryanRoomData = socketData['ryans_room.temp_sensor.temp_status'];
             if (ryanRoomData) {
                 if (ryanRoomData.temperature !== undefined) {
@@ -131,6 +177,41 @@ function Manual({ onOpenSettings }) {
             const bathroomValveData = socketData['hvac.bathroom_valve.relay_status'];
             if (bathroomValveData && bathroomValveData.relay !== undefined) {
                 setBathroomValve(bathroomValveData.relay);
+            }
+
+            // Only update AC states if we're not currently polling for changes
+            const ac1ModeData = socketData['living_room_ac.ac.mode_status'];
+            if (ac1ModeData && ac1ModeData.mode !== undefined && delayUpdate.current === false) {
+                const newAc1Mode = ac1ModeData.mode !== 'off';
+                setac1Mode(newAc1Mode);
+            }
+
+            const ac2ModeData = socketData['avery_room_ac.ac.mode_status'];
+            if (ac2ModeData && ac2ModeData.mode !== undefined && delayUpdate.current === false) {
+                const newAc2Mode = ac2ModeData.mode !== 'off';
+                setac2Mode(newAc2Mode);
+            }
+
+            const ac1PresetData = socketData['living_room_ac.ac.preset_status'];
+            if (ac1PresetData && ac1PresetData.preset !== undefined && delayUpdate.current === false) {
+                const newAc1Preset = ac1PresetData.preset === 'boost';
+                setac1Preset(newAc1Preset);
+            }
+
+            const ac2PresetData = socketData['avery_room_ac.ac.preset_status'];
+            if (ac2PresetData && ac2PresetData.preset !== undefined && delayUpdate.current === false) {
+                const newAc2Preset = ac2PresetData.preset === 'boost';
+                setac2Preset(newAc2Preset);
+            }
+
+            const ac1SetTempData = socketData['living_room_ac.ac.target_temp_status'];
+            if (ac1SetTempData && ac1SetTempData.target_temperature !== undefined) {
+                setac1SetTemp((ac1SetTempData.target_temperature * 1.8 + 32).toFixed(0));
+            }
+
+            const ac2SetTempData = socketData['avery_room_ac.ac.target_temp_status'];
+             if (ac2SetTempData && ac2SetTempData.target_temperature !== undefined) {
+                setac2SetTemp((ac2SetTempData.target_temperature * 1.8 + 32).toFixed(0));
             }
 
             // Debug logging
@@ -168,6 +249,65 @@ function Manual({ onOpenSettings }) {
     // Handle fan power setting
     const handleFanPowerSet = (newPower) => {
         sendCommand("DIRECT", `controller.hvac.fan.set_power(power=${newPower})`);
+    };
+
+    const handleAC1TempSet = (newTemp) => {
+        newTemp = (newTemp -32) / 1.8
+        sendCommand("DIRECT", `controller.living_room_ac.ac.set_temp(${newTemp})`);
+    };
+
+    const handleAC2TempSet = (newTemp) => {
+        newTemp = (newTemp -32) / 1.8
+        sendCommand("DIRECT", `controller.avery_room_ac.ac.set_temp(${newTemp})`);
+    };
+
+    // Updated AC1 Mode handler with immediate state change and polling
+    const handleAC1Mode = (newMode) => {
+        handleDelayUpdate();
+
+        // Immediately update the UI state
+        setac1Mode(newMode);      
+
+        // Send the command
+        const toggle = newMode ? "on" : "off";
+        sendCommand("DIRECT", `controller.living_room_ac.ac.turn_${toggle}()`);
+    
+    };
+
+    // Updated AC2 Mode handler with immediate state change and polling
+    const handleAC2Mode = (newMode) => {
+        handleDelayUpdate();
+
+        // Immediately update the UI state
+        setac2Mode(newMode);
+
+        // Send the command
+        const toggle = newMode ? "on" : "off";
+        sendCommand("DIRECT", `controller.avery_room_ac.ac.turn_${toggle}()`);
+    };
+
+    // Updated AC1 Preset handler with immediate state change and polling
+    const handleAC1Preset = (newPreset) => {
+        handleDelayUpdate();
+
+        // Immediately update the UI state
+        setac1Preset(newPreset);
+
+        // Send the command
+        sendCommand("DIRECT", `controller.living_room_ac.ac.set_boost_mode(${newPreset})`);
+        
+    };
+
+    // Updated AC2 Preset handler with immediate state change and polling
+    const handleAC2Preset = (newPreset) => {
+        handleDelayUpdate();
+
+        // Immediately update the UI state
+        setac2Preset(newPreset);
+
+        // Send the command
+        sendCommand("DIRECT", `controller.avery_room_ac.ac.set_boost_mode(${newPreset})`);
+    
     };
 
     // Send direct device commands (for testing)
@@ -220,6 +360,30 @@ function Manual({ onOpenSettings }) {
                             temperature={radTemp}
                         />
                     </div>
+                    <div className="Left-Line-2 text-outline" style={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
+                        <NumberInput
+                                label="Living Room Set Temp"
+                                value={ac1SetTemp}
+                                onSubmit={handleAC1TempSet}
+                                min={60}
+                                max={86}
+                                step={1}
+                                suffix=""
+                                className=""
+                            />
+                    </div>
+                    <div className="Left-Line-2 text-outline" style={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
+                        <NumberInput
+                                label="Avery's Room Set Temp"
+                                value={ac2SetTemp}
+                                onSubmit={handleAC2TempSet}
+                                min={60}
+                                max={86}
+                                step={1}
+                                suffix=""
+                                className=""
+                            />
+                    </div>
                     
                     <div className="Pinkbox Left-Line-3" id="ManualLeftLine3">
                         <div className="Pink-Line-2">
@@ -242,6 +406,16 @@ function Manual({ onOpenSettings }) {
                                 falseColor="#e80e0eff"
                             />
                         </div>
+                        <div className="Pink-Line-2">
+                            <BooleanDisplay
+                                label="Living Room AC Boost"
+                                value={ac1Preset}
+                                trueText="On"
+                                falseText="Off"
+                                trueColor="#11e743ff"
+                                falseColor="#e80e0eff"
+                            />
+                        </div>
                         <div className="Pink-Line-3">
                             <NumberInput
                                 label="Fan Power"
@@ -258,9 +432,9 @@ function Manual({ onOpenSettings }) {
                 </div>
                 
                 <div className="RightContainer" id="ManualRightContainer">
-                    <div className="Right-Line-2">
-                        <div className="Pink-Line-2" style={{width: "100%", marginTop: "20px"}}>
-                    <span>Avery's Room Valve: </span>
+                    <div className="Right-Line-2" style={{width: "100%"}}>
+                        <div className="Pink-Line-2 sel-text" style={{width: "100%", marginTop: "20px"}}>
+                    <span style={{marginLeft: "12px"}}>Avery's Room Valve: </span>
                     <div className="">
                         <BooleanToggle
                             value={averyValve}
@@ -273,14 +447,56 @@ function Manual({ onOpenSettings }) {
                         />
                     </div>
                     </div>
-                    <div className="Pink-Line-2" style={{width: "100%"}}>
-                    <span>Bathroom Valve: </span>
+                    <div className="Pink-Line-2 sel-text" style={{width: "100%"}}>
+                    <span style={{marginLeft: "12px"}}>Bathroom Valve: </span>
                     <div className="">
                         <BooleanToggle
                             value={bathroomValve}
                             onChange={handleBathroomValveToggle}
                             onText="Close Valve"
                             offText="Open Valve"
+                            disabled={!isConnected}
+                            variant="danger"
+                            className="button"
+                        />
+                    </div>
+                    </div>
+                    <div className="Pink-Line-2 sel-text" style={{width: "100%"}}>
+                    <span style={{marginLeft: "12px"}}>Living Room AC: </span>
+                    <div className="">
+                        <BooleanToggle
+                            value={ac1Mode}
+                            onChange={handleAC1Mode}
+                            onText="Turn Off"
+                            offText="Turn On"
+                            disabled={!isConnected}
+                            variant="danger"
+                            className="button"
+                        />
+                    </div>
+                    </div>
+                    <div className="Pink-Line-2 sel-text" style={{width: "100%"}}>
+                    <span style={{marginLeft: "12px"}}>Living Room AC Boost: </span>
+                    <div className="">
+                        <BooleanToggle
+                            value={ac1Preset}
+                            onChange={handleAC1Preset}
+                            onText="Disable"
+                            offText="Enable"
+                            disabled={!isConnected}
+                            variant="danger"
+                            className="button"
+                        />
+                    </div>
+                    </div>
+                    <div className="Pink-Line-2 sel-text" style={{width: "100%"}}>
+                    <span style={{marginLeft: "12px"}}>Avery's Room AC: </span>
+                    <div className="">
+                        <BooleanToggle
+                            value={ac2Mode}
+                            onChange={handleAC2Mode}
+                            onText="Turn Off"
+                            offText="Turn On"
                             disabled={!isConnected}
                             variant="danger"
                             className="button"
@@ -310,72 +526,11 @@ function Manual({ onOpenSettings }) {
                     <div className={`Grid-Item Bold ${ryanRoomHeartbeat ? "Greenbox" : "Redbox"}`}>EMS 2</div>
                     
                     <div className={`Grid-Item Bold ${averyRoomHeartbeat ? "Greenbox" : "Redbox"}`}>EMS</div>
-                
-                </div>
-                
-                {/* Debug Section - Remove in production */}
-                {/* <div style={{ marginTop: '20px', padding: '10px', background: '#494949ff', borderRadius: '4px' }}>
-                    <h5>Debug Controls:</h5>
-                    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                        <button 
-                            onClick={() => sendDirectCommand('controller.hvac.avery_valve.on()')}
-                            style={{ padding: '5px 10px', fontSize: '12px' }}
-                        >
-                            Avery Valve On
-                        </button>
-                        <button 
-                            onClick={() => sendDirectCommand('controller.hvac.avery_valve.off()')}
-                            style={{ padding: '5px 10px', fontSize: '12px' }}
-                        >
-                            Avery Valve Off
-                        </button>
-                        <button 
-                            onClick={() => sendDirectCommand('controller.hvac.bathroom_valve.on()')}
-                            style={{ padding: '5px 10px', fontSize: '12px' }}
-                        >
-                            Bathroom Valve On
-                        </button>
-                        <button 
-                            onClick={() => sendDirectCommand('controller.hvac.bathroom_valve.off()')}
-                            style={{ padding: '5px 10px', fontSize: '12px' }}
-                        >
-                            Bathroom Valve Off
-                        </button>
-                        <button 
-                            onClick={() => sendDirectCommand('controller.hvac.fan.set_power(power=5)')}
-                            style={{ padding: '5px 10px', fontSize: '12px' }}
-                        >
-                            Fan Power 5
-                        </button>
-                        <button 
-                            onClick={() => sendDirectCommand('controller.hvac.fan.set_power(power=0)')}
-                            style={{ padding: '5px 10px', fontSize: '12px' }}
-                        >
-                            Fan Off
-                        </button>
-                        <button 
-                            onClick={() => sendDirectCommand('controller.hvac.temp_sensor.read_temp(units="f")')}
-                            style={{ padding: '5px 10px', fontSize: '12px' }}
-                        >
-                            Read Temp
-                        </button>
-                    </div>
-                    
 
-                    <details style={{ marginTop: '10px' }}>
-                        <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>Raw State Data</summary>
-                        <pre style={{ 
-                            background: 'rgb(65, 65, 65)', 
-                            padding: '10px', 
-                            borderRadius: '4px', 
-                            fontSize: '10px',
-                            maxHeight: '400px',
-                            overflow: 'auto'
-                        }}>
-                            {JSON.stringify(socketData, null, 2)}
-                        </pre>
-                    </details>
-                </div> */}
+                    <div className={`Grid-Item Bold ${ac1Heartbeat ? "Greenbox" : "Redbox"}`}>Living Room AC</div>
+
+                    <div className={`Grid-Item Bold ${ac2Heartbeat ? "Greenbox" : "Redbox"}`}>Avery's Room AC</div>                
+                </div>
             </div>
             
             <div className="FooterContainer">

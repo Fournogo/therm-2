@@ -77,7 +77,7 @@ class AsyncInfluxSensorWriter:
             # Add more sensor configurations here...
             {
                 'command_path': 'averys_room.temp_sensor.read_temp',
-                'command_args': {'units': 'f'},
+                'command_args': {},
                 'influx_fields': {
                     'sensor_0.temperature': 'shroompi_temp_0',
                     'sensor_0.humidity': 'shroompi_hum_0',
@@ -90,7 +90,7 @@ class AsyncInfluxSensorWriter:
             },
             {
                 'command_path': 'ryans_room.temp_sensor.read_temp',
-                'command_args': {'units': 'f'},
+                'command_args': {},
                 'influx_fields': {
                     'temperature': 'ems2_temp',
                     'humidity': 'ems2_hum'
@@ -101,7 +101,7 @@ class AsyncInfluxSensorWriter:
             },
             {
                 'command_path': 'hvac.temp_sensor.read_temp',
-                'command_args': {'units': 'f'},
+                'command_args': {},
                 'influx_fields': {
                     'temperature': 'fan_temp',
                     'humidity': 'fan_hum'
@@ -112,7 +112,7 @@ class AsyncInfluxSensorWriter:
             },
             {
                 'command_path': 'living_room.temp_sensor.read_temp',
-                'command_args': {'units': 'f'},
+                'command_args': {},
                 'influx_fields': {
                     'temperature': 'temperature',
                     'humidity': 'humidity'

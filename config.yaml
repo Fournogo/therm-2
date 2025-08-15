@@ -1,7 +1,7 @@
 app:
   # Logging configuration
   logging:
-    level: 'INFO'
+    level: 'DEBUG'
     format: '%(asctime)s - %(levelname)s - %(message)s'
     filename: 'app.log'
     filemode: 'a'
@@ -25,6 +25,7 @@ app:
         - "https://therm.cfd"
         - "http://localhost:3001"
         - "http://10.1.1.11:3001"
+        - "http://10.1.1.11:5023"
     
     # Server configuration
     server:
@@ -52,7 +53,11 @@ control:
 
 state:
   internal_state:
-    control: "MANUAL"
+    control_mode: "MANUAL"
+    target_temperature: 72
   config:
-    refresh_interval: 30
-    heartbeat_refresh_interval: 15
+    poll_intervals:
+      temp_status: 5      # Poll temperature every 5 seconds
+      mode_status: 1     # Poll mode every 10 seconds
+      power_status: 30    # Poll power every 30 seconds
+      heartbeat_status: 15

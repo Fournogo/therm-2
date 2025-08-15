@@ -2,6 +2,7 @@ import asyncio
 import logging
 from typing import Type, TypeVar
 from SafeCommandDispatcher import SafeCommandDispatcher
+from StinkMode import StinkMode
 
 async def clear_async_queue(queue: asyncio.Queue) -> None:
     """
@@ -65,6 +66,7 @@ class AsyncCommandProcessor:
         self.processor_task = None
         self.controller = controller
         self.state_manager = state_manager
+        self.stink_mode = StinkMode(self.controller, self.state_manager, self.config.get("stink_mode", {}))
         self._initialized = True
         
         # Initialize dispatcher
@@ -172,6 +174,13 @@ class AsyncCommandProcessor:
                     except Exception as e:
                         logging.error(f"Error executing direct command {data}: {e}")
                         print(f"Error executing direct command {data}: {e}")
+
+                elif command == "STINK":
+                    try:
+                        await self.stink_mode.toggle_stink_mode()
+                    except Exception as e:
+                        logging.error(f"Error executing stink mode command {data}: {e}")
+                        print(f"Error executing stink mode command {data}: {e}")
 
                 # Handle mode changes
                 elif command == "CONTROL":

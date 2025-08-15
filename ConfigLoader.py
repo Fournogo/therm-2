@@ -1,351 +1,259 @@
+
 import yaml
 import os
 import glob
-from ServerDeviceProxy import AsyncServerDeviceManager, ComponentInspector
-import json
 import asyncio
+import logging
+import sys
+from typing import Dict, Any, List, Optional
 
-class AsyncConfigLoader:
-    """Async version of ConfigLoader - loads multiple config files and creates device proxies"""
+from ServerMQTTManager import ServerMQTTManager
+from MQTTDeviceProxy import MQTTDeviceProxy, MQTTComponentProxy
+from ESPHomeComponentAdapter import ESPHomeComponentAdapter
+from UnifiedComponentProxy import UnifiedComponentProxy
+
+class ConfigLoader:
+    """
+    Config loader that properly creates proxies for remote devices
+    without instantiating physical components on the server.
+    """
     
     def __init__(self, config_directory: str = "configs", component_path: str = "."):
         self.config_directory = config_directory
-        self.device_managers = {}  # One per device_prefix
-        self.all_devices = {}  # All devices accessible by name
-        self._initialized = False
+        self.component_path = component_path
         
-        # Add component path for imports
-        ComponentInspector.add_component_path(component_path)
+        # Add component path for imports (for inspection only)
+        if component_path not in sys.path:
+            sys.path.insert(0, component_path)
+        
+        # Track devices and MQTT managers
+        self.mqtt_managers = {}  # One per device_prefix
+        self.all_devices = {}    # All devices by name
+        self._initialized = False
     
     async def initialize(self):
-        """Initialize all device managers"""
+        """Initialize all connections and devices"""
         if self._initialized:
             return
         
         await self.load_all_configs()
-        
-        # Initialize all device managers
-        for manager in self.device_managers.values():
-            await manager.initialize()
-        
         self._initialized = True
-        print("AsyncConfigLoader initialized successfully")
+        
+        logging.info("CleanConfigLoader initialized successfully")
     
     async def load_all_configs(self):
-        """Load all YAML config files from the directory"""
+        """Load all config files"""
         if not os.path.exists(self.config_directory):
-            print(f"Config directory '{self.config_directory}' not found")
+            logging.error(f"Config directory '{self.config_directory}' not found")
             return
         
-        # Find all .yaml and .yml files
+        # Find all YAML files
         config_files = glob.glob(os.path.join(self.config_directory, "*.yaml"))
         config_files.extend(glob.glob(os.path.join(self.config_directory, "*.yml")))
         
-        print(f"Found {len(config_files)} config files")
+        logging.info(f"Found {len(config_files)} config files")
         
         for config_file in config_files:
             try:
                 await self.load_config_file(config_file)
             except Exception as e:
-                print(f"Failed to load config file {config_file}: {e}")
+                logging.error(f"Failed to load config {config_file}: {e}")
     
     async def load_config_file(self, config_file: str):
         """Load a single config file"""
-        print(f"Loading config: {config_file}")
+        logging.info(f"Loading config: {config_file}")
         
         with open(config_file, 'r') as file:
             config = yaml.safe_load(file)
         
-        # Extract MQTT config
+        # Get devices config
+        devices_config = config.get('devices', {})
+        if not devices_config:
+            logging.warning(f"No devices found in {config_file}")
+            return
+        
+        # Check if this has MQTT config (for MQTT devices)
         mqtt_config = config.get('mqtt', {})
+        
+        if mqtt_config:
+            # This is an MQTT device config
+            await self._load_mqtt_devices(devices_config, mqtt_config)
+        else:
+            # This might be ESPHome-only config
+            await self._load_esphome_devices(devices_config)
+    
+    async def _load_mqtt_devices(self, devices_config: Dict, mqtt_config: Dict):
+        """Load MQTT devices"""
         device_prefix = mqtt_config.get('device_prefix', 'devices')
         
-        # Create or get device manager for this prefix
-        if device_prefix not in self.device_managers:
-            # Add broker_host if not specified
+        # Get or create MQTT manager for this prefix
+        if device_prefix not in self.mqtt_managers:
+            # Ensure broker_host is set
             if 'broker_host' not in mqtt_config:
                 mqtt_config['broker_host'] = 'localhost'
             
-            self.device_managers[device_prefix] = AsyncServerDeviceManager(mqtt_config)
+            mqtt_manager = ServerMQTTManager(mqtt_config)
+            self.mqtt_managers[device_prefix] = mqtt_manager
+            
+            # Connect to MQTT
+            connected = await mqtt_manager.connect()
+            if not connected:
+                logging.error(f"Failed to connect MQTT manager for prefix '{device_prefix}'")
+                return
+        else:
+            mqtt_manager = self.mqtt_managers[device_prefix]
         
-        # Load devices into the appropriate manager
-        device_manager = self.device_managers[device_prefix]
-        device_manager.load_device_config(config)
-        
-        # Add devices to global registry and as attributes
-        for device_name, device_proxy in device_manager.devices.items():
+        # Create device proxies
+        for device_name, device_config in devices_config.items():
+            components = device_config.get('components', {})
+            
+            # Create device proxy
+            device_proxy = MQTTDeviceProxy(
+                device_name=device_name,
+                components_config=components,
+                mqtt_manager=mqtt_manager
+            )
+            
+            # Store and add as attribute
             self.all_devices[device_name] = device_proxy
-            # Add device as attribute to this loader for easy access
             setattr(self, device_name, device_proxy)
+            
+            logging.info(f"Created MQTT device proxy: {device_name} (prefix: {device_prefix})")
+    
+    async def _load_esphome_devices(self, devices_config: Dict):
+        """Load ESPHome devices"""
+        for device_name, device_config in devices_config.items():
+            components = device_config.get('components', {})
+            
+            # Create a simple device container
+            class ESPHomeDevice:
+                pass
+            
+            device = ESPHomeDevice()
+            
+            for component_name, component_config in components.items():
+                if component_config.get('type') == 'ESPHomeACComponent':
+                    # Create ESPHome adapter
+                    esphome_adapter = ESPHomeComponentAdapter(
+                        name=component_name,
+                        device_name=device_name,
+                        **{k: v for k, v in component_config.items() if k != 'type'}
+                    )
+                    
+                    # Initialize the ESPHome connection
+                    success = await esphome_adapter.initialize()
+                    if success:
+                        setattr(device, component_name, esphome_adapter)
+                        logging.info(f"Created ESPHome component: {device_name}.{component_name}")
+                    else:
+                        logging.error(f"Failed to initialize ESPHome component: {device_name}.{component_name}")
+            
+            # Store device
+            self.all_devices[device_name] = device
+            setattr(self, device_name, device)
     
     def get_device(self, name: str):
-        """Get any device by name regardless of prefix"""
+        """Get a device by name"""
         return self.all_devices.get(name)
     
     def list_all_devices(self):
-        """List all devices from all config files"""
+        """List all devices and their components"""
         print("\n=== All Loaded Devices ===")
-        for prefix, manager in self.device_managers.items():
-            print(f"\nDevice Prefix: {prefix}")
-            manager.list_devices()
+        
+        for device_name, device in self.all_devices.items():
+            print(f"\nDevice: {device_name}")
+            
+            if isinstance(device, MQTTDeviceProxy):
+                # MQTT device
+                for comp_name, component in device.components.items():
+                    print(f"  - {comp_name} ({component.component_type})")
+                    print(f"    Commands: {', '.join(component.command_methods)}")
+                    if component.status_methods:
+                        print(f"    Status: {', '.join(component.status_methods)}")
+            else:
+                # ESPHome device
+                for attr_name in dir(device):
+                    if not attr_name.startswith('_'):
+                        component = getattr(device, attr_name)
+                        if hasattr(component, 'component_type'):
+                            print(f"  - {attr_name} (ESPHome)")
     
-    async def disconnect_all(self):
-        """Disconnect all MQTT connections"""
-        tasks = []
-        for manager in self.device_managers.values():
-            tasks.append(manager.disconnect())
-        
-        if tasks:
-            await asyncio.gather(*tasks, return_exceptions=True)
-
-    def list_data_commands(self):
-        """
-        Generate a list of all available data commands with their proxy methods
-        
-        Returns:
-            List of data command info with proxy method references
-        """
+    def list_data_commands(self) -> List[Dict[str, Any]]:
+        """List all data commands for state manager"""
         commands = []
         
-        # Iterate through all loaded devices
-        for device_name, device_proxy in self.all_devices.items():
-            # Get the device config to find component types
-            device_config = self._get_device_config(device_name)
-            if not device_config:
-                continue
-                
-            components_config = device_config.get('components', {})
-            
-            for component_name, component_config in components_config.items():
-                component_type = component_config.get('type')
-                if not component_type:
-                    continue
-                    
-                # Use ComponentInspector to discover methods
-                data_methods = ComponentInspector.discover_data_methods(component_type)
-                
-                # Add data methods
-                for data_method in data_methods:
-                    command_method_name = data_method['command_method_name']
-                    status_method_name = data_method['status_method_name']
-
-                    # Get signatures from the component class
-                    command_signature = self._get_method_signature(component_type, command_method_name)
-                    status_signature = self._get_method_signature(component_type, status_method_name)
-
-                    # Build the command/status strings
-                    command_str = f"{device_name}.{component_name}.{command_method_name}{command_signature}"
-                    status_str = f"{device_name}.{component_name}.{status_method_name}{status_signature}"
-                    component_path = f"{device_name}.{component_name}"
-                    status_path = f"{device_name}.{component_name}.{status_method_name}"
-
-                    # Get the actual proxy methods from the loaded device
-                    try:
-                        # Get the component proxy from the device proxy
-                        component_proxy = getattr(device_proxy, component_name)
-                        
-                        # Get the actual proxy methods
-                        command_proxy_method = getattr(component_proxy, command_method_name)
+        for device_name, device in self.all_devices.items():
+            if isinstance(device, MQTTDeviceProxy):
+                # MQTT device
+                for comp_name, component in device.components.items():
+                    for cmd_name, cmd_info in component.data_commands.items():
+                        status_method = cmd_info['status_method']
                         
                         commands.append({
-                            "command_str": command_str,
-                            "status_str": status_str,
-                            "command_method_name": command_method_name,
-                            "command_method": command_proxy_method,  # Async proxy method
-                            "status_method_name": status_method_name,
-                            "status_path": status_path,
-                            "component_path": component_path
+                            "device_name": device_name,
+                            "component_name": comp_name,
+                            "command_method_name": cmd_name,
+                            "status_method_name": status_method,
+                            "status_path": f"{device_name}.{comp_name}.{status_method}",
+                            "component_path": f"{device_name}.{comp_name}",
+                            "component_proxy": component,
+                            "type": "mqtt"
                         })
-                        
-                    except AttributeError as e:
-                        print(f"Warning: Could not get proxy methods for {device_name}.{component_name}: {e}")
-                        continue
+            else:
+                # ESPHome device - handle differently
+                for attr_name in dir(device):
+                    if not attr_name.startswith('_'):
+                        component = getattr(device, attr_name)
+                        if hasattr(component, 'get_data_commands'):
+                            # Let ESPHome adapter provide its data commands
+                            esphome_commands = component.get_data_commands()
+                            for cmd in esphome_commands:
+                                commands.append({
+                                    "device_name": device_name,
+                                    "component_name": attr_name,
+                                    "command_method_name": cmd['command'],
+                                    "status_method_name": cmd['status'],
+                                    "status_path": f"{device_name}.{attr_name}.{cmd['status']}",
+                                    "component_path": f"{device_name}.{attr_name}",
+                                    "component_proxy": component,
+                                    "type": "esphome"
+                                })
         
         return commands
-
-    # ... rest of the methods remain the same since they're just for listing/inspection ...
     
-    def list_all_commands(self, include_status=True):
-        """Generate a list of all available commands using ComponentInspector"""
-        commands = []
+    async def send_heartbeat(self, device_prefix: Optional[str] = None):
+        """Send heartbeat to devices"""
+        if device_prefix:
+            # Send to specific prefix
+            if device_prefix in self.mqtt_managers:
+                await self.mqtt_managers[device_prefix].send_heartbeat()
+        else:
+            # Send to all
+            for manager in self.mqtt_managers.values():
+                await manager.send_heartbeat()
+    
+    async def disconnect_all(self):
+        """Disconnect all connections"""
+        # Disconnect MQTT managers
+        for manager in self.mqtt_managers.values():
+            await manager.disconnect()
         
-        for device_name, device_proxy in self.all_devices.items():
-            device_config = self._get_device_config(device_name)
-            if not device_config:
-                continue
-                
-            components_config = device_config.get('components', {})
-            
-            for component_name, component_config in components_config.items():
-                component_type = component_config.get('type')
-                if not component_type:
-                    continue
-                    
-                command_methods = ComponentInspector.discover_command_methods(component_type)
-                status_methods = ComponentInspector.discover_status_methods(component_type) if include_status else []
-                
-                for method_name in command_methods:
-                    signature = self._get_method_signature(component_type, method_name)
-                    command_str = f"await {device_name}.{component_name}.{method_name}{signature}"  # Add await prefix
-                    commands.append(command_str)
-                
-                for method_name in status_methods:
-                    signature = self._get_method_signature(component_type, method_name)
-                    command_str = f"await {device_name}.{component_name}.{method_name}{signature}"  # Add await prefix
-                    commands.append(command_str)
+        # Disconnect ESPHome components
+        for device in self.all_devices.values():
+            if not isinstance(device, MQTTDeviceProxy):
+                # ESPHome device
+                for attr_name in dir(device):
+                    if not attr_name.startswith('_'):
+                        component = getattr(device, attr_name)
+                        if hasattr(component, 'disconnect'):
+                            await component.disconnect()
         
-        return sorted(commands)
+        logging.info("All connections closed")
 
-    def _get_device_config(self, device_name: str):
-        """Get the original config for a device"""
-        for manager in self.device_managers.values():
-            if hasattr(manager, 'devices') and device_name in manager.devices:
-                device_proxy = manager.devices[device_name]
-                if hasattr(device_proxy, 'device_config'):
-                    return device_proxy.device_config
-        return None
 
-    def _get_method_signature(self, component_type: str, method_name: str):
-        """Get the actual method signature by inspecting the component class"""
-        try:
-            import importlib
-            import inspect
-            
-            module = importlib.import_module(component_type)
-            component_class = getattr(module, component_type)
-            method = getattr(component_class, method_name)
-            
-            sig = inspect.signature(method)
-            
-            params = []
-            for name, param in sig.parameters.items():
-                if name == 'self':
-                    continue
-                if param.kind == param.VAR_KEYWORD:
-                    continue
-                params.append(str(param))
-            
-            if params:
-                return f"({', '.join(params)})"
-            else:
-                return "()"
-                
-        except Exception as e:
-            return "()"
-
-    def print_all_commands(self, include_status=True):
-        """Print all available commands to the terminal"""
-        commands = self.list_all_commands(include_status)
-        
-        print(f"\nAvailable Commands ({len(commands)} total):")
-        print("=" * 50)
-        print("Note: All commands are now async and must be awaited!")
-        print("=" * 50)
-        
-        by_device = {}
-        for cmd in commands:
-            device = cmd.split('.')[0].replace('await ', '')  # Remove await for grouping
-            if device not in by_device:
-                by_device[device] = []
-            by_device[device].append(cmd)
-            
-        for device, cmds in by_device.items():
-            print(f"\n{device.upper()}:")
-            for cmd in cmds:
-                if self._is_status_method(cmd):
-                    print(f"  {cmd} [STATUS]")
-                else:
-                    print(f"  {cmd}")
-
-    def _is_status_method(self, command_str: str):
-        """Check if a command string represents a status method"""
-        try:
-            # Remove 'await ' prefix for parsing
-            clean_cmd = command_str.replace('await ', '')
-            parts = clean_cmd.split('.')
-            if len(parts) < 3:
-                return False
-                
-            device_name = parts[0]
-            component_name = parts[1]
-            method_name = parts[2].split('(')[0]
-            
-            device_config = self._get_device_config(device_name)
-            if not device_config:
-                return False
-                
-            component_config = device_config.get('components', {}).get(component_name, {})
-            component_type = component_config.get('type')
-            
-            if not component_type:
-                return False
-                
-            status_methods = ComponentInspector.discover_status_methods(component_type)
-            return method_name in status_methods
-            
-        except Exception:
-            return False
-
-    def get_commands_json(self, include_status=True):
-        """Get all commands as JSON string for API endpoints"""
-        import json
-        return json.dumps(self.get_commands(include_status), indent=2)
-
-    def get_commands(self, include_status=True):
-        commands = self.list_all_commands(include_status)
-        
-        command_list = []
-        status_list = []
-        
-        for cmd in commands:
-            if self._is_status_method(cmd):
-                status_list.append(cmd)
-            else:
-                command_list.append(cmd)
-
-        return {
-            "commands": command_list,
-            "status_methods": status_list,
-            "total": len(commands)
-        }
-
-# Updated factory function
+# Factory function
 async def create_device_controller(config_directory: str = "configs", component_path: str = "."):
-    """Create and return a configured async device controller"""
-    loader = AsyncConfigLoader(config_directory, component_path)
+    """Create and initialize the clean config loader"""
+    loader = ConfigLoader(config_directory, component_path)
     await loader.initialize()
     return loader
-
-# Convenience function for testing
-async def test_controller():
-    """Test function to create controller and show usage"""
-    controller = await create_device_controller()
-    
-    print("\n=== Testing Controller ===")
-    controller.print_all_commands()
-    
-    # Example usage:
-    try:
-        # This is how you call methods now:
-        result = await controller.hvac.avery_valve.on()
-        print(f"Command result: {result}")
-    except AttributeError as e:
-        print(f"Device/component not found: {e}")
-    except Exception as e:
-        print(f"Error executing command: {e}")
-    
-    return controller
-
-# Test in async context
-if __name__ == "__main__":
-    async def main():
-        controller = await test_controller()
-        
-        # Keep alive for testing
-        print("\nController ready for testing. Use 'await controller.device.component.method()' syntax")
-        
-        # Example interactive session:
-        # await controller.hvac.avery_valve.on()
-        # await controller.hvac.temp_sensor.get_temperature()
-        
-    asyncio.run(main())

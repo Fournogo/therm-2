@@ -1,0 +1,7 @@
+devices:
+  avery_room_ac:
+    components:
+      ac:
+        type: "ESPHomeACComponent"
+        host: "10.1.1.175"
+        port: 6053
